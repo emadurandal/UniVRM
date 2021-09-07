@@ -1,0 +1,5012 @@
+{
+  "homepages": [],
+  "source_base_path": "D:/a/UniVRM/UniVRM/docfx",
+  "xrefmap": "xrefmap.yml",
+  "files": [
+    {
+      "log_codes": [
+        "InvalidFileLink"
+      ],
+      "type": "Conceptual",
+      "source_relative_path": "README.md",
+      "output": {
+        ".html": {
+          "relative_path": "README.html",
+          "hash": "vcjoVvmvsldA3F0Ezztxam3IoSZGXAfM7eQBuJjSbQc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.AmbiguousGltfFileParser.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.AmbiguousGltfFileParser.html",
+          "hash": "3bo4sYGe+mag/yI5cVS56ipVfjKTaTZHXTWx2WjmrrQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.AnimationExporter.InputOutputValues.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.AnimationExporter.InputOutputValues.html",
+          "hash": "+wK4vkYOwZnE+8RDpYH0unr0hpv3bDDYQMnbdFTbips="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.AnimationExporter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.AnimationExporter.html",
+          "hash": "zEvpVJt3U3vACDe7O6zb40xbeEiag+d72Z0cXLxTX0g="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.AnimationImporterUtil.ReverseFunc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.AnimationImporterUtil.ReverseFunc.html",
+          "hash": "Mi8O0myxlGoEwDJL4Udxw5hQjG74aJSD8TxNR2W6Jbk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.AnimationImporterUtil.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.AnimationImporterUtil.html",
+          "hash": "awKTkuch2mN/dMhgz5lsDbUQX8uElh4ugy7D6Cib8JY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.ArrayByteBuffer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.ArrayByteBuffer.html",
+          "hash": "OgFcDCnXW7oUQI3dqko5g7tVGbqSylheDZssvVXNmWo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.ArrayExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.ArrayExtensions.html",
+          "hash": "vsCFyQ1Xb7ZsXOWhHKaX/+inaaHg1pss7ek82bk9+l8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.ArraySegmentByteBuffer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.ArraySegmentByteBuffer.html",
+          "hash": "3DVTUaGSqeu+olB+3mXjQBusc/jU9RdSwWI4L6fzZiw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.ArraySegmentExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.ArraySegmentExtensions.html",
+          "hash": "AzCZEfy/IDI9LHrJWagCscWmEYk3zeCzw0jKDWcmTwQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.ArraySerialization.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.ArraySerialization.html",
+          "hash": "vSXRqTNhVK7rklfBg6UEZEvrF8vMvxeL5owfgaImLDs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.AssetTests.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.AssetTests.html",
+          "hash": "3jqkxIYV2Sn49gnSm4kjuThrJrW05avjosLYEVP/hIc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.Axes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.Axes.html",
+          "hash": "9Eyv8XQx7X4C978Iy8VB2DIyO8S9SZgypDVlJwitEJ4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.AxisesExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.AxisesExtensions.html",
+          "hash": "ZvKRXXd81qN4uKLL6+tn6aMrDUWBSdP2+KJArrbtLDI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.BaseJsonSchemaAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.BaseJsonSchemaAttribute.html",
+          "hash": "m3lGO+RcRXq62ZzBITXTjmoDYU8sRPpIKtWJlYFat4Q="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.BlendShape.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.BlendShape.html",
+          "hash": "soIkL6HVecFKKW5TVLuv4VRScUXtO4bmBhTK5kLcvFc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.BlendShapeExporter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.BlendShapeExporter.html",
+          "hash": "JeLb+1oTvu5rwcZKS4td/4hfHytqTI0OojT8gGkN/fQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.BooleanSerialization.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.BooleanSerialization.html",
+          "hash": "JJZQM7t3mla70FFCg0o7UfOoE4jZkXcVsaTzdryus3s="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.BytesReader.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.BytesReader.html",
+          "hash": "akZF6R33OfC0FASunI/p/VbyAVEmg/ZE3d0cZ8cVzCk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.CacheEnum.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.CacheEnum.html",
+          "hash": "vq2hKRYkGmXazD+7oXOQISWCrpd/8OqIIH+1QOlxHjQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.CacheEnumTest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.CacheEnumTest.html",
+          "hash": "d7qZDGkY8qRWQPhQrgjxqGVM2qHDKWC5PQOdELlV0g8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.CollectionSerializationBase.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.CollectionSerializationBase.html",
+          "hash": "DzJThK5BUMtG8fLVbwGvAieGux5VYOhmPDqmEN2IcQE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.ColorConversionExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.ColorConversionExtensions.html",
+          "hash": "b/hJGt9MhYB425yFrUnLiKbZWeWQJFDtdAcCtpeGJzU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.DefaultMaterialValidator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.DefaultMaterialValidator.html",
+          "hash": "6zvQ6IfkKZp17slWJ4+FgXn5OLyhgfyqSSZTuZoRxbQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.DefualtBlendShapeExportFilter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.DefualtBlendShapeExportFilter.html",
+          "hash": "5mKrjNJHJ404dsevQBMuRPEklJs6wn5HB5ePmQqMSa0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.DeserializerGenerator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.DeserializerGenerator.html",
+          "hash": "ZKRr4WOO3Y26PhcYPe4Q0olWN1u8V15ip+6vaQ0g0DI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.DoubleSerialization.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.DoubleSerialization.html",
+          "hash": "iSAJq5mZXnIL4QCPfzjc/9O4EqmeYYnbjlXq8zGLUxc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.EditorMapGetterFunc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.EditorMapGetterFunc.html",
+          "hash": "/6XESRtd64zzhohAvU5KsshOCbDKZi5EGgKai8omFtY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.EditorMapSetterFunc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.EditorMapSetterFunc.html",
+          "hash": "CoTOz3nLe4FxpiBdEylbryOgzN7GDbUwuKhTnItllA4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.EditorTextureSerializerTests.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.EditorTextureSerializerTests.html",
+          "hash": "OsmfRIRJu9sHIyNnz+UDOa9qjOLm7ByS+5Bg9F3Mxhg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.EnableTPose.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.EnableTPose.html",
+          "hash": "0NBfgiU9xs+Mdk77p3cOALpHVC8pcq1zSbOQDZflzQ8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.EnabledScope.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.EnabledScope.html",
+          "hash": "MmF+zZCMKY2nIlhDERBmyI9luDDdFEeG1ekj+rzEteQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.EnumSerialization.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.EnumSerialization.html",
+          "hash": "MI/lRo3LMPMy61wb5EnTbYu0ywQrDryGXKB8/Q286Fc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.EnumSerializationType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.EnumSerializationType.html",
+          "hash": "ws5kOqm2p2oUvkKrPjn6ZGRZmMAcHBq9juswzcyZ9Zg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.ErrorLevels.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.ErrorLevels.html",
+          "hash": "lgBiQTFbgBZjq0kn4sz7Fx5z5x9TXMpjGfH2lXozRlI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.ExportDialogBase.BeginVerticalScrollViewFunc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.ExportDialogBase.BeginVerticalScrollViewFunc.html",
+          "hash": "6UbjZvX2R7T5QXtlEs7qCo4VW6FUVtfMmXOxeycwADs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.ExportDialogBase.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.ExportDialogBase.html",
+          "hash": "kPx++0fRzfp8ttfPUsF7mHhRVLWB1QOQE71em6MhAkc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.ExporterDialogState.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.ExporterDialogState.html",
+          "hash": "P3LEYfXjV0qsjpjaak2YD/Zm/nnmur74Jj2IpvhlVgU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.ExtensionSerialization.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.ExtensionSerialization.html",
+          "hash": "UooahOmRkexdcOYlnM9+1pqteRqwjGnIShZJdRNrv78="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.FieldSerializationInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.FieldSerializationInfo.html",
+          "hash": "eFUXn2dV9Eyg8EhEIV77iVMa/9QEq47jPhIXJZn4ukY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.FileSystemStorage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.FileSystemStorage.html",
+          "hash": "CwFMp0QVBsR1gR2LCWQ2FnDoLbq3jExivV36WXUZvaE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.Glb.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.Glb.html",
+          "hash": "rXnfLVo795pmfOi9zZNANq7Y11lxTEBfuejcoyeKBiI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.GlbBinaryParser.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.GlbBinaryParser.html",
+          "hash": "TGIJJY5+2n+sWc0jzpQ5W2NgkYW8qtuRo+12L95bFmU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.GlbChunk.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.GlbChunk.html",
+          "hash": "qEwiIY3Ox3HxDl7CB+QIJuR5ukzSgvhBY7Kiq2oKv+A="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.GlbChunkType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.GlbChunkType.html",
+          "hash": "9GXAH9rxd/K1GG24cLX5wRWLlyKB8ZP4MrNTFmEH1pw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.GlbFileParser.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.GlbFileParser.html",
+          "hash": "kCJDAuKIVsLY7T0wpUBg3zVqAmBBmiCfWfrRtZFEZtc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.GlbHeader.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.GlbHeader.html",
+          "hash": "Zj6yTIQomsFG05qEO9aXqaislHBwPKc3VtnWbA7ZFmI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.GlbLowLevelParser.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.GlbLowLevelParser.html",
+          "hash": "LtrenUKmycbHALlHLQ2s8S/Rn2sDtMmLCtnpOQF/4wE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.GlbScriptedImporter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.GlbScriptedImporter.html",
+          "hash": "JTOQO28dFWFRDYSqi3o8HQubguRLjeziUgfad/qwuE8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.GlbScriptedImporterEditor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.GlbScriptedImporterEditor.html",
+          "hash": "D4kLvSbbXx1nOB6S/Mp5qk94Vqtz8am3uyGxasEkQJA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.GltfData.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.GltfData.html",
+          "hash": "b1Xxbzuiz8tFD3FYr6QN8p4GT2U7I8BKJmP9pvlCkYc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.GltfDeserializer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.GltfDeserializer.html",
+          "hash": "AN48xPhEYk3YuaOfqUB4p5iyqzVbo/CqwyQrB75phHo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.GltfExportSettings.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.GltfExportSettings.html",
+          "hash": "Zn4TsMivoXbd1EtYYW7zOkYHbeEt/Utmal2qcmdqUWM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.GltfExportWindow.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.GltfExportWindow.html",
+          "hash": "W+7lgSy9YlmhjMTLZMn7+EfsoONP9hP4CROu1sYXj3A="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.GltfExtensionFormatterExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.GltfExtensionFormatterExtensions.html",
+          "hash": "6SZNS956ZearampXMI5GRGK97EX9McrpCWC/Soen5hA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.GltfFileWithResourceFilesParser.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.GltfFileWithResourceFilesParser.html",
+          "hash": "5o+VbIrOfzSOW2p4w0r2RQps9etvrXpB4S3aISqWyoE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.GltfLoadTests.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.GltfLoadTests.html",
+          "hash": "OQMeGPSPipx5N1USNssW0UjUUXt3tt+czNp7slHMu/E="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.GltfMaterialDescriptorGenerator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.GltfMaterialDescriptorGenerator.html",
+          "hash": "h7dN53i8xwzV8s6MBc/Z+CNmgH5/CqN2kvGRzrJ7KFI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.GltfPbrMaterialImporter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.GltfPbrMaterialImporter.html",
+          "hash": "8tVTFIBvuTkT/r41p0/OD90qGRbcf8msTAmMpWwzi+M="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.GltfPbrTextureImporter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.GltfPbrTextureImporter.html",
+          "hash": "aEJEnCpEOSocXrnYuLSTQMUZKhtfI0LIOErhVlG/1/w="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.GltfPbrUrpMaterialImporter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.GltfPbrUrpMaterialImporter.html",
+          "hash": "xwYi4EmzRFfrWkpQjXEYc5+JJcgsaNiKEO5PA4B4w60="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.GltfScriptedImporter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.GltfScriptedImporter.html",
+          "hash": "nxBFNNK/BLJTPHNGM/Kk68aDKwxb7C9Secz7C487VDg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.GltfScriptedImporterBase.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.GltfScriptedImporterBase.html",
+          "hash": "WrYN3MqiRuvoJAZWIJKI6C1UWxid9QCXXwnNzbn2xh4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.GltfScriptedImporterEditor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.GltfScriptedImporterEditor.html",
+          "hash": "29JtRxIS9SSUC5Gnz+Bgfhe/RghUaXCG9hQaN8EM990="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.GltfSerializer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.GltfSerializer.html",
+          "hash": "IeplHJuPzMv0WRjeQsw99obe6UL2q0J+V4oCh7ZSdyk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.GltfTextureDescriptorGenerator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.GltfTextureDescriptorGenerator.html",
+          "hash": "h4GDcbZx9gYlBHnXry1HRY2JNrmbaMqZIt5uGc3rV5I="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.GltfTextureExporter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.GltfTextureExporter.html",
+          "hash": "80mclSvBAa9tQttVeqq4rXBx2cXbe719pzdjrFikMQA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.GltfTextureImporter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.GltfTextureImporter.html",
+          "hash": "ItZ3SPduQi9xAdLJjew+3TdGJYjElTK9rp+egC837Oc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.GltfUnlitMaterialImporter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.GltfUnlitMaterialImporter.html",
+          "hash": "xJE+hgYFaKcVaCWYu06Tkv0MmUvZT1i88gvSAxOkjI4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.GltfUrpMaterialDescriptorGenerator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.GltfUrpMaterialDescriptorGenerator.html",
+          "hash": "OmdAJr2M1DB/gx+07iWws5XzUvkT1hYDnt5AagXAL+E="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.HierarchyValidator.ExportValidatorMessages.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.HierarchyValidator.ExportValidatorMessages.html",
+          "hash": "q346SerSR2LMWOdNde1I010q8tQbGoP6zx7Vgqq6rr8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.HierarchyValidator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.HierarchyValidator.html",
+          "hash": "gGUF5RGcXiXJXLCBZPUofxMeIaZMaCkO5EjU0eqIojk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.HumanoidValidator.ValidationMessages.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.HumanoidValidator.ValidationMessages.html",
+          "hash": "nXZsSo4dDyyCeo6HGOmA9v9u4+wBzI+0CTJNVwgz938="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.HumanoidValidator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.HumanoidValidator.html",
+          "hash": "xl8XviEKrbW28ksTT8Kl9KwrgbEOdJ2/74/wDpfxEUc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.IAxisInverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.IAxisInverter.html",
+          "hash": "is7K87WkDgNnGEyRw3yeqjO6qbGHomPbkKqHxVptcm8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.IBlendShapeExportFilter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.IBlendShapeExportFilter.html",
+          "hash": "3d7xuRcL5WAWHyOqhQncW+de56LfMwKJSzuxFw831Yg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.IBytesBuffer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.IBytesBuffer.html",
+          "hash": "QAZnx+lg2QC4xJtJLdc7vvieVQyw4xmQShfjF6sPeEc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.IMaterialDescriptorGenerator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.IMaterialDescriptorGenerator.html",
+          "hash": "bBVSPAWlmCXgfou1WbaDyN78X4OPxGeaLF3LkYlcWCM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.IMaterialExporter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.IMaterialExporter.html",
+          "hash": "3JnXDzr6IltJxwZB4bEi88gIj+XHvPZpBpqPAr1554A="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.IMaterialValidator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.IMaterialValidator.html",
+          "hash": "wjja2SSYdJsyFAI/eFPcFMM1dqDoq8tkIK2KQNKoaRA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.IStorage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.IStorage.html",
+          "hash": "Mf4DlUcbOnG6nKFfFw5RoJI5LKVuh+iGxbVFzuoWrkQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.ITextureDescriptorGenerator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.ITextureDescriptorGenerator.html",
+          "hash": "c2u6qXFSSswwtB3vsuylpC4jSz0o1Xk9efwuDMIp22U="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.IValueSerialization.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.IValueSerialization.html",
+          "hash": "7YwRxc9x5rZ+Bu/Sbdi8IcVBGXdufQ0hBCV1S1uXLQM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.ImporterContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.ImporterContext.html",
+          "hash": "DNVtBdgSNiKy6ZN3z2RrRmpLZyvFsq80W69ezfpf1Iw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.ImporterContextExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.ImporterContextExtensions.html",
+          "hash": "BsaDMoKYH8crJtak+1lbfbfoHdn3ODNfAjL4zzRuCC4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.ImporterContextSpeedLog.KeyElapsed.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.ImporterContextSpeedLog.KeyElapsed.html",
+          "hash": "Zj507ORyZgX/7jDWLr4WzZCoVDzhtNSK53YdtozM+4g="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.ImporterContextSpeedLog.MeasureScope.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.ImporterContextSpeedLog.MeasureScope.html",
+          "hash": "MWQYOCZoCXOLaPsHmHNf3KsfXZF6CyNFnmujF0rT9oo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.ImporterContextSpeedLog.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.ImporterContextSpeedLog.html",
+          "hash": "PbddMTzQRSwMcaZs5s+QPOPiFbLIU/ELcBU6H9pa3dk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.Int16Serialization.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.Int16Serialization.html",
+          "hash": "ilb5IZyyFGFxQk9W3YWdXAleiREPKoJK8OnOGBioH94="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.Int32Serialization.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.Int32Serialization.html",
+          "hash": "Tzx2RzB5KMh3MPnE6lLM6uZmQx+3KnrYcmjXSkfc1bs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.Int64Serialization.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.Int64Serialization.html",
+          "hash": "xa8XAfG1wGfCGDdGXGQdvoV+336iw2h1z36ZkHyCWTE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.Int8Serialization.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.Int8Serialization.html",
+          "hash": "Xm7ypCb+L5bW0FBH4QLToaHr+lNWSL5QqfrPnz1g1oo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.InternalTPose.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.InternalTPose.html",
+          "hash": "6960q+mWjrl7VveLa0nhd/gWsj1vRCd2cSQ9/Va38Dg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.ItemJsonSchemaAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.ItemJsonSchemaAttribute.html",
+          "hash": "y2N8ySnhkUvQnGTb72w/k5kj4qJEzNVNd36yBek9LCE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.JointsAccessor.Getter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.JointsAccessor.Getter.html",
+          "hash": "DxcQnkylEe9Sj4FmxhbITpwGhCI8G3/FWroe4sHHw7o="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.JointsAccessor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.JointsAccessor.html",
+          "hash": "6vup0Do9K/zs8WP+gQJRBemitCI1XT1JPk8VVXM+1MA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.JsonDeserializeTests.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.JsonDeserializeTests.html",
+          "hash": "XsLl0A4pIekJLs2vFeHaMapMlCcyTVi6rjwFl8Vnj2Y="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.JsonSchemaAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.JsonSchemaAttribute.html",
+          "hash": "AwwxkaEgNGzjIdMjzs4dTFQJsRpLcptL7A1cSQESnoo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.JsonWithStorageParser.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.JsonWithStorageParser.html",
+          "hash": "9jtitSdm0gPqfTOpcXt13o+ANmoTp39dcdalB1Ut7yY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.ListExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.ListExtensions.html",
+          "hash": "mxhBIF8j6YbcqG9P1HaWwy1+BN+R//9lIgEqSJvbIJc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.ListSerialization.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.ListSerialization.html",
+          "hash": "7s4MrWZT3vokUTMGLm9qsZ62uPEI6avBtaLtPdXd+50="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.M17NTest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.M17NTest.html",
+          "hash": "RRNnHJkH5d2ySymcx+NoPw+7FZjWIf6Rovs1gTEVB20="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.MaterialExporter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.MaterialExporter.html",
+          "hash": "lSKtrZp7y9ezqh+1OZNemSTveYYKy2bdHypl8aMMjUU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.MaterialImporterParamExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.MaterialImporterParamExtensions.html",
+          "hash": "kchl0ltwQVRSduZraZmafA1d9OavY3ORb3G6Vwl6a28="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.MaterialTests.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.MaterialTests.html",
+          "hash": "9/N7D9W9m4KJNrFj3KJQw4izxRy8bmrZoH2rTBrGEYU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.MatrixTests.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.MatrixTests.html",
+          "hash": "640dYbNxSU3X1Bn9SsxdaYbzXbsmvV/c1SmE0EMvYx0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.MeshExportInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.MeshExportInfo.html",
+          "hash": "nrvliTSqeDryd0V1EycPGwu7hb3aTWm6W/pvhni21jk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.MeshExportList.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.MeshExportList.html",
+          "hash": "zXkLFvGISeqj9unDdFASLK/mOum2Dqj3rdyN8QlIVpY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.MeshExportUtil.BlendShapeBuffer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.MeshExportUtil.BlendShapeBuffer.html",
+          "hash": "xdqMoasXsdAQZ1K5qAFP/K03INP5fZ7w/mZiDmaqPWo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.MeshExportUtil.VertexBuffer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.MeshExportUtil.VertexBuffer.html",
+          "hash": "DDjTAtm+a8JWZ3P6cXl+lQc5Ew0QoI02aTxmj6Se8mE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.MeshExportUtil.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.MeshExportUtil.html",
+          "hash": "hJEe5i4C/qiK1u7cfQdE8mzfJW3yP8jcHGPhHMSNMVI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.MeshExportValidator.Messages.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.MeshExportValidator.Messages.html",
+          "hash": "GWRaxcsjvgMf8Wf2hBCa71/pmndK99JVB1ZXSS1ppEU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.MeshExportValidator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.MeshExportValidator.html",
+          "hash": "6DPGkFw2Pg4QMZM7b/I/1ySwAdj8+07hTLoKnXPRw4s="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.MeshExportValidatorEditor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.MeshExportValidatorEditor.html",
+          "hash": "xh/A6CqFnbZiB5O2oMh4nagTswIvih3l0eJI1BTtWgY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.MeshExportValidatorTests.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.MeshExportValidatorTests.html",
+          "hash": "90zDb9qiMT7RJkrcNYcs0QYEsm79+F5kBmAXlzjbKnI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.MeshExporter_DividedVertexBuffer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.MeshExporter_DividedVertexBuffer.html",
+          "hash": "z772CDg2KWESUGEB4WzPoTWRsYNuaaDlGgHz+zCmsD0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.MeshExporter_SharedVertexBuffer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.MeshExporter_SharedVertexBuffer.html",
+          "hash": "0esCpHvYwTNi3JUrbtYBPv+CQFINvRpUV0YBVqhLewo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.MeshImporter.MeshContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.MeshImporter.MeshContext.html",
+          "hash": "TpM1ZmrRiPdeiD0G940oSpp0KYxmde3e/YYRTRcLMBM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.MeshImporter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.MeshImporter.html",
+          "hash": "EuhI3WRvqQC5DC4AyxLYOwZqtWTWTKpx9WCCWKoFZnk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.MeshTests.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.MeshTests.html",
+          "hash": "F8m17DtMwVzX4VOXpmKzZ2tQ0WeBzRKjd+pA/JuSejs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.MeshWithMaterials.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.MeshWithMaterials.html",
+          "hash": "c9z5+OGQATfwj79lkxOIPVCZd5A4Ie9AXjY4CDXAHdA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.MigrationFlags.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.MigrationFlags.html",
+          "hash": "qNsno57Krwt/1s4npw9qjWP9ehnyPTUDYGZYvwIjAQk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.MonoBehaviourComparator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.MonoBehaviourComparator.html",
+          "hash": "4WvyRyN9nMjzILQUAn5uzKTEr69q3AkgXab/UWzg5qM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.NameValidator.ValidationMessages.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.NameValidator.ValidationMessages.html",
+          "hash": "+fHPJNckpxpoLEptybw16njVvptsirP/yYXyS1WgYms="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.NameValidator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.NameValidator.html",
+          "hash": "oeIvPPWrtvjZLbqngSAc3fNZ+DxlQpdAsc0YaDbQ5/M="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.NodeImporter.TransformWithSkin.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.NodeImporter.TransformWithSkin.html",
+          "hash": "TZFwnxQyHVav+rO2uioJ5PTCA6wgU46HIy+/S0oS5zc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.NodeImporter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.NodeImporter.html",
+          "hash": "e8ZkftatYr4rm8+Z6xyuQax5crRbUGRFr/Hdm9ZN/jc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.NumberSerializationBase.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.NumberSerializationBase.html",
+          "hash": "jnmmFXjD3sGbG90fHGZwn/PK+nSfOw+M9FBuszku8/Y="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.ObjectSerialization.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.ObjectSerialization.html",
+          "hash": "HexM5B0PVwyhoHqUjlu+dPblpE32cl8nwIv5f30dSCA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.Pin-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.Pin-1.html",
+          "hash": "1Y1tDjPxkB1Ge7thLNyF15o3b00KQor8mOUzJVD88uA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.Pin.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.Pin.html",
+          "hash": "qK7lkzaEyedyCYO2tiTfFBdeDdXxXwIoxhRjvIPYEr0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.PosRot.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.PosRot.html",
+          "hash": "HqnGWYDUt+MFeAQo/KV9Hof9romhl0wszQLI3LlvhvU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.PrimitiveSerializationBase.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.PrimitiveSerializationBase.html",
+          "hash": "5BeVNVctngqEjuUWZ0YSsDngQ/UkgGckRgdSMg26ApM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.ProjectionType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.ProjectionType.html",
+          "hash": "sjfvxy5MFFdWtiRw55izPBCby+/mQTWhFXno1qB4xEk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.RemapEditorAnimation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.RemapEditorAnimation.html",
+          "hash": "O+aPAdI7hfx1Mw2/DDqQKtlF2fMZoOEY7B6i1joBOIY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.RemapEditorBase.SubAssetPair.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.RemapEditorBase.SubAssetPair.html",
+          "hash": "Gkee7ocJA2cBnQbsJzmn4MKfkO48kmlDurjiESPyrEs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.RemapEditorBase.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.RemapEditorBase.html",
+          "hash": "VqrzsCQBhjHs42Bof5kDx1Tl0/8XwP5Epbj+O/oXefc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.RemapEditorMaterial.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.RemapEditorMaterial.html",
+          "hash": "qi1V9c2LHBaj/oa5huxS2jEFr1zVkL9sdfeuTXy5UEE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.RemapScriptedImporterEditorBase.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.RemapScriptedImporterEditorBase.html",
+          "hash": "DLdEOlwxumNGxUrcv84vR9XBffYOY03Udmv5wc6ruys="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.RenderPipelineTypes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.RenderPipelineTypes.html",
+          "hash": "lnZkNq0xUqwEepPhLItLue08PbFzLsGNxuaG1ygqLos="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.ReverseX.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.ReverseX.html",
+          "hash": "mIPftReOAfVNvkbgIvYMO79l36wqP3rBC14htrzyvwQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.ReverseZ.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.ReverseZ.html",
+          "hash": "q/RK71dxUCIYro4wa5bmIEGYKCESun4H4pq5kFnYxAk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.RuntimeGltfInstance.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.RuntimeGltfInstance.html",
+          "hash": "5qOPtkiNokBwZ9lHR3AF7/RFJo6DSYlEYgS+EIthJ7I="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.SaveFileDialog.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.SaveFileDialog.html",
+          "hash": "cqBY7UBMpYOdVZfXmJX5nOkdIN1MaAd42aKp9sz65aw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.ScriptedImporterAxes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.ScriptedImporterAxes.html",
+          "hash": "K8NXRXbIvGrjyIWhyRzFkaHUu1LQ6aCzzE1GxxP3ZL8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.ScriptedImporterAxesExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.ScriptedImporterAxesExtensions.html",
+          "hash": "B4dSmRTKzIa0NLQcDlJwjk2cPmbzy0wU58IgvXGldko="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.SerializedPropertyEditor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.SerializedPropertyEditor.html",
+          "hash": "Ph1Ny6yWeiEZrvs15TPoRlbI4CjXYAIx951YM3xcr+c="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.SerializerGenerator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.SerializerGenerator.html",
+          "hash": "rP8Jv4wbKl1d5huUU2QNwFhqx17BBdBaey0rmcb+ttg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.ShaderPropMenu.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.ShaderPropMenu.html",
+          "hash": "Y1EoLMctAmiL4ivWO98v6wUV/8gZZQSvZ1OIF9HMslY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.SimpleStorage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.SimpleStorage.html",
+          "hash": "zH9Smp/Nyd1Un6peNKj4XbxKGQaCKrA2UFjhIF/EIRw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.SingleSerialization.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.SingleSerialization.html",
+          "hash": "GeVTqUPzz3nN+w6A7gHhI6XCodz7+R+vx57ReTDQ8Y4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.StringExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.StringExtensions.html",
+          "hash": "2cpt1qL4AXuQpZiojh5blL2oxH6nEEmKyMcNX0lhHdk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.StringKeyDictionarySerialization.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.StringKeyDictionarySerialization.html",
+          "hash": "QkUOyD4s+he0QXWpthDb7tpq6L/Ar89ptvLt6INNGv8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.StringSerialization.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.StringSerialization.html",
+          "hash": "CIUvfCNWdHqjXYOcxQ2JsPFpv8YG1GvLIbzn6mhquDk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.TextureEnumerateTests.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.TextureEnumerateTests.html",
+          "hash": "gPzwNqC3+j7pWWmXH4SBfCuttlXdoeKJz2evuhxyYlw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.TextureExtractor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.TextureExtractor.html",
+          "hash": "m5xpwRJEIRyzzc2/dIUrixevlEgjI/QX/Fx41GUfWhI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.TextureTests.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.TextureTests.html",
+          "hash": "JXiniKrfJba4pHAru/bpZZyF724zzr4ZVC2O7dEhkXk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.UInt16Serialization.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.UInt16Serialization.html",
+          "hash": "G2vlSgDqiFV91k3W2/VZNJs+qTerWVX5ytIONWcquIo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.UInt32Serialization.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.UInt32Serialization.html",
+          "hash": "pbopDphwk+evHMAM8Cwz1zxvPDBnTPEQNFIf2uh2KBQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.UInt64Serialization.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.UInt64Serialization.html",
+          "hash": "+i4ZvpRooD6NQsJnMPDBEN5/aCagXSLZ0K2uk1NU+sQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.UInt8Serialization.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.UInt8Serialization.html",
+          "hash": "wpHna5RqW9j7jbufVqEV2+BpP0LKqUwcKQePBGRY2wA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.UniGLTFException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.UniGLTFException.html",
+          "hash": "+kI/c7/OTTjn4wyjJXii0HGK3Lfgs9ifTmDqF65eSWo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.UniGLTFNotSupportedException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.UniGLTFNotSupportedException.html",
+          "hash": "4g0sj8q0CGjEVvUaWiSx/SpCFnQRayyc1xZEcoxuaP4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.UniGLTFPreference.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.UniGLTFPreference.html",
+          "hash": "aL4HwDDBF7juDSLbIxwpCXnvgXynNT9nEBvudA35rNc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.UniGLTFTests.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.UniGLTFTests.html",
+          "hash": "MY4ob38gtriORgtqbJuw94xASUHBKgJNPNSxXxH9b9Q="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.UniGLTFVersion.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.UniGLTFVersion.html",
+          "hash": "9Bp2By4BPcn9wICp7Q6q5tQeK7FDqlhg6mypPjmIDSA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.UnityExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.UnityExtensions.html",
+          "hash": "axM6/ojUfiteoye4mW6LXexJ0Go64k+m67Nusp7FSzk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.UnityPath.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.UnityPath.html",
+          "hash": "rkUXM4GBsNb5OtKCHcXR8q3zOgUunM5HP2aMXvxId6Q="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.UriByteBuffer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.UriByteBuffer.html",
+          "hash": "7JDDTTaTCqMbWCvePL0QcNezca0yCEM6WdfY/1gTJwc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.Validation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.Validation.html",
+          "hash": "MwW/GDVtp1tx9zXnW7rD5wbtPlCdEzwBhdKU8kw2Ht4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.ValidationContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.ValidationContext.html",
+          "hash": "3dCo5U11AuICVLp1bSfqXvKGj+uG1+sqNtM1YkP79Q4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.ValidationExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.ValidationExtensions.html",
+          "hash": "qJDCfNEdkYYKIcZedKyqgfXoFAWOhtQCY2LipAGVw+Q="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.Validator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.Validator.html",
+          "hash": "418qh9/EKbGAK7X4QyR/UKp9hZKUqjwDTUQuYvzaVAU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.VertexColorState.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.VertexColorState.html",
+          "hash": "h/DoguIM9IY7RbNTieg8FYVv/qiyRw5JMkgyLJSUqKc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.VertexColorUtility.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.VertexColorUtility.html",
+          "hash": "9OTXwv0AGvyec742vGVQDm/YAFiF+0Jsc+tDb/fgG2c="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.WeightsAccessor.Getter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.WeightsAccessor.Getter.html",
+          "hash": "HGDvRbVSI1PIYXbnVd8t5uoM/+KLiE7y107SxBAJbS8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.WeightsAccessor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.WeightsAccessor.html",
+          "hash": "Y7+t+KWJyD8wIj7OaavmKiZmK3nbcVm1uT8SISXTxQ4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.ZipArchivedGltfFileParser.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.ZipArchivedGltfFileParser.html",
+          "hash": "MDJozCTXAVcjcuLgO42gDGQDpVJpdLbfGZtRyJUgcoo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.ZipArchivedGltfScriptedImporter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.ZipArchivedGltfScriptedImporter.html",
+          "hash": "I0SbnipqFvShmbxMTiZJwbaGUEhaEsylTaRIcf4AU9s="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.ZipArchivedGltfScriptedImporterEditor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.ZipArchivedGltfScriptedImporterEditor.html",
+          "hash": "8YbIRUqArny1luvC77FGaeYLBwrGOPCz4f8Ei+kG42s="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.glBufferTarget.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.glBufferTarget.html",
+          "hash": "vC/TtfITl/6A5VuU6IhoMetb1CDt79mMBGgaYMRlMMs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.glComponentType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.glComponentType.html",
+          "hash": "GtrnSH39FCwzcZZ0Uwdx4DioI0N5zOlYFNMgJVuBK3A="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.glComponentTypeExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.glComponentTypeExtensions.html",
+          "hash": "NqQigCGxgDukDeKGbIfGfpmcd9fOygJVfTVFdBSls80="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.glFilter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.glFilter.html",
+          "hash": "MxH/m7IkZBGZkdwRwBlp+25EfKFf+5xWPUInnvwaYb0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.glTF.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.glTF.html",
+          "hash": "SsMRISaEL9d2sKaPjBAoTN/Gi1NIEcef+zJMKLW2OkY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.glTFAccessor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.glTFAccessor.html",
+          "hash": "JI90e+qXysXHoMnO7CC2MEFH2CYy7pGZJx3Q+jlUlNo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.glTFAnimation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.glTFAnimation.html",
+          "hash": "zdvljRx6F1fwoz/WfUGsdb30+7bTKPDzce3DB2+gRiQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.glTFAnimationChannel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.glTFAnimationChannel.html",
+          "hash": "3vW9nQsCXOA/Bq2YDq+T307W2jk6xoNN2qZBOy/f6WE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.glTFAnimationTarget.AnimationProperties.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.glTFAnimationTarget.AnimationProperties.html",
+          "hash": "masktbEhTLzlMqiLPs/Gigipp26DaC2bV2vPw0X4Mfk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.glTFAnimationTarget.AnimationPropertys.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.glTFAnimationTarget.AnimationPropertys.html",
+          "hash": "6djrlpfn2sbhRQBTG9U3ThLKGe7aMKA+KsdRb+NFPPk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.glTFAnimationTarget.Interpolations.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.glTFAnimationTarget.Interpolations.html",
+          "hash": "NdTNx9efwflptqUbiEeR88uQzegdBkYQGK0XQi5ryyY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.glTFAnimationTarget.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.glTFAnimationTarget.html",
+          "hash": "D57CMxBp4L037GPWdUU6jLvQpRu+qipGRSjUyuWPAk4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.glTFAssets.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.glTFAssets.html",
+          "hash": "s8OAkMBo8MBgaDXE/BC9z0e+KBgbfCs+MwGBjZAD9aI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.glTFAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.glTFAttributes.html",
+          "hash": "va9RqHJ+fVB/m0wLMnVS4uc298KYOPJXXiSUwyU6a1Y="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.glTFBlendMode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.glTFBlendMode.html",
+          "hash": "9Mhcg+0VobL8tCAvl5WdcHpHiTDnMTnXCt4eXZ9W0eo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.glTFBuffer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.glTFBuffer.html",
+          "hash": "gQv/T71NzphUiAnlsel8yQldjNOT2mxFXLfScPiOEIM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.glTFBufferView.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.glTFBufferView.html",
+          "hash": "28c2luOvISXGDmrn8sDI6h/nvB6nCNErQLPpESo06eo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.glTFCamera.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.glTFCamera.html",
+          "hash": "ra9V9t26+TtScueSAjgo1fKn5N6PT9EMGt+czRzD3iQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.glTFExtension.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.glTFExtension.html",
+          "hash": "Hhdi8wCdVgos6s4EmkilMZSs4KvX8aqN5n2fseGeLbw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.glTFExtensionExport.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.glTFExtensionExport.html",
+          "hash": "RgnrWhMORO+N5QlcGaEJwL3MJramkQvFV5gYKY1B8To="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.glTFExtensionImport.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.glTFExtensionImport.html",
+          "hash": "ax76yHJCchdyQ+t3tAihXfjVQg1wyzeZ8T+i9NrepoA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.glTFExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.glTFExtensions.html",
+          "hash": "KrGORkUw6faRIE8Yj0FxLNP8Qq0LnUa1ARFTxUXicdc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.glTFImage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.glTFImage.html",
+          "hash": "qztwZklzJgQkrykYc70eVZAeNHVPKZ8GjPCImj138UE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.glTFMaterial.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.glTFMaterial.html",
+          "hash": "u83QhVlpoJSrUr6vD1mspbXb5nJhfxfrhuBycdTskY0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.glTFMaterialBaseColorTextureInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.glTFMaterialBaseColorTextureInfo.html",
+          "hash": "6dvQIuVQDaOF8MzkxOyFzEiD5vANnmpM119ZBW3NBIs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.glTFMaterialEmissiveTextureInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.glTFMaterialEmissiveTextureInfo.html",
+          "hash": "U4vCnzZZjVtwa91g0nxM9tyEXfsLGHksKgB92YG1O24="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.glTFMaterialMetallicRoughnessTextureInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.glTFMaterialMetallicRoughnessTextureInfo.html",
+          "hash": "0TIrSYfgtzSMKipxye3OYrUGcJUyjNiSg3HwxYRfqYU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.glTFMaterialNormalTextureInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.glTFMaterialNormalTextureInfo.html",
+          "hash": "aD9Ut7e1ZFmpYM4YEXxRb3G9SDIDqppI/JborONEqF0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.glTFMaterialOcclusionTextureInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.glTFMaterialOcclusionTextureInfo.html",
+          "hash": "aKP5eAJUr490YBk4+UfPOYG1KDJuDSTHV8vvXd77KPo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.glTFMesh.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.glTFMesh.html",
+          "hash": "3jT51SxeO6lkOd7lCem0wdoGankljdjs0DvxBwAp05k="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.glTFNode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.glTFNode.html",
+          "hash": "s9zoPHL2ILO4ohHCWJJJcbgTAyreJxgIEEjqf+mE1YQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.glTFOrthographic.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.glTFOrthographic.html",
+          "hash": "U+muC1vjQpfgRSfzKfH8LCOyWFmVKwj9EBs1UFf3894="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.glTFPbrMetallicRoughness.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.glTFPbrMetallicRoughness.html",
+          "hash": "aT/auL1UWSMIZwvraT4NMluHdASFQYA7Dw8AIfdtI5c="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.glTFPerspective.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.glTFPerspective.html",
+          "hash": "rqzbmK6P2r9ryeLBL+PIvj69ogXId3WUhSDISepctc0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.glTFPrimitives.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.glTFPrimitives.html",
+          "hash": "tu5cXCdkvpCvhAt/EFwFXRC+SSR07IncCGerENHSYBY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.glTFSkin.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.glTFSkin.html",
+          "hash": "3m1kWPka6oL7X73WIZQlBONi88Ff/hUxk6hTxvqO/8U="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.glTFSparse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.glTFSparse.html",
+          "hash": "RrI4mi9rMiDUZ1boSwBp8+MOrTMmXxrMYp0upKSup08="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.glTFSparseIndices.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.glTFSparseIndices.html",
+          "hash": "jiP4Ze2qZYRP0Jk1bYzzqWMMlnLodWWcIeD6/lks86M="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.glTFSparseValues.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.glTFSparseValues.html",
+          "hash": "74UW8vVfPPlSLYQIOba+fjLP5PF8uv+LgDWWQbTmhSU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.glTFTexture.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.glTFTexture.html",
+          "hash": "yNEsfhqrpengu7TkSg3l0x6UvduB3NtYn6RlUizKPkw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.glTFTextureInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.glTFTextureInfo.html",
+          "hash": "s7pRANaqoUkwHN3Opm6mMSr73yHxtpTg2BbLMh5ub3A="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.glTF_KHR_materials_unlit.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.glTF_KHR_materials_unlit.html",
+          "hash": "hT2hxGHLrCH38ajsi86f1QcGjusmxN6vRIVnpoJzjAY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.glTF_KHR_texture_transform.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.glTF_KHR_texture_transform.html",
+          "hash": "00Qn5KajOslQTMz/Nq8Hmy/W1ZL/iF6igaGGWvTiPo4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.glWrap.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.glWrap.html",
+          "hash": "XIQBbOj5987V5VeAuOCWGucsq30NN6nX1c8xy3O4WyQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.glbImporter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.glbImporter.html",
+          "hash": "GpNuYBeOzi9rWIMYNGh24S8jpRUBaN/ufOrBozwwbII="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.gltfExporter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.gltfExporter.html",
+          "hash": "jKOodnJT/QruWvOYrgZ8s0V+kXCdGzVioZEh+0zb4iU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.gltfMorphTarget.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.gltfMorphTarget.html",
+          "hash": "PExoLCEnEj/H2CfVIMUjHlOS4xzbwiRSh+chH2CjGbw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.gltfScene.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.gltfScene.html",
+          "hash": "OpkTBUg6HSZeZdlC2Jk5nmIC8jOYksk2/wkqCfBZaXs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.gltf_mesh_extras_targetNames.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.gltf_mesh_extras_targetNames.html",
+          "hash": "X1mwhoncp+e01QWL106gESNRO2pGwlHIDe8kAdhy5rQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/UniGLTF.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/UniGLTF.html",
+          "hash": "4BMHbNCtrKgbjEfHx8E51VX9b8oKQruF2OZh6ehhkas="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.AllowedUser.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.AllowedUser.html",
+          "hash": "G+L859RyKx/rRMrqUL3EaWT5Z5oyAjd1iGedgOuMq74="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.BlendShapeAvatar.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.BlendShapeAvatar.html",
+          "hash": "4UffgvMU7eep80/T/hGtNTmfD2mGYaDgeco1HnLtzAA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.BlendShapeAvatarEditor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.BlendShapeAvatarEditor.html",
+          "hash": "XE79e2vTXc4uD1jB0Kno0eXvF6n7LoU+0xw9N+ktDIc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.BlendShapeBinding.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.BlendShapeBinding.html",
+          "hash": "jQDqO7f9OPTl+L9T/ACSUdkpvU6GqD5D3S7a3AXKT70="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.BlendShapeClip.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.BlendShapeClip.html",
+          "hash": "oYYotjkzRNGtpMbLeSWaTxi4LbmbGFBQ6tLMLBu6uKY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.BlendShapeClipDrawer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.BlendShapeClipDrawer.html",
+          "hash": "aiLBVIIj6uDWJONptoj0odKPnMIydZC2Aipy0H4z5A8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.BlendShapeClipEditor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.BlendShapeClipEditor.html",
+          "hash": "4YtyYbpc+3Oez8ySGmFRkAmNnj/b1aRc2qo8Nztfe7c="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.BlendShapeClipEditorHelper.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.BlendShapeClipEditorHelper.html",
+          "hash": "zUPOkqziSPDoqj7h0BjzqK7PqlxcE4KWs/KngyQvDK0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.BlendShapeClipHandler.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.BlendShapeClipHandler.html",
+          "hash": "l8G6eCrQVG5HXGvECy1NAxlXyv9yLAkWfSeWexfvsxo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.BlendShapeKey.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.BlendShapeKey.html",
+          "hash": "TiZoN8CHmm1cjrQAxudXkiDBV2kgN68jwGJTwjnNxDI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.BlendShapeMerger.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.BlendShapeMerger.html",
+          "hash": "3jyZhtRM04bGSYGjq47vHb+kg5ogKum+Bz9vrgw+sv0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.BlendShapePreset.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.BlendShapePreset.html",
+          "hash": "OSLzrU04PfqqHJ39fU3qYYT5+WjKqPdwqgqyeMdzkTs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.Blinker.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.Blinker.html",
+          "hash": "tiS62Lh4UOrLrWlEVj/MaH0EmunptHuqBwhU9xM+SPM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.BuildClass.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.BuildClass.html",
+          "hash": "TkPRq2muwr5JN6IEcjZq2MQNE3szcVx+hMowIlmsh30="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.CurveMapper.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.CurveMapper.html",
+          "hash": "tTxRmfKxNRB6hudazxGevCNfGuLHQHXJt6tsGHvHN08="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.DeserializerGenerator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.DeserializerGenerator.html",
+          "hash": "STdDiI6JL+AVC/bb5U68kgrhu6rsaBSzzd/NA+Jok7k="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.DividedMeshTests.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.DividedMeshTests.html",
+          "hash": "/3BkqXcHvFWb5SuXwQSb8vgTDdikaId4U0fwyx3BXpI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.EnumExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.EnumExtensions.html",
+          "hash": "W2C9gy0u85u6xg4i15NWsTk464n+Ra7qATdz5sVaIpI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.EnumUtil.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.EnumUtil.html",
+          "hash": "fUTDPcTgsRHpXzkNiUcII5fda1XYRDQxe9C/ptI9CY0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.EnumUtilTest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.EnumUtilTest.html",
+          "hash": "o2CNYVjPLYeuCe0v4nWj7/X8eS+Q2IS3F35fT9Gm5zg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.FirstPersonFlag.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.FirstPersonFlag.html",
+          "hash": "5t1HifV//WWcEZI+ymg4U0xNANw+30ZibcrWzO6K5oo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.IVRMComponent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.IVRMComponent.html",
+          "hash": "rKpzSxjg4aVDECab2R4QT+7ehMmi7qj/QJLaDE0JRkg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.InvalidFileNameTest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.InvalidFileNameTest.html",
+          "hash": "ROMuSTmzXVROnYxbZztimOp6+mNN9HfuiLTMDC+rBSM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.LicenseType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.LicenseType.html",
+          "hash": "+xXFTbcDJSdAKFCT8LTBD5gY9AENsJ8ziXEFhRwSo/0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.LookAtTargetSwitcher.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.LookAtTargetSwitcher.html",
+          "hash": "4CCUGjRde+neSNhiryz9Hi6XHuVaIHXKDjyUw4OwNAQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.LookAtType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.LookAtType.html",
+          "hash": "S9gmv2QrQ8pPjjIwLLnMi2gvDTVXT1Ej+x/1oI7Yof0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.LookTarget.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.LookTarget.html",
+          "hash": "3k2k3wcoxsUSiaGcuOCqDyGTT33gqJ1qo6XC/SStBK0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.MToonTests.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.MToonTests.html",
+          "hash": "oKyHY2RoqeHnqGdPiM3YVQ1mTOnusBXdoeNtiESmHL4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.MaterialItem.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.MaterialItem.html",
+          "hash": "b2cUBNhgcqBiZevEu2grbssL2BerrjZgYOXjEAyW4VY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.MaterialValueBinding.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.MaterialValueBinding.html",
+          "hash": "mWaDn1+jGGEldUHHpSjVV1LrC/lVk9Ftrq9L/k+XOOM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.Matrix4x4Extensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.Matrix4x4Extensions.html",
+          "hash": "4aPcf1bznvtWLe1L1m9BIhSx4JivYL98sKsOndZypFc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.MeshIntegratorEditor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.MeshIntegratorEditor.html",
+          "hash": "H3Ay93eZfTyx7+1rVkiS7PtNn4SrGrMQXJUEUZfM5Ls="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.MeshIntegratorWizard.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.MeshIntegratorWizard.html",
+          "hash": "jus2+xqNPrX3vMQuDx2IMcIPwgoyoc0kQBMltHYMnZw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.MeshPreviewItem.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.MeshPreviewItem.html",
+          "hash": "NGJlshZUbILtdirqgnzEoFe69BxaNF0Hblf471wecCk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.MeshTests.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.MeshTests.html",
+          "hash": "iIkQa9j2WXOmAUvUabsfbpJFYI5Mb77+XHF83Hp/8L0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.NormalizeTests.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.NormalizeTests.html",
+          "hash": "R86e8cA85FvIqZlsIIaSV58Xrpqy/YOrGKLAln24FVY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.NotVrm0Exception.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.NotVrm0Exception.html",
+          "hash": "mDzmaYAtvWHPl6une2c0b3focE9zOUsXFMksfjcEick="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.OffsetOnTransform.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.OffsetOnTransform.html",
+          "hash": "f7D/0KRGNF7/AqvTl2CV7L8Xyy57G5WAdjCovygdelw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.PreviewEditor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.PreviewEditor.html",
+          "hash": "B06FYBrNCp+pLd6xecPa+W9cNwBz7QbaktvQRav0Iwk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.PreviewFaceRenderer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.PreviewFaceRenderer.html",
+          "hash": "TvOUr2p0xCEP+pnnXzlxIjDA3svxtqUU6Ir/7dID6HA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.PreviewSceneManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.PreviewSceneManager.html",
+          "hash": "pf/oH9abTU1GstlusMkG8mj4HqZZB70vtH2b6gLnl9o="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.RecordDisposer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.RecordDisposer.html",
+          "hash": "D3s4DzoZNkAXZtWG3CHyXNLbjsvqekHbkYsX0otrbjQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.RendererFirstPersonFlagsDrawer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.RendererFirstPersonFlagsDrawer.html",
+          "hash": "JXlXmxSJxIVeNpgKNG0c0NLmk5ComB9bewQt5xkt+9I="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.SerializedBlendShapeEditor.DrawResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.SerializedBlendShapeEditor.DrawResult.html",
+          "hash": "+6Bh7GBW/t6YHNQ2jqiS3bBzghiLSdpjtH+8LsI7b3E="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.SerializedBlendShapeEditor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.SerializedBlendShapeEditor.html",
+          "hash": "lj68+rlXb0AM02eyAuqr895EnB4kiGlrLxnhZZmEFAg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.SkinnedMeshUtility.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.SkinnedMeshUtility.html",
+          "hash": "f4ZeAmTGgGc6ZSyUUSCttVjBsq1uFTP31BepCUw5o+o="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.TextureScale.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.TextureScale.html",
+          "hash": "jEITSZdHx4ZHFfHfKsnd0oZ1bG+IrYo3jXTWkW0bhnU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.TransformExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.TransformExtensions.html",
+          "hash": "M0B7IZNn7iobAeHu5oYMdD9KbcZn+jarORj5ImNnLig="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.UniVRMSerializeTests.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.UniVRMSerializeTests.html",
+          "hash": "bFqj1bYBrFYV5M4HlMeysFXk+DGDC2I3394Gzw5ejc0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.UniVRMVersionTests.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.UniVRMVersionTests.html",
+          "hash": "GaFqy5knsKKdZmntsV1VssE+Y8X7btOAwI1q7RoKvSY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.UpdateType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.UpdateType.html",
+          "hash": "YjpWTi6QWtspnfJD4g40NxAlv3oRmjCvPbpbhcpwAv0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.UssageLicense.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.UssageLicense.html",
+          "hash": "stYEStmUs3ZfLMqs2y9WOAgUfeYW2j1FWWNk9rOGkpo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMAOTMenu.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMAOTMenu.html",
+          "hash": "t3amOgt//p12pDyYAES6Oenpj79ba8wC97ywZLywJrk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMBlendShapeExportFilter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMBlendShapeExportFilter.html",
+          "hash": "9353000edn8XVwUVDKvoJtAJ8BJmbSV7wX1zkczKx6c="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMBlendShapeKeyTest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMBlendShapeKeyTest.html",
+          "hash": "cQPtAQY9Fw1WV8WBHxP+GqVzdZh1k1PSuRZ3viUDYIA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMBlendShapeProxy.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMBlendShapeProxy.html",
+          "hash": "ZEVru6fKZFKAn9JWAgu7FIgc2F0QntTe6gkjNrtskX8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMBlendShapeProxyEditor.BlendShapeSlider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMBlendShapeProxyEditor.BlendShapeSlider.html",
+          "hash": "ac4SbsMGh88wx+uQRUS3hJkNSlFv1f+SzTLI579EEDA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMBlendShapeProxyEditor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMBlendShapeProxyEditor.html",
+          "hash": "tR4T7vVkfGtsnYcU3jdOrZTy1t7rjYK600Dj5kTQsZI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMBlendShapeProxyExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMBlendShapeProxyExtensions.html",
+          "hash": "s+iocvs2GxJasATW7MKCrbFEmZPhdpNaYR4n0KHjLI8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMBlendShapeProxyValidator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMBlendShapeProxyValidator.html",
+          "hash": "Ocbi2xSF92leDR7FviPPn/WwzlvDvvBxSE4DMWD+JME="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMBone.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMBone.html",
+          "hash": "Q68rgEZHFkimVFyvNO9K3vGkBLGC9Gr0euYC+W+3FLM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMBoneExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMBoneExtensions.html",
+          "hash": "yMAg2yB0wusRSnHvHaaZZ0WM9uDu+J+DYrI30SVSSw4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMBoneNormalizer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMBoneNormalizer.html",
+          "hash": "UK6+fqN3IVaqGuDRB4CqVzr6T/lix6NyDbn0uUg8AOE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMData.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMData.html",
+          "hash": "VV6X1GqMLfatOU4W4FzLftVCPYZBAl1Fnn/mVi5efYg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMEditorExporter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMEditorExporter.html",
+          "hash": "5StsyuyfE3SkDz67jjnVe7coceth40t5i0GPzqWdf4k="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMEditorImporterContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMEditorImporterContext.html",
+          "hash": "huBpKDse0GyfT9FMxgJ9kkjtH/nMHYBdMJ0HyQDTbTU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMExportSettings.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMExportSettings.html",
+          "hash": "WqxzAFl0tzzmRfo7RpeqWfND1MiWsT22lWeiJiDwn84="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMExportSettingsEditor.Options.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMExportSettingsEditor.Options.html",
+          "hash": "uIM7PT9fCVBr2mb1R1X+JsmGDhoZdCyjPnQNZ6f1K7A="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMExportSettingsEditor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMExportSettingsEditor.html",
+          "hash": "VSdHfW5AMx+0TVr9wD01o0HH0eqQ2InA90ysJ0escTY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMExporter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMExporter.html",
+          "hash": "wP/nJ3mkJ4D5uOW9iZi4leraCVEPI8dgUakEryqgUdY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMExporterValidator.VRMExporterWizardMessages.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMExporterValidator.VRMExporterWizardMessages.html",
+          "hash": "zri/XWoguBn8zFiGLHmPZPU/CTQgGk1GkIXj45blX/o="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMExporterValidator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMExporterValidator.html",
+          "hash": "HO8Bjxw+D6+0IxI1yIw0uBlGLIEkDEYHYJ4xxgK25Z0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMExporterWizard.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMExporterWizard.html",
+          "hash": "waWgRDPmTlss47ncSueLVcvU1hc4MhqI9s+aDFzgiEY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMFirstPerson.RendererFirstPersonFlags.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMFirstPerson.RendererFirstPersonFlags.html",
+          "hash": "Y/WPgSD0CUETFR68mYeMjliwj4Qpp0Yhgg/nLiESJq8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMFirstPerson.SetVisibilityFunc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMFirstPerson.SetVisibilityFunc.html",
+          "hash": "1laQB+yO+nBUmM4+LJ4U7JUdXFGkdDx0Y0xudDZIRLQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMFirstPerson.SetVisiblityFunc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMFirstPerson.SetVisiblityFunc.html",
+          "hash": "EtKpiY7YsAvZCEqYEOyymvo0lXzipzwpnzN016Mu7RA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMFirstPerson.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMFirstPerson.html",
+          "hash": "s2XItNDBOLFCDHNz+q6kl7q4gSwwJrLwYKdBVnwiEGA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMFirstPersonCameraManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMFirstPersonCameraManager.html",
+          "hash": "U1Cc4qERBso+B5zZs8V4y3ZbyTHftidiHWTDzmWDYuE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMFirstPersonValidator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMFirstPersonValidator.html",
+          "hash": "UhSwO/U5ZU2S3XHl86w3cC/fiykbNqtJ3f7CGu7EqjA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMHumanoidDescription.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMHumanoidDescription.html",
+          "hash": "A4OMsqWLCmFXUH8UMbhb18ImO0MBdW0Qj4xpfaT25YE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMHumanoidExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMHumanoidExtensions.html",
+          "hash": "2NHBtshTh6x7YeZDm3r7SytFueWkdwX8KKit/cH0O2s="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMHumanoidNormalizerMenu.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMHumanoidNormalizerMenu.html",
+          "hash": "BmT2T2UmMOrE1b0OrAT6p8fNQjIVOJbzakkb1v/1l3A="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMImporterContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMImporterContext.html",
+          "hash": "PlS7zwlvx3YPUm8JXtZ0lbZOZ8X6uJKKU3JGBZeMgm0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMImporterContextExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMImporterContextExtensions.html",
+          "hash": "2J2KJj5aAW3lBL3JySkhf+WpzVsEdFVHDeoO1zLg6Zw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMImporterMenu.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMImporterMenu.html",
+          "hash": "STQIhhmKkPVnWqE4XxSNZN/X7Ur4sPrTTKgGXVvdQ2Y="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMLoadTest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMLoadTest.html",
+          "hash": "oYpMZ7QedoOhUUlnYyd5XODzqi5fh0IJWFsSnHzestg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMLookAt.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMLookAt.html",
+          "hash": "DNFfkRvz1vDo1yuj/jls+e9qMqivskDykvizc+0nE+w="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMLookAtBlendShapeApplyer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMLookAtBlendShapeApplyer.html",
+          "hash": "gUezdvvIVUs3kZoaneswevZfqBvS0ICbjd2dkG53wcU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMLookAtBoneApplyer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMLookAtBoneApplyer.html",
+          "hash": "J4fGGFTu5XstshqzDo8vRo6kYlUlts7d+4Yg+H4ukMU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMLookAtHead.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMLookAtHead.html",
+          "hash": "FQQ3XcaLr5JJd9UHWN/NoQbn/rzP/YAFHuAUVsf1Jjc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMLookAtHeadEditor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMLookAtHeadEditor.html",
+          "hash": "2WLfkbtWyNlAdFcaLYgm6Cy68f3rcqaM4s+fBR1m1Sc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMLookAtTests.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMLookAtTests.html",
+          "hash": "9mU5MuN6LCD38T+9/feoUy7uDnzx2Rvi1qs3byRXnEE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMMToonMaterialImporter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMMToonMaterialImporter.html",
+          "hash": "W3NxjMrjGUx6RNeHIqkITFwA4BEoaLklQHzQCLjVOJ8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMMToonTextureImporter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMMToonTextureImporter.html",
+          "hash": "6ROTTAwQ21eygQreO1+PCBoJs/KUt7IRWRJ6+C2Cd7A="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMMaterialDescriptorGenerator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMMaterialDescriptorGenerator.html",
+          "hash": "qL8xINy7q+tTNNPFPOWdZjGwsslih3HTOOOEmmha85g="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMMaterialExporter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMMaterialExporter.html",
+          "hash": "UhVvcq2e/gg8gddTm3bw1zgEjQmB3zZwW+OeEk3EFBw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMMeshIntegratorUtility.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMMeshIntegratorUtility.html",
+          "hash": "OYthsFboRfd1YRSqXMmD3u61ZtUvu/NTsWG+/wQUSdg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMMeta.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMMeta.html",
+          "hash": "LFJO/R71joctRAos2YvHqheNxaU73DQc1wztcAoj2Lw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMMetaEditor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMMetaEditor.html",
+          "hash": "5JgQBPjxKP0sYmEcceAs4Ezf+B+5ipyCMYM3wI86vus="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMMetaInformation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMMetaInformation.html",
+          "hash": "6X1/dl1/D6d6IRhQs84kzbAs7e9RR/EYnSsYswJszIc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMMetaObject.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMMetaObject.html",
+          "hash": "LPdNx0CWkI+7pWXBapBHh+7IpAQ3l8rFD+UJr8lvvp8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMMetaObjectEditor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMMetaObjectEditor.html",
+          "hash": "tjzV2AxxWU6fgsD1QdI9tkCxHByZmf4Vjd3MDT1QxRE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMSerializer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMSerializer.html",
+          "hash": "fPoISKiz7Lm+7b6m+5hgN94YsCqCFqqZYseQ1FtzJMI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMSerializerGenerator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMSerializerGenerator.html",
+          "hash": "qKoa7lKOJ1lt7qYrLfwLsTu73KZf9ZaeC36y08eMT1I="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMSpecVersion.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMSpecVersion.html",
+          "hash": "dZPNpXtl1UsehkKzkpulr98nnUT9fpjuRa7YtrUhKEg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMSpringBone.SphereCollider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMSpringBone.SphereCollider.html",
+          "hash": "onwsUi9+edlqTKX6fGeGOGCPdHXDyMrkSs+6zl2I5Os="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMSpringBone.SpringBoneUpdateType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMSpringBone.SpringBoneUpdateType.html",
+          "hash": "Y+0IJuoFS5OUOhrNGzlZ1fuGjlJc80jprNTbk4AHb54="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMSpringBone.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMSpringBone.html",
+          "hash": "YJHoBinNv43aqRW67cjNWdEMG/xS8BldFZHuuFc141s="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMSpringBoneColliderGroup.SphereCollider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMSpringBoneColliderGroup.SphereCollider.html",
+          "hash": "CkdW+vvOQa6n7KLa2tRY5FF2c9k9mkMhXWSCB4HlhxM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMSpringBoneColliderGroup.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMSpringBoneColliderGroup.html",
+          "hash": "rdovy1GDLBTbjWHVcP3s2UquMGt1L3pDyrvJue7M2+s="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMSpringBoneColliderGroupEditor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMSpringBoneColliderGroupEditor.html",
+          "hash": "Y20/0cGQVBaplg4XfIaggNegZJn0verBcAu8VDZs4sA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMSpringUtility.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMSpringUtility.html",
+          "hash": "lYChXrga9ttY2VwB3WM8O08OBKUZvznhReTxeGkXbtQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMTestAssets.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMTestAssets.html",
+          "hash": "jKchKkZJKPTkqsPsmb0ld3xoaku/1ej6I/hzKBA3dO0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMTextureEnumerateTests.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMTextureEnumerateTests.html",
+          "hash": "V08i5tD21fKHCqtgWbzAPzyBxcqhcAsz2gAwKfWTIh4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMUrpMaterialDescriptorGenerator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMUrpMaterialDescriptorGenerator.html",
+          "hash": "IIP0vbUY7dyDcFauqbwOjdIpxE/+cLm/lPW/0CWGu84="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMVersion.Version.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMVersion.Version.html",
+          "hash": "Bfom4TcBhqZDMYW5ZOXkc1gpNm2UPg5RrsyFV9qu9rk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMVersion.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMVersion.html",
+          "hash": "IKdqVR0YOxAO/wPdKPD2okYpo6Vr9F8fiu1aBk9QJdQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VRMVersionMenu.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VRMVersionMenu.html",
+          "hash": "mg8bH9YyqYPa5OfQHpns7r0hp2yHm4r1Wzjwr0JOBUQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VrmDeserializer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VrmDeserializer.html",
+          "hash": "pb5gjLKicrctdaPVXLt1bjDhCjXnPc94ldlQTTOdTk8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VrmPreference.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VrmPreference.html",
+          "hash": "SdILRqIpg0317Tx/wA8qWQHIFBmp5skyALr9wibOsKY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.VrmTextureDescriptorGenerator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.VrmTextureDescriptorGenerator.html",
+          "hash": "cpneWx+pLH49588P3yRld+CwKufR8jAT8C9AEsqh4CQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.glTF_VRMExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.glTF_VRMExtensions.html",
+          "hash": "MY6X2kxnQDIVt+Egb1xZG2O9GtnOTgZqI5pdsIeBfeM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.glTF_VRM_BlendShapeBind.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.glTF_VRM_BlendShapeBind.html",
+          "hash": "FCbElFbxNNTaxE7A66KwWG+P0gW7rKujeFstQf6aNSo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.glTF_VRM_BlendShapeGroup.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.glTF_VRM_BlendShapeGroup.html",
+          "hash": "ipFrr/figYdZg3FQdxle5LRVEHHLOQPPnDgt3BJCEuU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.glTF_VRM_BlendShapeMaster.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.glTF_VRM_BlendShapeMaster.html",
+          "hash": "3k0wwBbBeJlgPrQhnBSIR1JD9YWqvRMHanJuXlTV98E="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.glTF_VRM_DegreeMap.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.glTF_VRM_DegreeMap.html",
+          "hash": "Y7JW5ha+6j+UL9M8LET0yzvtGTJav+YSnCVyjrZCESw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.glTF_VRM_Firstperson.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.glTF_VRM_Firstperson.html",
+          "hash": "4m996GFEzzsvD9UDyouKoYvt9wrw1rbAR0Usd/XOOgI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.glTF_VRM_Humanoid.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.glTF_VRM_Humanoid.html",
+          "hash": "n0M9vAuUHpPYa3Ddh8YAExoobV5TkEDAjEt6+clJYXg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.glTF_VRM_HumanoidBone.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.glTF_VRM_HumanoidBone.html",
+          "hash": "1TDQSULCRawRheO4VqAqDp8Hpw0aMTEg1rmytRfIvDA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.glTF_VRM_Material.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.glTF_VRM_Material.html",
+          "hash": "MHEqutekTyUkwzs5LNruKg7J4v4DTmwzEXBqDDqTa5Q="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.glTF_VRM_MaterialValueBind.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.glTF_VRM_MaterialValueBind.html",
+          "hash": "NtDLB542M523qFpn2hpv7xV6Uyfm8l2r6elT4Kb01CQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.glTF_VRM_MeshAnnotation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.glTF_VRM_MeshAnnotation.html",
+          "hash": "xS/MR9RRhUvKZiH6eYXyB+orVzgUCvzvOktIijXhjm0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.glTF_VRM_Meta.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.glTF_VRM_Meta.html",
+          "hash": "YG8QKvrA77BKX2m2d/mL6fma3dnzVhIVcBN6sn/dWNk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.glTF_VRM_SecondaryAnimation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.glTF_VRM_SecondaryAnimation.html",
+          "hash": "gesgavK9/RQ3UEECMVw6GT6wfFhwXKjQkZP9gc4qqPc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.glTF_VRM_SecondaryAnimationCollider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.glTF_VRM_SecondaryAnimationCollider.html",
+          "hash": "9mOMTed8ELKoeDUuNd4ysQPqkOc3cOZ//4XYY8WQid4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.glTF_VRM_SecondaryAnimationColliderGroup.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.glTF_VRM_SecondaryAnimationColliderGroup.html",
+          "hash": "1kX4E8nLQF+uMhmR9S6WRK0Gu1k6meL1LokHe49ryW4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.glTF_VRM_SecondaryAnimationGroup.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.glTF_VRM_SecondaryAnimationGroup.html",
+          "hash": "RpS+DeOfkxyOm6e1O1BbLX//rOTFrpfMCkG2/FUp2lQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.glTF_VRM_extensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.glTF_VRM_extensions.html",
+          "hash": "191zuGkTWuHMlN2bEEbvkSrJwzI3ZlTMeAZuQmXeTk0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.vrmAssetPostprocessor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.vrmAssetPostprocessor.html",
+          "hash": "OIeImc5N0GMgOcxdarximQi9A3IIe/VqnIKAAKi1AGA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VRM.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VRM.html",
+          "hash": "oAkFJmyWPzkrxcGSnabgxuQEkrbLdpC1nfvtATPOO2k="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "api/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "api/index.html",
+          "hash": "EWAZNs9xwgV+2hSeJg/UrvPRG71wNgp5ZovSmQHu3GQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "api/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/toc.html",
+          "hash": "6O9XFCPWapd5iziq00hx1qGBalqJLQLTKV75FgJRVMY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/gltf/0_82_glb_import.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/gltf/0_82_glb_import.html",
+          "hash": "NXY3ZRTi4Ytc9SIuzNrIznXUHTjnZTVnhPOIi+Z+mQs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/gltf/how_to_impl_extension.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/gltf/how_to_impl_extension.html",
+          "hash": "oj7gWWbW0Ukv9Z7RBzHxHbCXbvDvqemE88VIFgpLgGk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/history.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/history.html",
+          "hash": "SA6lYrYUkMPJf4BWDiGxiL+xenlDNwY75pJkNayrX3o="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/index.html",
+          "hash": "llCZ9emb1J3FwEsHFqaqE/pNNo2xOSpiHhYaz+H0l78="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/package.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/package.html",
+          "hash": "pXeOoX/NJJ5XWs3C9t2S5SNnEY8MTF6IObIfzQNGajY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "articles/en/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/toc.html",
+          "hash": "1cErx3ondkrN56hPAu+BZvnJEd3b8Fa+JlKv7u31BPY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/vrm0/0_44_runtime_import.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/vrm0/0_44_runtime_import.html",
+          "hash": "mcXWoBHg0f8tLIn2qZUNGfcSKFHLFCYwu7rDr2BGgEM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/vrm0/0_58_blendshape.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/vrm0/0_58_blendshape.html",
+          "hash": "tuGzKO/vh98GcR4sDndDJKOKmAWw+Ezoeh020pl8jko="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/vrm0/0_68_runtime_import.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/vrm0/0_68_runtime_import.html",
+          "hash": "Pm92HeLw9+9FyKS+6WYOFUmM1zP6sqTki+StNsadaDM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/vrm0/0_77_runtime_import.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/vrm0/0_77_runtime_import.html",
+          "hash": "TZXGdHtGlkp/1cbnQyu/fmDmRB35gWnSmArHWNzLly4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/vrm0/0_79_runtime_import.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/vrm0/0_79_runtime_import.html",
+          "hash": "mCoI1fsPOnA4KlEnNtDyFDintoGChKoJmC/CPdIZhIo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/vrm0/0_82_runtime_import.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/vrm0/0_82_runtime_import.html",
+          "hash": "ZC4Q3vxbGysXTsPemGS2jdtDB48RVFJ/qxSnkPh+63g="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/vrm0/firstperson.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/vrm0/firstperson.html",
+          "hash": "abI12tNSdFRRtjuVGDV/5vwj+GAkcBVrNklF1n6IsEw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/vrm1/vrm1_expression.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/vrm1/vrm1_expression.html",
+          "hash": "cmrh0C7HAuSRHXqxiT9pPxUL/H5VhcZLVGTGiBzAVdM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/vrm1/vrm1_firstperson.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/vrm1/vrm1_firstperson.html",
+          "hash": "dR74r98025uRRa9Jemiqd6193MfLaIof3nPmz/NoOFo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/vrm1/vrm1_get_humanoid.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/vrm1/vrm1_get_humanoid.html",
+          "hash": "xKDU/lDMHSRqoyJ50n1zt4KFDgLLxx3vhSMsKBBjgmI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/vrm1/vrm1_lookat.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/vrm1/vrm1_lookat.html",
+          "hash": "zXaAwyrArBw1uIvdgqi9o5GtTkd/FthJbWHnwRovmMQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/en/vrm1/vrm1_runtime_load.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/en/vrm1/vrm1_runtime_load.html",
+          "hash": "GMob4EfVNiKr7EstOQV/JnWLDk1dNGNn1z8qtrKOJcQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "log_codes": [
+        "InvalidFileLink"
+      ],
+      "type": "Conceptual",
+      "source_relative_path": "articles/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/index.html",
+          "hash": "7bb+ExPbKhMT/oOiSujpIhHrU4rbqzMHS/4alCdJGuU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ja/gltf/0_82_glb_import.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ja/gltf/0_82_glb_import.html",
+          "hash": "ZIPIUFZt+MITEH2ua7znmaovl138+oZcZO2dAqLK8xg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ja/gltf/how_to_impl_extension.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ja/gltf/how_to_impl_extension.html",
+          "hash": "v0nmPSkXFU3pbWnRLEuy2T1jQK3fUJP19hsE8lkkLGg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ja/history.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ja/history.html",
+          "hash": "ZG2V1u52pUu/gWFbvh1wr4T1OBPl6tEqUvEzzFYAVts="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ja/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ja/index.html",
+          "hash": "XJqyTQVrRdlhHvxa3mhjf0mDDYeI3HC38yT6PBiItrw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ja/package.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ja/package.html",
+          "hash": "GDuicuQclPoJTF5BJTdrRdoxdjIolM33AMlZcH1Suzo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "articles/ja/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ja/toc.html",
+          "hash": "RCUOWZpFItkHAmN9xlkHAp8nNtpApBiIzyEHqkCQ0D8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ja/vrm0/0_44_runtime_import.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ja/vrm0/0_44_runtime_import.html",
+          "hash": "oArINXXCgqlX9B7ByIuH579vETo4LG4Vthug7TcuHmI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ja/vrm0/0_58_blendshape.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ja/vrm0/0_58_blendshape.html",
+          "hash": "8mq48Hyk+BySZTzU1xXxnPJY8MPadTl4F0kQKXEtmTU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ja/vrm0/0_68_runtime_import.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ja/vrm0/0_68_runtime_import.html",
+          "hash": "TCVzt66DLKaqR+aiBs1nzllorBV3UnyfP2Pbm0/zkCA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ja/vrm0/0_77_runtime_import.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ja/vrm0/0_77_runtime_import.html",
+          "hash": "vPaU3cuSFD+4o1yU94pTfKjaA75U4kL2paWRDCdWYyQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ja/vrm0/0_79_runtime_import.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ja/vrm0/0_79_runtime_import.html",
+          "hash": "dZ5yXwhIUtjF9GW9VLp14WZALuae5ubSD2nLx4yP4aI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ja/vrm0/0_82_runtime_import.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ja/vrm0/0_82_runtime_import.html",
+          "hash": "q0WofXjjZY7tBheuIx1zLj1BBQPNVSN7gGiEpCQMEoM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ja/vrm0/firstperson.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ja/vrm0/firstperson.html",
+          "hash": "ZLyrlo3NB0cOSyLGk7rfpMKzv/i1t9AtE7NXvLqpR38="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ja/vrm1/vrm1_expression.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ja/vrm1/vrm1_expression.html",
+          "hash": "tPjNEnrJQydE8PYgm9WKl1CLqaPbqnzlu/w3A/7UJWM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ja/vrm1/vrm1_firstperson.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ja/vrm1/vrm1_firstperson.html",
+          "hash": "wf+VWtjf5HFsgn6GlLIUsLqiB7OW1RTU3iM9ZEmld20="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ja/vrm1/vrm1_get_humanoid.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ja/vrm1/vrm1_get_humanoid.html",
+          "hash": "O7eygfymYnXDRI4M5PkDYC2zi+IsWXAvzVrqodqj3Tw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ja/vrm1/vrm1_lookat.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ja/vrm1/vrm1_lookat.html",
+          "hash": "TE2Xffvb4CTo/JSNjyacjPlW2p0uHT5dVGE8pTZknP8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/ja/vrm1/vrm1_runtime_load.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/ja/vrm1/vrm1_runtime_load.html",
+          "hash": "mgdBExOJRUo2iikgxm7tWgjeaj6v8cjNVTCcX5/Us2s="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "log_codes": [
+        "InvalidFileLink"
+      ],
+      "type": "Toc",
+      "source_relative_path": "articles/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "articles/toc.html",
+          "hash": "BRW5UPGb4N3Lurc1Nt5ZOYJs5JJ1S2ZY4P0Yx2X9TB4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "log_codes": [
+        "InvalidFileLink"
+      ],
+      "type": "Conceptual",
+      "source_relative_path": "index.md",
+      "output": {
+        ".html": {
+          "relative_path": "index.html",
+          "hash": "Y8hGbHyZvQC/kV57Fe53XuthQPpNHB0w4hfmkIgnDn0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "toc.html",
+          "hash": "oTURDwgwfWcgGnkMfPIFGUWw9jF6WwZuYd0QxVje1KU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    }
+  ],
+  "incremental_info": [
+    {
+      "status": {
+        "can_incremental": false,
+        "details": "Cannot build incrementally because last build info is missing.",
+        "incrementalPhase": "build",
+        "total_file_count": 0,
+        "skipped_file_count": 0,
+        "full_build_reason_code": "NoAvailableBuildCache"
+      },
+      "processors": {
+        "ConceptualDocumentProcessor": {
+          "can_incremental": false,
+          "incrementalPhase": "build",
+          "total_file_count": 38,
+          "skipped_file_count": 0
+        },
+        "ManagedReferenceDocumentProcessor": {
+          "can_incremental": false,
+          "incrementalPhase": "build",
+          "total_file_count": 369,
+          "skipped_file_count": 0
+        },
+        "TocDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build",
+          "total_file_count": 0,
+          "skipped_file_count": 0
+        }
+      }
+    },
+    {
+      "status": {
+        "can_incremental": false,
+        "details": "Cannot support incremental post processing, the reason is: last post processor info is null.",
+        "incrementalPhase": "postProcessing",
+        "total_file_count": 0,
+        "skipped_file_count": 0
+      },
+      "processors": {}
+    }
+  ],
+  "version_info": {},
+  "groups": [
+    {
+      "xrefmap": "xrefmap.yml"
+    }
+  ]
+}
