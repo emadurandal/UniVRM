@@ -5,9 +5,9 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>1. GltfData &#12434;&#24471;&#12427; </title>
+    <title>v0.36 </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="1. GltfData &#12434;&#24471;&#12427; ">
+    <meta name="title" content="v0.36 ">
     <meta name="generator" content="docfx 2.58.2.0">
     
     <link rel="shortcut icon" href="../../../favicon.ico">
@@ -67,64 +67,30 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
+<h1 id="v036">v0.36</h1>
 
+<h2 id="テクスチャ名の格納位置の修正">テクスチャ名の格納位置の修正</h2>
+<p>GLTFの仕様に準拠しました。</p>
 <ul>
-<li><code>Version 0.82.0</code> は <code>0.82.1</code> 以降を使ってください。</li>
-<li><code>Version 0.82.1~</code></li>
+<li>extraはextrasの間違い</li>
+<li>imageはnameを持っていた</li>
 </ul>
-<p>以下の手順で import します。</p>
-<ol>
-<li>VRMをパースして、<code>GltfData</code> を得る。</li>
-<li><code>GltfData</code> から <code>VRMData</code> を得る。</li>
-<li><code>VrmData</code> から <code>RuntimeGltfInstance</code> をロードする。</li>
-<li><code>RuntimeGltfInstance</code> を使う。</li>
-</ol>
-<p>サンプルの <code>Assets\VRM\Samples\SimpleViewer\ViewerUI.cs</code> も参照してください。</p>
-<h1 id="1-gltfdata-を得る">1. <code>GltfData</code> を得る</h1>
-<pre><code class="lang-cs">GltfData Load(string path)
-{
-    return new GlbFileParser(path).Parse();
-}
+<pre><code class="lang-json">json.images[i].extra.name
 </code></pre>
-<p><a href="../gltf/0_82_glb_import.html">GLB import</a> も参照してください。</p>
-<h1 id="2-vrmdata-を得る">2. <code>VRMData</code> を得る</h1>
-<pre><code class="lang-cs">VRMData vrm = new VRMData(data);
+<p>変更後</p>
+<pre><code class="lang-json">json.images[i].name
 </code></pre>
-<h1 id="3-load-する">3. Load する</h1>
-<pre><code class="lang-cs">async RuntimeGltfInstance Load(VRMData vrm)
-{
-    // 使用後に Dispose で VRMImporterContext を破棄してください。
-    using(var loader = new VRMImporterContext(vrm))
-    {
-        var instance = await loader.LoadAsync();
-        return instance;
-    }
-}
-</code></pre>
-<h2 id="urp-向けに-materialgenerator-を指定する実験">URP 向けに <code>materialGenerator</code> を指定する(実験)</h2>
-<p><code>materialGenerator</code> 引き数(省略可能)を指定することで URP マテリアルを生成するようにカスタムできます。
-指定しない場合は <code>built-in</code> 向けのデフォルトが使用されます。</p>
-<pre><code class="lang-cs">async RuntimeGltfInstance Load(VRMData vrm)
-{
-    var materialGenerator = new VRMUrpMaterialDescriptorGenerator(vrm.VrmExtension);
-    using(var loader = new VRM.VRMImporterContext(vrm, materialGenerator: materialGenerator))
-    {
-        var instance = await loader.LoadAsync();
-        return instance;
-    }
-}
-</code></pre>
+<h2 id="ブレンドシェイプ名の格納位置の修正">ブレンドシェイプ名の格納位置の修正</h2>
+<p>GLTFの仕様に準拠しました。</p>
 <ul>
-<li>まだ URP 向け MToonShader が作成されていないので、<code>UniUnlit</code> にフォールバックします。</li>
+<li>extraはextrasの間違い</li>
+<li>targetにextrasは不許可</li>
+<li><a href="https://github.com/KhronosGroup/glTF/issues/1036#issuecomment-314078356">https://github.com/KhronosGroup/glTF/issues/1036#issuecomment-314078356</a></li>
 </ul>
-<h1 id="4-instance">4. Instance</h1>
-<pre><code class="lang-cs">// SkinnedMeshRenderer に対する指示
-instance.EnableUpdateWhenOffscreen();
-// 準備ができたら表示する(デフォルトでは非表示)
-instance.ShowMeshes();
+<pre><code class="lang-json">json.meshes[i].primitives[j].targets[k].extra.name
 </code></pre>
-<p>使用後に以下のように破棄してください。関連する Asset(Texture, Material, Meshなど)も破棄されます。</p>
-<pre><code class="lang-cs">GameObject.Destroy(instance);
+<p>変更後</p>
+<pre><code class="lang-json">json.meshes[i].primitives[j].extras.targetNames[k]
 </code></pre>
 </article>
           </div>
@@ -134,7 +100,7 @@ instance.ShowMeshes();
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/emadurandal/UniVRM/blob/master/docfx/articles/ja/vrm0/0_82_runtime_import.md/#L1" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/emadurandal/UniVRM/blob/master/docfx/articles/ja/gltf/0_36_update.md/#L1" class="contribution-link">Improve this Doc</a>
                   </li>
                 </ul>
               </div>
