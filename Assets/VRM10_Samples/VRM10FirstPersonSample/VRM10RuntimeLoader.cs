@@ -69,7 +69,7 @@ namespace UniVRM10.FirstPersonSample
                 return;
             }
 
-            var instance = await LoadAsync(path);
+            var instance = await LoadAsync(path, new RuntimeOnlyAwaitCaller());
 
             var root = instance.gameObject;
             root.transform.SetParent(transform, false);
@@ -82,27 +82,18 @@ namespace UniVRM10.FirstPersonSample
             }
             m_target = humanPoseTransfer;
             SetupTarget(m_target);
-
-            instance.ShowMeshes();
         }
 
-        async Task<RuntimeGltfInstance> LoadAsync(string path)
+        async Task<Vrm10Instance> LoadAsync(string path, IAwaitCaller awaitCaller)
         {
-            var data = new GlbFileParser(path).Parse();
-            if (!Vrm10Data.TryParseOrMigrate(data, true, out Vrm10Data vrm))
-            {
-                throw new System.Exception("vrm parse error !");
-            }
-            using (var loader = new Vrm10Importer(vrm))
-            {
-                var instance = await loader.LoadAsync();
+            var instance = await Vrm10.LoadPathAsync(path, awaitCaller: awaitCaller, showMeshes: false);
 
-                // VR用 FirstPerson 設定
-                var controller = instance.GetComponent<Vrm10Instance>();
-                await controller.Vrm.FirstPerson.SetupAsync(controller.gameObject);
+            // VR用 FirstPerson 設定
+            await instance.Vrm.FirstPerson.SetupAsync(instance.gameObject, awaitCaller);
 
-                return instance;
-            }
+            instance.GetComponent<RuntimeGltfInstance>().ShowMeshes();
+
+            return instance;
         }
 
         void LoadBVHClicked()

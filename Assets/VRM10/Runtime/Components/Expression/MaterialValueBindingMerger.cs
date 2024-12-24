@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UniGLTF.Extensions.VRMC_vrm;
 using UnityEngine;
+using VRM10.MToon10;
 
 namespace UniVRM10
 {
@@ -10,11 +11,12 @@ namespace UniVRM10
     ///
     internal sealed class MaterialValueBindingMerger
     {
-        public const string COLOR_PROPERTY = "_Color";
-        public const string EMISSION_COLOR_PROPERTY = "_EmissionColor";
-        public const string RIM_COLOR_PROPERTY = "_RimColor";
-        public const string OUTLINE_COLOR_PROPERTY = "_OutlineColor";
-        public const string SHADE_COLOR_PROPERTY = "_ShadeColor";
+        private static readonly string COLOR_PROPERTY = MToon10Prop.BaseColorFactor.ToUnityShaderLabName();
+        private static readonly string EMISSION_COLOR_PROPERTY = MToon10Prop.EmissiveFactor.ToUnityShaderLabName();
+        private static readonly string RIM_COLOR_PROPERTY = MToon10Prop.ParametricRimColorFactor.ToUnityShaderLabName();
+        private static readonly string OUTLINE_COLOR_PROPERTY = MToon10Prop.OutlineColorFactor.ToUnityShaderLabName();
+        private static readonly string SHADE_COLOR_PROPERTY = MToon10Prop.ShadeColorFactor.ToUnityShaderLabName();
+        private static readonly string MATCAP_COLOR_PROPERTY = MToon10Prop.MatcapColorFactor.ToUnityShaderLabName();
 
         public static string GetProperty(MaterialColorType bindType)
         {
@@ -38,6 +40,9 @@ namespace UniVRM10
 
                 case MaterialColorType.outlineColor:
                     return OUTLINE_COLOR_PROPERTY;
+
+                case MaterialColorType.matcapColor:
+                    return MATCAP_COLOR_PROPERTY;
             }
 
             throw new NotImplementedException();
@@ -226,41 +231,6 @@ namespace UniVRM10
             }
         }
 
-        // UVアクセスするテクスチャーのScaleOffsetプロパティの一覧
-        static Dictionary<string, string[]> UVPropMap = new Dictionary<string, string[]>
-        {
-            {"Standard", new string[]{
-                "_MainTex_ST",
-                "_BumpMap_ST",
-                "_EmissionMap_ST",
-                "_MetallicGlossMap_ST",
-                "_ParallaxMap_ST",
-            }},
-            {"VRM10/MToon10", new string[]{
-                "_MainTex_ST",
-                "_ShadeTexture_ST",
-                "_BumpMap_ST",
-                "_EmissionMap_ST",
-                "_OutlineWidthTexture_ST",
-                "_ReceiveShadowTexture_ST",
-                "_RimTexture_ST",
-                "_ShadingGradeTexture_ST",
-                "_UvAnimMaskTexture_ST",
-            }},
-        };
-        static string[] DefaultProps = { "_MainTex_ST" };
-        public static String[] GetUVProps(string shaderName)
-        {
-            if (UVPropMap.TryGetValue(shaderName, out string[] props))
-            {
-                return props;
-            }
-            else
-            {
-                return DefaultProps;
-            }
-        }
-
         HashSet<MaterialTarget> m_used = new HashSet<MaterialTarget>();
         public void Apply()
         {
@@ -309,10 +279,8 @@ namespace UniVRM10
                         //
                         // Standard and MToon use _MainTex_ST as uv0 scale/offset
                         //
-                        foreach (var prop in GetUVProps(item.Material.shader.name))
-                        {
-                            item.Material.SetVector(prop, kv.Value);
-                        }
+                        item.Material.mainTextureScale = new Vector2(kv.Value.x, kv.Value.y);
+                        item.Material.mainTextureOffset = new Vector2(kv.Value.z, kv.Value.w);
                     }
                 }
                 m_materialUVMap.Clear();

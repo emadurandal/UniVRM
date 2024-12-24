@@ -7,7 +7,15 @@ using UnityEditor.Experimental.AssetImporters;
 
 namespace UniGLTF
 {
-    [ScriptedImporter(1, "gltf")]
+#if UNITY_2020_2_OR_NEWER
+#if UNIGLTF_DISABLE_DEFAULT_GLTF_IMPORTER
+    [ScriptedImporter(1, null, overrideExts: new[] { "gltf" })]
+#else
+    [ScriptedImporter(1, new[] { "gltf" })]
+#endif
+#else
+	[ScriptedImporter(1, new[] { "gltf" })]
+#endif
     public class GltfScriptedImporter : GltfScriptedImporterBase
     {
         public override void OnImportAsset(AssetImportContext ctx)

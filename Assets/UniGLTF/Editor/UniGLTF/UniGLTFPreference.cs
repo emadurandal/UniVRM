@@ -23,7 +23,7 @@ namespace UniGLTF
                 {
                     if (glb.m_reverseAxis == ScriptedImporterAxes.Default)
                     {
-                        Debug.Log($"[reimport] {assetPath}");
+                        UniGLTFLogger.Log($"[reimport] {assetPath}");
                         yield return assetPath;
                     }
                 }
@@ -31,7 +31,7 @@ namespace UniGLTF
                 {
                     if (gltf.m_reverseAxis == ScriptedImporterAxes.Default)
                     {
-                        Debug.Log($"[reimport] {assetPath}");
+                        UniGLTFLogger.Log($"[reimport] {assetPath}");
                         yield return assetPath;
                     }
                 }
@@ -105,27 +105,29 @@ namespace UniGLTF
 
         public static bool HasSymbol(string symbol)
         {
-            var target = EditorUserBuildSettings.selectedBuildTargetGroup;
-            var current = PlayerSettings.GetScriptingDefineSymbolsForGroup(target).Split(';');
+            var buildTarget = UnityEditor.Build.NamedBuildTarget.FromBuildTargetGroup(
+                EditorUserBuildSettings.selectedBuildTargetGroup
+            );
+            PlayerSettings.GetScriptingDefineSymbols(buildTarget, out var current);
             return current.Contains(symbol);
         }
 
         public static void AddSymbol(string symbol)
         {
-            var target = EditorUserBuildSettings.selectedBuildTargetGroup;
-            var current = PlayerSettings.GetScriptingDefineSymbolsForGroup(target).Split(';');
-            PlayerSettings.SetScriptingDefineSymbolsForGroup(target,
-                string.Join(";", current.Concat(new[] { symbol }))
+            var buildTarget = UnityEditor.Build.NamedBuildTarget.FromBuildTargetGroup(
+                EditorUserBuildSettings.selectedBuildTargetGroup
             );
+            PlayerSettings.GetScriptingDefineSymbols(buildTarget, out var current);
+            PlayerSettings.SetScriptingDefineSymbols(buildTarget, current.Append(symbol).ToArray());
         }
 
         public static void RemoveSymbol(string symbol)
         {
-            var target = EditorUserBuildSettings.selectedBuildTargetGroup;
-            var current = PlayerSettings.GetScriptingDefineSymbolsForGroup(target).Split(';');
-            PlayerSettings.SetScriptingDefineSymbolsForGroup(target,
-                string.Join(";", current.Where(x => x != symbol))
+            var buildTarget = UnityEditor.Build.NamedBuildTarget.FromBuildTargetGroup(
+                EditorUserBuildSettings.selectedBuildTargetGroup
             );
+            PlayerSettings.GetScriptingDefineSymbols(buildTarget, out var current);
+            PlayerSettings.SetScriptingDefineSymbols(buildTarget, current.Where(x => x != symbol).ToArray());
         }
 
         public static void ToggleSymbol(string title, string symbol)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UniGLTF;
 using UniGLTF.MeshUtility;
+using UniGLTF.Utils;
 using UnityEngine;
 
 
@@ -37,8 +38,7 @@ namespace VRM
                         return renderer.sharedMesh;
                     }
 
-                    var filter = Renderer.GetComponent<MeshFilter>();
-                    if (filter != null)
+                    if (Renderer.TryGetComponent<MeshFilter>(out var filter))
                     {
                         return filter.sharedMesh;
                     }
@@ -56,10 +56,25 @@ namespace VRM
             var dst = _dst.AddComponent<VRMFirstPerson>();
             dst.FirstPersonBone = map[FirstPersonBone];
             dst.FirstPersonOffset = FirstPersonOffset;
-            dst.Renderers = Renderers.Select(x =>
+            dst.Renderers = Renderers
+            .Where(x =>
+            {
+                if (x.Renderer == null || x.Renderer.transform == null)
+                {
+                    Debug.LogWarning("[VRMFirstPerson] Renderer is null", this);
+                    return false;
+                }
+                if (!map.ContainsKey(x.Renderer.transform))
+                {
+                    Debug.LogWarning("[VRMFirstPerson] Cannot copy. Not found ?", this);
+                    return false;
+                }
+                return true;
+            })
+            .Select(x =>
             {
                 var mapped = map[x.Renderer.transform];
-                var renderer = mapped.GetComponent<Renderer>();
+                var renderer = mapped.GetComponentOrNull<Renderer>();
                 return new VRMFirstPerson.RendererFirstPersonFlags
                 {
                     Renderer = renderer,
@@ -71,8 +86,7 @@ namespace VRM
         public void SetDefault()
         {
             FirstPersonOffset = new Vector3(0, 0.06f, 0);
-            var animator = GetComponent<Animator>();
-            if (animator != null)
+            if (TryGetComponent<Animator>(out var animator))
             {
                 FirstPersonBone = animator.GetBoneTransform(HumanBodyBones.Head);
             }
@@ -91,6 +105,12 @@ namespace VRM
             var rendererComponents = transform.GetComponentsInChildren<Renderer>();
             foreach (var renderer in rendererComponents)
             {
+                // renderer が !enabled/!activeSelf なのがロード中なのか否か区別がつかないような気がするので
+                // チェックしない。
+                // if(!renderer.enabled)
+                // {
+                //     continue;
+                // }
                 var flags = new RendererFirstPersonFlags
                 {
                     Renderer = renderer,
@@ -120,7 +140,7 @@ namespace VRM
             {
                 if (x.mesh == index)
                 {
-                    return CacheEnum.TryParseOrDefault<FirstPersonFlag>(x.firstPersonFlag, true);
+                    return CachedEnum.ParseOrDefault<FirstPersonFlag>(x.firstPersonFlag, true);
                 }
             }
 
@@ -358,6 +378,17 @@ namespace VRM
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// for MeshUtility interface
+        /// </summary>
+        public Mesh ProcessFirstPerson(Transform firstPersonBone, SkinnedMeshRenderer smr)
+        {
+            SetVisibilityFunc dummy = (Renderer renderer, bool firstPerson, bool thirdPerson) =>
+            {
+            };
+            return CreateHeadlessModel(smr, FirstPersonBone, dummy);
         }
 
         void OnDestroy()

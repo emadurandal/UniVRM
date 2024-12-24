@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using UniJSON;
+using System.Collections.Concurrent;
 
 namespace UniGLTF
 {
@@ -25,6 +26,7 @@ namespace UniGLTF
             { typeof(Vector2), new ComponentVec(glComponentType.FLOAT, 2) },
             { typeof(Vector3), new ComponentVec(glComponentType.FLOAT, 3) },
             { typeof(Vector4), new ComponentVec(glComponentType.FLOAT, 4) },
+            { typeof(Quaternion), new ComponentVec(glComponentType.FLOAT, 4) },
             { typeof(UShort4), new ComponentVec(glComponentType.UNSIGNED_SHORT, 4) },
             { typeof(Matrix4x4), new ComponentVec(glComponentType.FLOAT, 16) },
             { typeof(Color), new ComponentVec(glComponentType.FLOAT, 4) },
@@ -135,11 +137,22 @@ namespace UniGLTF
             }
         }
 
+        static ConcurrentDictionary<(string, int, int), bool> s_cache = new ConcurrentDictionary<(string, int, int), bool>();
+
         public static bool IsGeneratedUniGLTFAndOlder(this glTF gltf, int major, int minor)
         {
             if (gltf == null) return false;
             if (gltf.asset == null) return false;
-            return IsGeneratedUniGLTFAndOlderThan(gltf.asset.generator, major, minor);
+
+            var key = (gltf.asset.generator, major, minor);
+            if (s_cache.TryGetValue(key, out bool isOlder))
+            {
+                return isOlder;
+            }
+
+            var result = IsGeneratedUniGLTFAndOlderThan(gltf.asset.generator, major, minor);
+            s_cache[key] = result;
+            return result;
         }
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using Unity.Collections;
 
 namespace UniGLTF
 {
@@ -9,7 +10,7 @@ namespace UniGLTF
     /// * JSON is parsed but not validated as glTF
     /// * For glb, bin chunks are already available
     /// </summary>
-    public sealed class GltfData
+    public sealed class GltfData : IDisposable
     {
         /// <summary>
         /// Source file path.
@@ -38,31 +39,26 @@ namespace UniGLTF
         /// </summary>
         public glTF GLTF { get; }
 
+        public NativeArrayManager NativeArrayManager { get; } = new NativeArrayManager();
+
         /// <summary>
         /// BIN chunk
         /// > This chunk MUST be the second chunk of the Binary glTF asset
         /// </summary>
         /// <returns></returns>
-        public ArraySegment<byte> Bin
-        {
-            get
-            {
-                if (Chunks == null)
-                {
-                    return default;
-                }
-                if (Chunks.Count < 2)
-                {
-                    return default;
-                }
-                return Chunks[1].Bytes;
-            }
-        }
+        public NativeArray<byte> Bin { get; }
 
         /// <summary>
         /// Migration Flags used by ImporterContext
         /// </summary>
         public MigrationFlags MigrationFlags { get; }
+
+        /// <summary>
+        /// Extension Supporting flags.
+        ///
+        /// User can set flags to enable or disable some extensions.
+        /// </summary>
+        public ExtensionSupportFlags ExtensionSupportFlags { get; } = new ExtensionSupportFlags();
 
         /// <summary>
         /// URI access
@@ -74,7 +70,7 @@ namespace UniGLTF
         /// uri = 相対パス。File.ReadAllBytes
         /// </summary>
         /// <returns></returns>
-        Dictionary<string, ArraySegment<byte>> _UriCache = new Dictionary<string, ArraySegment<byte>>();
+        Dictionary<string, NativeArray<byte>> _UriCache = new Dictionary<string, NativeArray<byte>>();
 
         public GltfData(string targetPath, string json, glTF gltf, IReadOnlyList<GlbChunk> chunks, IStorage storage, MigrationFlags migrationFlags)
         {
@@ -84,11 +80,26 @@ namespace UniGLTF
             Chunks = chunks;
             _storage = storage;
             MigrationFlags = migrationFlags;
+
+            // init
+            if (Chunks != null)
+            {
+                if (Chunks.Count >= 2)
+                {
+                    Bin = NativeArrayManager.CreateNativeArray(Chunks[1].Bytes);
+                }
+            }
+        }
+
+        public void Dispose()
+        {
+            NativeArrayManager.Dispose();
+            _UriCache.Clear();
         }
 
         public static GltfData CreateFromExportForTest(ExportingGltfData data)
         {
-            return CreateFromGltfDataForTest(data.GLTF, data.BinBytes);
+            return CreateFromGltfDataForTest(data.Gltf, data.BinBytes);
         }
 
         public static GltfData CreateFromGltfDataForTest(glTF gltf, ArraySegment<byte> bytes)
@@ -107,14 +118,14 @@ namespace UniGLTF
             );
         }
 
-        ArraySegment<Byte> GetBytesFromUri(string uri)
+        NativeArray<Byte> GetBytesFromUri(string uri)
         {
             if (string.IsNullOrEmpty(uri))
             {
                 throw new ArgumentNullException();
             }
 
-            if (_UriCache.TryGetValue(uri, out ArraySegment<byte> data))
+            if (_UriCache.TryGetValue(uri, out NativeArray<byte> data))
             {
                 // return cache
                 return data;
@@ -122,20 +133,20 @@ namespace UniGLTF
 
             if (uri.StartsWith("data:", StringComparison.Ordinal))
             {
-                data = new ArraySegment<byte>(UriByteBuffer.ReadEmbedded(uri));
+                data = NativeArrayManager.CreateNativeArray(UriByteBuffer.ReadEmbedded(uri));
             }
             else
             {
-                data = _storage.Get(uri);
+                data = NativeArrayManager.CreateNativeArray(_storage.Get(uri));
             }
             _UriCache.Add(uri, data);
             return data;
         }
 
-        public ArraySegment<Byte> GetBytesFromBuffer(int bufferIndex)
+        public NativeArray<Byte> GetBytesFromBuffer(int bufferIndex)
         {
             var buffer = GLTF.buffers[bufferIndex];
-            if (bufferIndex == 0 && Bin.Array != null)
+            if (bufferIndex == 0 && Bin.IsCreated)
             {
                 // https://www.khronos.org/registry/glTF/specs/2.0/glTF-2.0.html#glb-stored-buffer
                 return Bin;
@@ -146,25 +157,44 @@ namespace UniGLTF
             }
         }
 
-        public ArraySegment<Byte> GetBytesFromBufferView(int bufferView)
+        public NativeArray<Byte> GetBytesFromBufferView(int bufferView)
         {
             var view = GLTF.bufferViews[bufferView];
             var segment = GetBytesFromBuffer(view.buffer);
-            return new ArraySegment<byte>(segment.Array, segment.Offset + view.byteOffset, view.byteLength);
+            return segment.GetSubArray(view.byteOffset, view.byteLength);
         }
 
-        T[] GetTypedFromBufferView<T>(int count, int byteOffset, glTFBufferView view) where T : struct
+        NativeArray<byte> GetBytesFromBufferView(glTFBufferView view)
         {
             var segment = GetBytesFromBuffer(view.buffer);
-            var attrib = new T[count];
-            var bytes = new ArraySegment<Byte>(segment.Array, segment.Offset + view.byteOffset + byteOffset, count * Marshal.SizeOf<T>());
-            SafeMarshalCopy.CopyBytesToArray(bytes, attrib);
-            return attrib;
+            return segment.GetSubArray(view.byteOffset, view.byteLength);
         }
 
-        T[] GetTypedFromAccessor<T>(glTFAccessor accessor, glTFBufferView view) where T : struct
+        NativeArray<T> GetTypedFromAccessor<T>(glTFAccessor accessor, glTFBufferView view) where T : struct
         {
-            return GetTypedFromBufferView<T>(accessor.count, accessor.byteOffset, view);
+            var bytes = GetBytesFromBufferView(view);
+            if (view.byteStride == 0 || view.byteStride == accessor.GetStride())
+            {
+                // planar layout
+                return bytes.GetSubArray(
+                    accessor.byteOffset.GetValueOrDefault(),
+                    accessor.CalcByteSize()).Reinterpret<T>(1);
+            }
+            else
+            {
+                // interleaved layout
+                // copy interleaved vertex to planar array
+                var src = GetBytesFromBufferView(view);
+                var dst = NativeArrayManager.CreateNativeArray<T>(accessor.count);
+                var offset = accessor.byteOffset.GetValueOrDefault();
+                var size = Marshal.SizeOf<T>();
+                for (int i = 0; i < accessor.count; ++i, offset += view.byteStride)
+                {
+                    var values = src.GetSubArray(offset, size).Reinterpret<T>(1);
+                    dst[i] = values[0];
+                }
+                return dst;
+            }
         }
 
         /// <summary>
@@ -175,158 +205,195 @@ namespace UniGLTF
         /// <param name="byteOffset"></param>
         /// <param name="componentType"></param>
         /// <returns></returns>
-        IEnumerable<int> GetIntIndicesFromView(glTFBufferView view, int count, int byteOffset, glComponentType componentType)
+        BufferAccessor GetIntIndicesFromView(glTFBufferView view, int count, int byteOffset, glComponentType componentType)
         {
+            var bytes = GetBytesFromBufferView(view);
             switch (componentType)
             {
                 case glComponentType.UNSIGNED_BYTE:
                     {
-                        return GetTypedFromBufferView<Byte>(count, byteOffset, view).Select(x => (int)(x));
+                        return new BufferAccessor(NativeArrayManager, bytes.GetSubArray(byteOffset, bytes.Length - byteOffset),
+                            AccessorValueType.UNSIGNED_BYTE, AccessorVectorType.SCALAR, count);
                     }
 
                 case glComponentType.UNSIGNED_SHORT:
                     {
-                        return GetTypedFromBufferView<UInt16>(count, byteOffset, view).Select(x => (int)(x));
+                        return new BufferAccessor(NativeArrayManager, bytes.GetSubArray(byteOffset, bytes.Length - byteOffset),
+                            AccessorValueType.UNSIGNED_SHORT, AccessorVectorType.SCALAR, count);
                     }
 
                 case glComponentType.UNSIGNED_INT:
                     {
-                        return GetTypedFromBufferView<UInt32>(count, byteOffset, view).Select(x => (int)(x));
+                        return new BufferAccessor(NativeArrayManager, bytes.GetSubArray(byteOffset, bytes.Length - byteOffset),
+                        AccessorValueType.UNSIGNED_INT, AccessorVectorType.SCALAR, count);
                     }
+
+                default:
+                    throw new NotImplementedException("GetIndices: unknown componenttype: " + componentType);
             }
-            throw new NotImplementedException("GetIndices: unknown componenttype: " + componentType);
         }
 
-        /// <summary>
-        /// Get indices and cast to int
-        /// </summary>
-        /// <param name="accessor"></param>
-        /// <param name="count"></param>
-        /// <returns></returns>
-        IEnumerable<int> GetIntIndicesFromAccessor(glTFAccessor accessor, out int count)
+        public BufferAccessor GetIndicesFromAccessorIndex(int accessorIndex)
         {
-            count = accessor.count;
-            var view = GLTF.bufferViews[accessor.bufferView];
-            switch ((glComponentType)accessor.componentType)
-            {
-                case glComponentType.UNSIGNED_BYTE:
-                    {
-                        return GetTypedFromAccessor<Byte>(accessor, view).Select(x => (int)(x));
-                    }
-
-                case glComponentType.UNSIGNED_SHORT:
-                    {
-                        return GetTypedFromAccessor<UInt16>(accessor, view).Select(x => (int)(x));
-                    }
-
-                case glComponentType.UNSIGNED_INT:
-                    {
-                        return GetTypedFromAccessor<UInt32>(accessor, view).Select(x => (int)(x));
-                    }
-            }
-            throw new NotImplementedException("GetIndices: unknown componenttype: " + accessor.componentType);
+            var accessor = GLTF.accessors[accessorIndex];
+            var view = GLTF.bufferViews[accessor.bufferView.Value];
+            return GetIntIndicesFromView(view, accessor.count, accessor.byteOffset.GetValueOrDefault(), accessor.componentType);
         }
 
-        public int[] GetIndices(int accessorIndex)
-        {
-            int count;
-            var result = GetIntIndicesFromAccessor(GLTF.accessors[accessorIndex], out count);
-            var indices = new int[count];
-
-            // flip triangles
-            var it = result.GetEnumerator();
-            {
-                for (int i = 0; i < count; i += 3)
-                {
-                    it.MoveNext(); indices[i + 2] = it.Current;
-                    it.MoveNext(); indices[i + 1] = it.Current;
-                    it.MoveNext(); indices[i] = it.Current;
-                }
-            }
-
-            return indices;
-        }
-
-        public T[] GetArrayFromAccessor<T>(int accessorIndex) where T : struct
+        public NativeArray<T> GetArrayFromAccessor<T>(int accessorIndex) where T : struct
         {
             var vertexAccessor = GLTF.accessors[accessorIndex];
 
-            if (vertexAccessor.count <= 0) return new T[] { };
+            if (vertexAccessor.count <= 0) return NativeArrayManager.CreateNativeArray<T>(0);
 
-            var result = (vertexAccessor.bufferView != -1)
-                ? GetTypedFromAccessor<T>(vertexAccessor, GLTF.bufferViews[vertexAccessor.bufferView])
-                : new T[vertexAccessor.count]
+            var result = (vertexAccessor.bufferView.HasValidIndex())
+                ? GetTypedFromAccessor<T>(vertexAccessor, GLTF.bufferViews[vertexAccessor.bufferView.Value])
+                : NativeArrayManager.CreateNativeArray<T>(vertexAccessor.count)
                 ;
 
             var sparse = vertexAccessor.sparse;
             if (sparse != null && sparse.count > 0)
             {
                 // override sparse values
-                var indices = GetIntIndicesFromView(GLTF.bufferViews[sparse.indices.bufferView], sparse.count, sparse.indices.byteOffset, sparse.indices.componentType);
-                var values = GetTypedFromBufferView<T>(sparse.count, sparse.values.byteOffset, GLTF.bufferViews[sparse.values.bufferView]);
+                var _indices = GetIntIndicesFromView(GLTF.bufferViews[sparse.indices.bufferView], sparse.count, sparse.indices.byteOffset, sparse.indices.componentType);
+                var bytes = GetBytesFromBufferView(GLTF.bufferViews[sparse.values.bufferView]);
+                var values = bytes.GetSubArray(sparse.values.byteOffset, bytes.Length - sparse.values.byteOffset).Reinterpret<T>(1).GetSubArray(0, sparse.count);
 
-                var it = indices.GetEnumerator();
-                for (int i = 0; i < sparse.count; ++i)
+                switch (_indices.ComponentType)
                 {
-                    it.MoveNext();
-                    result[it.Current] = values[i];
+                    case AccessorValueType.UNSIGNED_BYTE:
+                        {
+                            var indices = _indices.Bytes;
+                            for (int i = 0; i < sparse.count; ++i)
+                            {
+                                result[indices[i]] = values[i];
+                            }
+                            break;
+                        }
+                    case AccessorValueType.UNSIGNED_SHORT:
+                        {
+                            var indices = _indices.Bytes.Reinterpret<ushort>(1);
+                            for (int i = 0; i < sparse.count; ++i)
+                            {
+                                result[indices[i]] = values[i];
+                            }
+                            break;
+                        }
+                    case AccessorValueType.UNSIGNED_INT:
+                        {
+                            var indices = _indices.Bytes.Reinterpret<int>(1);
+                            for (int i = 0; i < sparse.count; ++i)
+                            {
+                                result[indices[i]] = values[i];
+                            }
+                            break;
+                        }
+
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
             }
             return result;
         }
 
-        public float[] FlatternFloatArrayFromAccessor(int accessorIndex)
+        public NativeArray<float> FlatternFloatArrayFromAccessor(int accessorIndex)
         {
             var vertexAccessor = GLTF.accessors[accessorIndex];
 
-            if (vertexAccessor.count <= 0) return new float[] { };
+            if (vertexAccessor.count <= 0) return NativeArrayManager.CreateNativeArray<float>(0);
 
             var bufferCount = vertexAccessor.count * vertexAccessor.TypeCount;
 
-            float[] result = null;
-            if (vertexAccessor.bufferView != -1)
+            NativeArray<float> result = default;
+            if (vertexAccessor.bufferView.HasValidIndex())
             {
-                var attrib = new float[vertexAccessor.count * vertexAccessor.TypeCount];
-                var view = GLTF.bufferViews[vertexAccessor.bufferView];
+                var view = GLTF.bufferViews[vertexAccessor.bufferView.Value];
                 var segment = GetBytesFromBuffer(view.buffer);
-                var bytes = new ArraySegment<Byte>(segment.Array, segment.Offset + view.byteOffset + vertexAccessor.byteOffset, vertexAccessor.count * 4 * vertexAccessor.TypeCount);
-                SafeMarshalCopy.CopyBytesToArray(bytes, attrib);
-                result = attrib;
+                result = segment.GetSubArray(view.byteOffset + vertexAccessor.byteOffset.GetValueOrDefault(), vertexAccessor.count * 4 * vertexAccessor.TypeCount).Reinterpret<float>(1);
             }
             else
             {
-                result = new float[bufferCount];
+                result = NativeArrayManager.CreateNativeArray<float>(bufferCount);
             }
 
             var sparse = vertexAccessor.sparse;
             if (sparse != null && sparse.count > 0)
             {
                 // override sparse values
-                var indices = GetIntIndicesFromView(GLTF.bufferViews[sparse.indices.bufferView], sparse.count, sparse.indices.byteOffset, sparse.indices.componentType);
-                var values = GetTypedFromBufferView<float>(sparse.count * vertexAccessor.TypeCount, sparse.values.byteOffset, GLTF.bufferViews[sparse.values.bufferView]);
+                var _indices = GetIntIndicesFromView(GLTF.bufferViews[sparse.indices.bufferView], sparse.count, sparse.indices.byteOffset, sparse.indices.componentType);
+                var bytes = GetBytesFromBufferView(GLTF.bufferViews[sparse.values.bufferView]);
+                var values = bytes.GetSubArray(sparse.values.byteOffset, bytes.Length - sparse.values.byteOffset).Reinterpret<float>(1).GetSubArray(0, sparse.count * vertexAccessor.TypeCount);
 
-                var it = indices.GetEnumerator();
-                for (int i = 0; i < sparse.count; ++i)
+                switch (_indices.ComponentType)
                 {
-                    it.MoveNext();
-                    result[it.Current] = values[i];
+                    case AccessorValueType.UNSIGNED_BYTE:
+                        {
+                            var indices = _indices.Bytes;
+                            for (int i = 0; i < sparse.count; ++i)
+                            {
+                                result[indices[i]] = values[i];
+                            }
+                            break;
+                        }
+                    case AccessorValueType.UNSIGNED_SHORT:
+                        {
+                            var indices = _indices.Bytes.Reinterpret<ushort>(1);
+                            for (int i = 0; i < sparse.count; ++i)
+                            {
+                                result[indices[i]] = values[i];
+                            }
+                            break;
+                        }
+                    case AccessorValueType.UNSIGNED_INT:
+                        {
+                            var indices = _indices.Bytes.Reinterpret<int>(1);
+                            for (int i = 0; i < sparse.count; ++i)
+                            {
+                                result[indices[i]] = values[i];
+                            }
+                            break;
+                        }
+
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
             }
             return result;
         }
 
-        public (ArraySegment<byte> binary, string mimeType)? GetBytesFromImage(int imageIndex)
+        static string GuessMimeFromUri(string uri)
+        {
+            if (string.IsNullOrEmpty(uri))
+            {
+                return null;
+            }
+            var ext = System.IO.Path.GetExtension(uri).ToLowerInvariant();
+            switch (ext)
+            {
+                case ".png":
+                    return "image/png";
+                case ".jpg":
+                case ".jpeg":
+                    return "image/jpeg";
+                default:
+                    return null;
+            }
+        }
+
+        public (NativeArray<byte> binary, string mimeType)? GetBytesFromImage(int imageIndex)
         {
             if (imageIndex < 0 || imageIndex >= GLTF.images.Count) return default;
 
             var image = GLTF.images[imageIndex];
             if (string.IsNullOrEmpty(image.uri))
             {
+                // use bufferView(glb)
                 return (GetBytesFromBufferView(image.bufferView), image.mimeType);
             }
             else
             {
-                return (GetBytesFromUri(image.uri), image.mimeType);
+                // use uri(gltf)
+                return (GetBytesFromUri(image.uri), image.mimeType ?? GuessMimeFromUri(image.uri));
             }
         }
 

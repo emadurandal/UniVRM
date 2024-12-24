@@ -11,10 +11,11 @@ namespace VRM
 {
     public class VRMExporterWizard : ExportDialogBase
     {
+        public const string MENU_NAME = "Export VRM 0.x...";
         public static void OpenExportMenu()
         {
             var window = (VRMExporterWizard)GetWindow(typeof(VRMExporterWizard));
-            window.titleContent = new GUIContent("VRM Exporter");
+            window.titleContent = new GUIContent(MENU_NAME);
             window.Show();
         }
 
@@ -78,8 +79,7 @@ namespace VRM
                 }
                 else
                 {
-                    var meta = root.GetComponent<VRMMeta>();
-                    if (meta != null)
+                    if (root.TryGetComponent<VRMMeta>(out var meta))
                     {
                         Meta = meta.Meta;
                     }
@@ -121,42 +121,6 @@ namespace VRM
             m_meshes = null;
         }
 
-        /// <summary>
-        /// VRM0
-        /// </summary>
-        class VRMMaterialValidator : DefaultMaterialValidator
-        {
-            public override string GetGltfMaterialTypeFromUnityShaderName(string shaderName)
-            {
-                var name = VRMMaterialExporter.VrmMaterialName(shaderName);
-                if (!string.IsNullOrEmpty(name))
-                {
-                    return name;
-                }
-                return base.GetGltfMaterialTypeFromUnityShaderName(shaderName);
-            }
-
-            public override IEnumerable<(string propertyName, Texture texture)> EnumerateTextureProperties(Material m)
-            {
-                if (m.shader.name != "VRM/MToon")
-                {
-                    foreach (var x in base.EnumerateTextureProperties(m))
-                    {
-                        yield return x;
-                    }
-                }
-
-                var prop = UniGLTF.ShaderPropExporter.PreShaderPropExporter.GetPropsForSupportedShader(m.shader.name);
-                foreach (var kv in prop.Properties)
-                {
-                    if (kv.ShaderPropertyType == UniGLTF.ShaderPropExporter.ShaderPropertyType.TexEnv)
-                    {
-                        yield return (kv.Key, m.GetTexture(kv.Key));
-                    }
-                }
-            }
-        }
-
         protected override IEnumerable<Validator> ValidatorFactory()
         {
             // ヒエラルキー　のチェック
@@ -185,14 +149,12 @@ namespace VRM
 
             yield return VRMSpringBoneValidator.Validate;
 
-            var firstPerson = State.ExportRoot.GetComponent<VRMFirstPerson>();
-            if (firstPerson != null)
+            if (State.ExportRoot.TryGetComponent<VRMFirstPerson>(out var firstPerson))
             {
                 yield return firstPerson.Validate;
             }
 
-            var proxy = State.ExportRoot.GetComponent<VRMBlendShapeProxy>();
-            if (proxy != null)
+            if (State.ExportRoot.TryGetComponent<VRMBlendShapeProxy>(out var proxy))
             {
                 yield return proxy.Validate;
             }
@@ -203,7 +165,7 @@ namespace VRM
 
         protected override void OnLayout()
         {
-            m_meshes.SetRoot(State.ExportRoot, m_settings.MeshExportSettings, new VRMBlendShapeExportFilter(State.ExportRoot, m_settings));
+            m_meshes.SetRoot(State.ExportRoot, m_settings.GltfExportSettings, new VRMBlendShapeExportFilter(State.ExportRoot, m_settings));
         }
 
         static bool s_foldT = true;
@@ -218,7 +180,7 @@ namespace VRM
             //
             // T-Pose
             //
-            if (State.ExportRoot.GetComponent<Animator>() != null)
+            if (State.ExportRoot.TryGetComponent<Animator>(out var animator))
             {
                 var backup = GUI.enabled;
                 GUI.enabled = State.ExportRoot.scene.IsValid();
@@ -340,7 +302,7 @@ namespace VRM
                 case Tabs.BlendShape:
                     if (State.ExportRoot)
                     {
-                        OnBlendShapeGUI(State.ExportRoot.GetComponent<VRMBlendShapeProxy>());
+                        OnBlendShapeGUI(State.ExportRoot.GetComponentOrNull<VRMBlendShapeProxy>());
                     }
                     break;
 
@@ -394,26 +356,26 @@ namespace VRM
                 return;
             }
 
-            m_merger = new BlendShapeMerger(avatar.Clips, proxy.transform);
+            m_merger = new BlendShapeMerger(avatar.Clips.Where(x => x != null), proxy.transform);
 
 
             GUILayout.Space(20);
 
             EditorGUILayout.HelpBox(BlendShapeTabMessages.SCENE_MESSAGE.Msg(), MessageType.Info);
 
-            var options = avatar.Clips.Select(x => x.ToString()).ToArray();
+            var options = avatar.Clips.Where(x => x != null).Select(x => x.ToString()).ToArray();
             m_selected = EditorGUILayout.Popup("select blendshape", m_selected, options);
 
             if (GUILayout.Button(BlendShapeTabMessages.APPLY_BLENDSHAPECLIP_BUTTON.Msg()))
             {
-                m_merger.SetValues(avatar.Clips.Select((x, i) => new KeyValuePair<BlendShapeKey, float>(x.Key, i == m_selected ? 1 : 0)));
+                m_merger.SetValues(avatar.Clips.Where(x => x != null).Select((x, i) => new KeyValuePair<BlendShapeKey, float>(x.Key, i == m_selected ? 1 : 0)));
                 m_merger.Apply();
                 m_settings.PoseFreeze = true;
             }
 
             if (GUILayout.Button(BlendShapeTabMessages.CLEAR_BLENDSHAPE_BUTTON.Msg()))
             {
-                m_merger.SetValues(avatar.Clips.Select(x => new KeyValuePair<BlendShapeKey, float>(x.Key, 0)));
+                m_merger.SetValues(avatar.Clips.Where(x => x != null).Select(x => new KeyValuePair<BlendShapeKey, float>(x.Key, 0)));
                 m_merger.Apply();
             }
         }

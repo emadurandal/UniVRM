@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UniJSON;
+using UnityEngine;
 
 namespace UniVRM10
 {
@@ -31,6 +32,7 @@ namespace UniVRM10
         {
             var meta = new UniGLTF.Extensions.VRMC_vrm.Meta
             {
+                LicenseUrl = Vrm10Exporter.LICENSE_URL_JA,
                 AllowPoliticalOrReligiousUsage = false,
                 AllowExcessivelySexualUsage = false,
                 AllowExcessivelyViolentUsage = false,
@@ -152,7 +154,8 @@ namespace UniVRM10
                         break;
 
                     default:
-                        throw new NotImplementedException(key);
+                        Debug.LogWarning($"[meta migration] unknown key: {key}");
+                        break;
                 } // switch
             } // foreach
 
@@ -169,8 +172,9 @@ namespace UniVRM10
                 }
                 else
                 {
-                    // different otherLicenseUrl & otherPermissionUrl
-                    throw new MigrationException("otherPermissionUrl", "can not migrate");
+                    // https://github.com/vrm-c/UniVRM/issues/1611
+                    // 両方を記述しエラーとしない
+                    meta.OtherLicenseUrl = $"'{otherLicenseUrl}', '{otherPermissionUrl}'";
                 }
             }
             else if (!string.IsNullOrEmpty(otherLicenseUrl))

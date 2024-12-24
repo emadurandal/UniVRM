@@ -1,21 +1,17 @@
 using System;
 using System.Collections.Generic;
-using MToon;
 using UniGLTF;
 using UniGLTF.Extensions.VRMC_materials_mtoon;
 using UniJSON;
 using UnityEngine;
-using VRMShaders.VRM10.MToon10.Runtime;
-using ColorSpace = VRMShaders.ColorSpace;
-using OutlineWidthMode = MToon.OutlineWidthMode;
-using RenderMode = MToon.RenderMode;
+using VRM10.MToon10;
+using VRM10.MToon10.MToon0X;
+using ColorSpace = UniGLTF.ColorSpace;
 
 namespace UniVRM10
 {
     internal static class MigrationMToonMaterial
     {
-        private const string MigrationMToon10SpecVersion = "1.0-draft";
-
         public static void Migrate(glTF gltf, JsonNode vrm0)
         {
             // Create MToonDefinition(0.x) from JSON(0.x)
@@ -46,14 +42,14 @@ namespace UniVRM10
                 }
                 switch (mtoon.Definition.Rendering.RenderMode)
                 {
-                    case RenderMode.Opaque:
+                    case MToon0XRenderMode.Opaque:
                         break;
-                    case RenderMode.Cutout:
+                    case MToon0XRenderMode.Cutout:
                         break;
-                    case RenderMode.Transparent:
+                    case MToon0XRenderMode.Transparent:
                         transparentRenderQueues.Add(mtoon.Definition.Rendering.RenderQueueOffsetNumber);
                         break;
-                    case RenderMode.TransparentWithZWrite:
+                    case MToon0XRenderMode.TransparentWithZWrite:
                         transparentZWriteRenderQueues.Add(mtoon.Definition.Rendering.RenderQueueOffsetNumber);
                         break;
                     default:
@@ -91,7 +87,7 @@ namespace UniVRM10
                 //
                 var dst = new VRMC_materials_mtoon
                 {
-                    SpecVersion = MigrationMToon10SpecVersion,
+                    SpecVersion = Vrm10Exporter.MTOON_SPEC_VERSION,
                 };
 
                 // Texture Transform
@@ -106,25 +102,25 @@ namespace UniVRM10
                 // Rendering
                 switch (mtoon.Definition.Rendering.RenderMode)
                 {
-                    case RenderMode.Opaque:
+                    case MToon0XRenderMode.Opaque:
                         gltfMaterial.alphaMode = "OPAQUE";
                         dst.TransparentWithZWrite = false;
                         gltfMaterial.alphaCutoff = 0.5f;
                         dst.RenderQueueOffsetNumber = 0;
                         break;
-                    case RenderMode.Cutout:
+                    case MToon0XRenderMode.Cutout:
                         gltfMaterial.alphaMode = "MASK";
                         dst.TransparentWithZWrite = false;
                         gltfMaterial.alphaCutoff = mtoon.Definition.Color.CutoutThresholdValue;
                         dst.RenderQueueOffsetNumber = 0;
                         break;
-                    case RenderMode.Transparent:
+                    case MToon0XRenderMode.Transparent:
                         gltfMaterial.alphaMode = "BLEND";
                         dst.TransparentWithZWrite = false;
                         gltfMaterial.alphaCutoff = 0.5f;
                         dst.RenderQueueOffsetNumber = Mathf.Clamp(transparentRenderQueueMap[mtoon.Definition.Rendering.RenderQueueOffsetNumber], -9, 0);
                         break;
-                    case RenderMode.TransparentWithZWrite:
+                    case MToon0XRenderMode.TransparentWithZWrite:
                         gltfMaterial.alphaMode = "BLEND";
                         dst.TransparentWithZWrite = true;
                         gltfMaterial.alphaCutoff = 0.5f;
@@ -135,13 +131,13 @@ namespace UniVRM10
                 }
                 switch (mtoon.Definition.Rendering.CullMode)
                 {
-                    case MToon.CullMode.Back:
+                    case MToon0XCullMode.Back:
                         gltfMaterial.doubleSided = false;
                         break;
-                    case MToon.CullMode.Off:
+                    case MToon0XCullMode.Off:
                         gltfMaterial.doubleSided = true;
                         break;
-                    case MToon.CullMode.Front:
+                    case MToon0XCullMode.Front:
                         // GLTF not support
                         gltfMaterial.doubleSided = true;
                         break;
@@ -159,7 +155,7 @@ namespace UniVRM10
                     };
                     if (textureScale.HasValue && textureOffset.HasValue)
                     {
-                        Vrm10MToonMaterialExporter.ExportTextureTransform(
+                        Vrm10MaterialExportUtils.ExportTextureTransform(
                             gltfMaterial.pbrMetallicRoughness.baseColorTexture,
                             textureScale.Value,
                             textureOffset.Value
@@ -176,7 +172,7 @@ namespace UniVRM10
                     };
                     if (textureScale.HasValue && textureOffset.HasValue)
                     {
-                        Vrm10MToonMaterialExporter.ExportTextureTransform(
+                        Vrm10MaterialExportUtils.ExportTextureTransform(
                             dst.ShadeMultiplyTexture,
                             textureScale.Value,
                             textureOffset.Value
@@ -197,7 +193,7 @@ namespace UniVRM10
                     };
                     if (textureScale.HasValue && textureOffset.HasValue)
                     {
-                        Vrm10MToonMaterialExporter.ExportTextureTransform(
+                        Vrm10MaterialExportUtils.ExportTextureTransform(
                             dst.ShadeMultiplyTexture,
                             textureScale.Value,
                             textureOffset.Value
@@ -214,7 +210,7 @@ namespace UniVRM10
                     };
                     if (textureScale.HasValue && textureOffset.HasValue)
                     {
-                        Vrm10MToonMaterialExporter.ExportTextureTransform(
+                        Vrm10MaterialExportUtils.ExportTextureTransform(
                             gltfMaterial.normalTexture,
                             textureScale.Value,
                             textureOffset.Value
@@ -245,7 +241,7 @@ namespace UniVRM10
                     };
                     if (textureScale.HasValue && textureOffset.HasValue)
                     {
-                        Vrm10MToonMaterialExporter.ExportTextureTransform(
+                        Vrm10MaterialExportUtils.ExportTextureTransform(
                             gltfMaterial.emissiveTexture,
                             textureScale.Value,
                             textureOffset.Value
@@ -256,12 +252,17 @@ namespace UniVRM10
                 // Rim Lighting
                 if (mtoon.TextureIndexMap.SphereAdd.HasValue)
                 {
-                    // Matcap behaviour will change in VRM 1.0.
+                    // NOTE: MatCap behaviour will change in VRM 1.0.
+                    // Texture transform is not required.
                     dst.MatcapTexture = new TextureInfo
                     {
                         Index = mtoon.TextureIndexMap.SphereAdd.Value
                     };
-                    // Texture transform is not required.
+                    dst.MatcapFactor = new [] { 1f, 1f, 1f };
+                }
+                else
+                {
+                    dst.MatcapFactor = new[] { 0f, 0f, 0f };
                 }
                 dst.ParametricRimColorFactor = mtoon.Definition.Rim.RimColor.ToFloat3(ColorSpace.sRGB, ColorSpace.Linear);
                 dst.ParametricRimFresnelPowerFactor = mtoon.Definition.Rim.RimFresnelPowerValue;
@@ -274,29 +275,32 @@ namespace UniVRM10
                     };
                     if (textureScale.HasValue && textureOffset.HasValue)
                     {
-                        Vrm10MToonMaterialExporter.ExportTextureTransform(
+                        Vrm10MaterialExportUtils.ExportTextureTransform(
                             dst.RimMultiplyTexture,
                             textureScale.Value,
                             textureOffset.Value
                         );
                     }
                 }
-                dst.RimLightingMixFactor = mtoon.Definition.Rim.RimLightingMixValue;
+                // NOTE: DESTRUCTIVE MIGRATION
+                // Rim Lighting behaviour will be merged with MatCap in VRM 1.0.
+                // So, RimLightingMixFactor set to 1.0, because it is safe appearance.
+                dst.RimLightingMixFactor = 1.0f;
 
                 // Outline
                 const float centimeterToMeter = 0.01f;
                 const float oneHundredth = 0.01f;
                 switch (mtoon.Definition.Outline.OutlineWidthMode)
                 {
-                    case OutlineWidthMode.None:
+                    case MToon0XOutlineWidthMode.None:
                         dst.OutlineWidthMode = UniGLTF.Extensions.VRMC_materials_mtoon.OutlineWidthMode.none;
                         dst.OutlineWidthFactor = null;
                         break;
-                    case OutlineWidthMode.WorldCoordinates:
+                    case MToon0XOutlineWidthMode.WorldCoordinates:
                         dst.OutlineWidthMode = UniGLTF.Extensions.VRMC_materials_mtoon.OutlineWidthMode.worldCoordinates;
                         dst.OutlineWidthFactor = mtoon.Definition.Outline.OutlineWidthValue * centimeterToMeter;
                         break;
-                    case OutlineWidthMode.ScreenCoordinates:
+                    case MToon0XOutlineWidthMode.ScreenCoordinates:
                         dst.OutlineWidthMode = UniGLTF.Extensions.VRMC_materials_mtoon.OutlineWidthMode.screenCoordinates;
                         // NOTE: 従来は、縦幅の半分を 100% としたときの % の値だった。
                         //       1.0 では縦幅を 1 としたときの値とするので、 1/200 する。
@@ -313,7 +317,7 @@ namespace UniVRM10
                     };
                     if (textureScale.HasValue && textureOffset.HasValue)
                     {
-                        Vrm10MToonMaterialExporter.ExportTextureTransform(
+                        Vrm10MaterialExportUtils.ExportTextureTransform(
                             dst.OutlineWidthMultiplyTexture,
                             textureScale.Value,
                             textureOffset.Value
@@ -323,10 +327,10 @@ namespace UniVRM10
                 dst.OutlineColorFactor = mtoon.Definition.Outline.OutlineColor.ToFloat3(ColorSpace.sRGB, ColorSpace.Linear);
                 switch (mtoon.Definition.Outline.OutlineColorMode)
                 {
-                    case OutlineColorMode.FixedColor:
+                    case MToon0XOutlineColorMode.FixedColor:
                         dst.OutlineLightingMixFactor = 0.0f;
                         break;
-                    case OutlineColorMode.MixedLighting:
+                    case MToon0XOutlineColorMode.MixedLighting:
                         dst.OutlineLightingMixFactor = mtoon.Definition.Outline.OutlineLightingMixValue;
                         break;
                     default:
@@ -342,20 +346,31 @@ namespace UniVRM10
                     };
                     if (textureScale.HasValue && textureOffset.HasValue)
                     {
-                        Vrm10MToonMaterialExporter.ExportTextureTransform(
+                        Vrm10MaterialExportUtils.ExportTextureTransform(
                             dst.UvAnimationMaskTexture,
                             textureScale.Value,
                             textureOffset.Value
                         );
                     }
                 }
-                dst.UvAnimationRotationSpeedFactor = mtoon.Definition.TextureOption.UvAnimationRotationSpeedValue;
+                const float rotationPerSecToRadianPerSec = Mathf.PI * 2f;
+                dst.UvAnimationRotationSpeedFactor = mtoon.Definition.TextureOption.UvAnimationRotationSpeedValue * rotationPerSecToRadianPerSec;
                 dst.UvAnimationScrollXSpeedFactor = mtoon.Definition.TextureOption.UvAnimationScrollXSpeedValue;
                 const float invertY = -1f;
                 dst.UvAnimationScrollYSpeedFactor = mtoon.Definition.TextureOption.UvAnimationScrollYSpeedValue * invertY;
 
                 // Export
                 UniGLTF.Extensions.VRMC_materials_mtoon.GltfSerializer.SerializeTo(ref gltfMaterial.extensions, dst);
+
+                if (!gltf.extensionsUsed.Contains(UniGLTF.Extensions.VRMC_materials_mtoon.VRMC_materials_mtoon.ExtensionName))
+                {
+                    gltf.extensionsUsed.Add(UniGLTF.Extensions.VRMC_materials_mtoon.VRMC_materials_mtoon.ExtensionName);
+                }
+
+                if (!gltf.extensionsUsed.Contains(glTF_KHR_texture_transform.ExtensionName))
+                {
+                    gltf.extensionsUsed.Add(glTF_KHR_texture_transform.ExtensionName);
+                }
             }
         }
     }

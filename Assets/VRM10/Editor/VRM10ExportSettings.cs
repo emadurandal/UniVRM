@@ -10,18 +10,38 @@ namespace UniVRM10
         /// <summary>
         /// エクスポート時にBlendShapeClipから参照されないBlendShapeを削除する
         /// </summary>
-        [Tooltip("Remove blendshape that is not used from BlendShapeClip")]
+        [Tooltip("not implemented yet. Remove blendshape that is not used from BlendShapeClip")]
+        [ReadOnly]
         public bool ReduceBlendshape = false;
 
         /// <summary>
         /// skip if BlendShapeClip.Preset == Unknown
         /// </summary>
-        [Tooltip("Remove blendShapeClip that preset is Unknown")]
+        [Tooltip("not implemented yet. Remove blendShapeClip that preset is Unknown")]
+        [ReadOnly]
         public bool ReduceBlendshapeClip = false;
+
+        [Tooltip("Use sparse accessor for morph target")]
+        public bool MorphTargetUseSparse = true;
+
+        /// <summary>
+        /// FreezeBlendShape
+        /// </summary>
+        [Tooltip("freeze rotation and scale and blendshape")]
+        public bool FreezeMesh = false;
+
+        [Tooltip("when freeze mesh, keep rotation")]
+        public bool FreezeMeshKeepRotation = false;
+
+        /// <summary>
+        /// FreezeBlendShape
+        /// </summary>
+        [Tooltip("when freeze mesh, blendShpae base use current weight")]
+        public bool FreezeMeshUseCurrentBlendShapeWeight = false;
 
         public GltfExportSettings MeshExportSettings => new GltfExportSettings
         {
-            UseSparseAccessorForMorphTarget = true,
+            UseSparseAccessorForMorphTarget = MorphTargetUseSparse,
             ExportOnlyBlendShapePosition = true,
             DivideVertexBuffer = true,
         };

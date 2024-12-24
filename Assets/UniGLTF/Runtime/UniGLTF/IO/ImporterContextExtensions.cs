@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using VRMShaders;
 
 namespace UniGLTF
 {
@@ -22,9 +21,10 @@ namespace UniGLTF
                 throw new AggregateException(task.Exception);
             }
 
-#if VRM_DEVELOP
-            Debug.Log($"{self.Data.TargetPath}: {meassureTime.GetSpeedLog()}");
-#endif
+            if (Symbols.VRM_DEVELOP)
+            {
+                Debug.Log($"{self.Data.TargetPath}: {meassureTime.GetSpeedLog()}");
+            }
 
             return task.Result;
         }

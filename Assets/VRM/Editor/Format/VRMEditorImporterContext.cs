@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UniGLTF;
 using UnityEditor;
 using UnityEngine;
-using VRMShaders;
 
 namespace VRM
 {
@@ -61,6 +59,12 @@ namespace VRM
                 var meshPath = meshDir.Child(o.name.EscapeFilePath() + ".asset");
                 return meshPath;
             }
+            else if (o is AnimationClip)
+            {
+                var meshDir = prefabPath.GetAssetFolder(".Animations");
+                var meshPath = meshDir.Child(o.name.EscapeFilePath() + ".anim");
+                return meshPath;
+            }
             else
             {
                 return default(UnityPath);
@@ -75,7 +79,7 @@ namespace VRM
             //
             // convert images(metallic roughness, occlusion map)
             //
-            var task = m_context.LoadMaterialsAsync();
+            var task = m_context.LoadMaterialsAsync(new ImmediateCaller());
             if (!task.IsCompleted)
             {
                 throw new Exception();
@@ -93,7 +97,7 @@ namespace VRM
             }
 
             // Convert thumbnail image
-            var task2 = m_context.ReadMetaAsync();
+            var task2 = m_context.ReadMetaAsync(new ImmediateCaller());
             if (!task2.IsCompleted || task2.IsCanceled || task2.IsFaulted)
             {
                 throw new Exception();
@@ -103,7 +107,7 @@ namespace VRM
             // extract converted textures
             //
             var subAssets = m_context.TextureFactory.ConvertedTextures;
-            var vrmTextures = new VRMMaterialDescriptorGenerator(m_context.VRM);
+            var vrmTextures = new BuiltInVrmMaterialDescriptorGenerator(m_context.VRM);
             var dirName = $"{m_prefabPath.FileNameWithoutExtension}.Textures";
             TextureExtractor.ExtractTextures(m_context.Data, m_prefabPath.Parent.Child(dirName), m_context.TextureDescriptorGenerator, subAssets, (_x, _y) => { }, onTextureReloaded);
         }
@@ -112,10 +116,11 @@ namespace VRM
         {
             if (!string.IsNullOrEmpty(AssetDatabase.GetAssetPath(o)))
             {
-#if VRM_DEVELOP
-                // 来ない？
-                Debug.LogWarning($"{o} already exists. skip write");
-#endif
+                if (Symbols.VRM_DEVELOP)
+                {
+                    // 来ない？
+                    Debug.LogWarning($"{o} already exists. skip write");
+                }
                 return;
             }
 
@@ -142,23 +147,23 @@ namespace VRM
             var root = loaded.Root;
 
             // Remove RuntimeGltfInstance component before saving as a prefab.
-            UnityObjectDestoyer.DestroyRuntimeOrEditor(loaded);
+            UnityObjectDestroyer.DestroyRuntimeOrEditor(loaded);
 
             // Create or update Main Asset
             if (m_prefabPath.IsFileExists)
             {
-                Debug.LogFormat("replace prefab: {0}", m_prefabPath);
+                UniGLTFLogger.Log($"replace prefab: {m_prefabPath}");
                 var prefab = m_prefabPath.LoadAsset<GameObject>();
                 PrefabUtility.SaveAsPrefabAssetAndConnect(root, m_prefabPath.Value, InteractionMode.AutomatedAction);
             }
             else
             {
-                Debug.LogFormat("create prefab: {0}", m_prefabPath);
+                UniGLTFLogger.Log($"create prefab: {m_prefabPath}");
                 PrefabUtility.SaveAsPrefabAssetAndConnect(root, m_prefabPath.Value, InteractionMode.AutomatedAction);
             }
 
             // destroy GameObject on scene
-            UnityObjectDestoyer.DestroyRuntimeOrEditor(root);
+            UnityObjectDestroyer.DestroyRuntimeOrEditor(root);
 
             foreach (var x in m_paths)
             {

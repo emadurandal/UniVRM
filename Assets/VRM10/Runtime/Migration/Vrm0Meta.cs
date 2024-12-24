@@ -23,14 +23,14 @@ namespace UniVRM10.Migration
         Other
     }
 
-    public enum UssageLicense
+    public enum UsageLicense
     {
         Disallow,
         Allow,
     }
 
     /// <summary>
-    /// VRM0.X version meta. This class has meta before migrate.
+    /// VRM0.x version meta. This class has meta before migrate.
     /// </summary>
     public class Vrm0Meta
     {

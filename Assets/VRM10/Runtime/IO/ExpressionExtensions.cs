@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UniGLTF;
 using UniGLTF.Extensions.VRMC_vrm;
 using UnityEngine;
 
@@ -7,16 +8,26 @@ namespace UniVRM10
 {
     public static class ExpressionExtensions
     {
-        public static UniVRM10.MorphTargetBinding Build10(this MorphTargetBind bind, GameObject root, Vrm10Importer.ModelMap loader, VrmLib.Model model)
+        public static MorphTargetBinding? Build10(this MorphTargetBind bind, GameObject root, Vrm10Importer importer)
         {
-            var libNode = model.Nodes[bind.Node.Value];
-            var node = loader.Nodes[libNode].transform;
-            var mesh = loader.Meshes[libNode.MeshGroup];
-            var relativePath = node.RelativePathFrom(root.transform);
-            return new UniVRM10.MorphTargetBinding(relativePath, bind.Index.Value, bind.Weight.Value);
+            if (bind.Node.TryGetValidIndex(importer.Nodes.Count, out var nodeIndex))
+            {
+                var node = importer.Nodes[nodeIndex];
+                var smr = node.GetComponent<SkinnedMeshRenderer>();
+                if (smr == null)
+                {
+                    return default;
+                }
+                var relativePath = node.RelativePathFrom(root.transform);
+                return new MorphTargetBinding(relativePath, bind.Index.Value, bind.Weight.Value);
+            }
+            else
+            {
+                return default;
+            }
         }
 
-        public static UniVRM10.MaterialColorBinding? Build10(this MaterialColorBind bind, IReadOnlyList<VRMShaders.MaterialFactory.MaterialLoadInfo> materials)
+        public static UniVRM10.MaterialColorBinding? Build10(this MaterialColorBind bind, IReadOnlyList<MaterialFactory.MaterialLoadInfo> materials)
         {
             var value = new Vector4(bind.TargetValue[0], bind.TargetValue[1], bind.TargetValue[2], bind.TargetValue[3]);
             var material = materials[bind.Material.Value].Asset;
@@ -42,7 +53,7 @@ namespace UniVRM10
             return binding;
         }
 
-        public static UniVRM10.MaterialUVBinding? Build10(this TextureTransformBind bind, IReadOnlyList<VRMShaders.MaterialFactory.MaterialLoadInfo> materials)
+        public static UniVRM10.MaterialUVBinding? Build10(this TextureTransformBind bind, IReadOnlyList<MaterialFactory.MaterialLoadInfo> materials)
         {
             var material = materials[bind.Material.Value].Asset;
 

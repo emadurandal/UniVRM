@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using UniGLTF;
 using UniGLTF.MeshUtility;
+using UniGLTF.Utils;
 using UniHumanoid;
 using UnityEngine;
 
@@ -12,11 +14,7 @@ namespace VRM
     {
         public static void EnforceTPose(GameObject go)
         {
-            var animator = go.GetComponent<Animator>();
-            if (animator == null)
-            {
-                throw new ArgumentException("Animator with avatar is required");
-            }
+            var animator = go.GetComponentOrThrow<Animator>();
 
             var avatar = animator.avatar;
             if (avatar == null)
@@ -39,18 +37,28 @@ namespace VRM
 
         /// <summary>
         /// モデルの正規化を実行する
+        /// 
+        /// v0.115 ヒエラルキーのコピーをしなくまりました(仕様変更)
+        /// v0.116 Animator.avatar 代入の副作用回避修正
+        ///
+        /// v0.114以前: 非破壊
+        ///    - return コピーされて正規化されたヒエラルキー
+        /// v0.115以降: 対象のヒエラルキーが正規化されます。
+        ///    - Transform が変更されます。
+        ///    - Animator.avatar が差し替えられます。
+        ///    - SkinnedMeshRenderer.sharedMesh が差し替えられます。
+        ///    - MeshFilter.sharedMesh が差し替えられます。
+        ///    - return void
         /// </summary>
         /// <param name="go">対象モデルのルート</param>
         /// <param name="forceTPose">強制的にT-Pose化するか</param>
-        /// <returns>正規化済みのモデル</returns>
-        public static GameObject Execute(GameObject go, bool forceTPose)
+        /// <param name="useCurrentBlendShapeWeight">BlendShape の現状をbakeするか</param>
+        public static void Execute(GameObject go, bool forceTPose, bool useCurrentBlendShapeWeight)
         {
-            //
-            // T-Poseにする
-            //
             if (forceTPose)
             {
-                var hips = go.GetComponent<Animator>().GetBoneTransform(HumanBodyBones.Hips);
+                // T-Poseにする
+                var hips = go.GetComponentOrThrow<Animator>().GetBoneTransform(HumanBodyBones.Hips);
                 var hipsPosition = hips.position;
                 var hipsRotation = hips.rotation;
                 try
@@ -64,51 +72,32 @@ namespace VRM
                 }
             }
 
-            //
-            // 正規化されたヒエラルキーを作る
-            //
-            var (normalized, bMap) = BoneNormalizer.Execute(go, (_src, dst, boneMap) =>
+            // Transform の回転とスケールを Mesh に適用します。
+            // - 回転とスケールが反映された新しい Mesh が作成されます
+            // - Transform の回転とスケールはクリアされます。world position を維持します
+            var newMeshMap = BoneNormalizer.NormalizeHierarchyFreezeMesh(go, useCurrentBlendShapeWeight);
+
+            // SkinnedMeshRenderer.sharedMesh と MeshFilter.sharedMesh を新しいMeshで置き換える
+            BoneNormalizer.Replace(go, newMeshMap, false);
+
+            // 回転とスケールが除去された新しいヒエラルキーからAvatarを作る
+            Avatar newAvatar = default;
+            if (go.TryGetComponent<Animator>(out var animator))
             {
-                var src = _src.GetComponent<Animator>();
+                newAvatar = UniHumanoid.AvatarDescription.RecreateAvatar(animator);
 
-                var srcHumanBones = Enum.GetValues(typeof(HumanBodyBones))
-                    .Cast<HumanBodyBones>()
-                    .Where(x => x != HumanBodyBones.LastBone)
-                    .Select(x => new { Key = x, Value = src.GetBoneTransform(x) })
-                    .Where(x => x.Value != null)
-                    ;
-
-                var map =
-                       srcHumanBones
-                       .Where(x => boneMap.ContainsKey(x.Value))
-                       .ToDictionary(x => x.Key, x => boneMap[x.Value])
-                       ;
-
-                if (dst.GetComponent<Animator>() == null)
+                // Animator.avatar を代入したときに副作用でTransformが変更されるのを回避するために削除します。
+                if (Application.isPlaying)
                 {
-                    var animator = dst.AddComponent<Animator>();
+                    GameObject.Destroy(animator);
                 }
-                var vrmHuman = go.GetComponent<VRMHumanoidDescription>();
-                var avatarDescription = AvatarDescription.Create();
-                if (vrmHuman != null && vrmHuman.Description != null)
+                else
                 {
-                    avatarDescription.armStretch = vrmHuman.Description.armStretch;
-                    avatarDescription.legStretch = vrmHuman.Description.legStretch;
-                    avatarDescription.upperArmTwist = vrmHuman.Description.upperArmTwist;
-                    avatarDescription.lowerArmTwist = vrmHuman.Description.lowerArmTwist;
-                    avatarDescription.upperLegTwist = vrmHuman.Description.upperLegTwist;
-                    avatarDescription.lowerLegTwist = vrmHuman.Description.lowerLegTwist;
-                    avatarDescription.feetSpacing = vrmHuman.Description.feetSpacing;
-                    avatarDescription.hasTranslationDoF = vrmHuman.Description.hasTranslationDoF;
+                    GameObject.DestroyImmediate(animator);
                 }
-                avatarDescription.SetHumanBones(map);
-                var avatar = avatarDescription.CreateAvatar(dst.transform);
-                return avatar;
-            });
+            }
 
-            CopyVRMComponents(go, normalized, bMap);
-
-            return normalized;
+            go.GetOrAddComponent<Animator>().avatar = newAvatar;
         }
 
         /// <summary>
@@ -120,10 +109,9 @@ namespace VRM
         static void CopyVRMComponents(GameObject go, GameObject root,
             Dictionary<Transform, Transform> map)
         {
+            // blendshape
             {
-                // blendshape
-                var src = go.GetComponent<VRMBlendShapeProxy>();
-                if (src != null)
+                if (go.TryGetComponent<VRMBlendShapeProxy>(out var src))
                 {
                     var dst = root.AddComponent<VRMBlendShapeProxy>();
                     dst.BlendShapeAvatar = src.BlendShapeAvatar;
@@ -181,7 +169,7 @@ namespace VRM
                     if (src.ColliderGroups != null)
                     {
                         dst.ColliderGroups = src.ColliderGroups
-                            .Select(x => map[x.transform].GetComponent<VRMSpringBoneColliderGroup>()).ToArray();
+                            .Select(x => map[x.transform].GetComponentOrThrow<VRMSpringBoneColliderGroup>()).ToArray();
                     }
                 }
             }
@@ -189,8 +177,7 @@ namespace VRM
 #pragma warning disable 0618
             {
                 // meta(obsolete)
-                var src = go.GetComponent<VRMMetaInformation>();
-                if (src != null)
+                if (go.TryGetComponent<VRMMetaInformation>(out var src))
                 {
                     src.CopyTo(root);
                 }
@@ -199,8 +186,7 @@ namespace VRM
 
             {
                 // meta
-                var src = go.GetComponent<VRMMeta>();
-                if (src != null)
+                if (go.TryGetComponent<VRMMeta>(out var src))
                 {
                     var dst = root.AddComponent<VRMMeta>();
                     dst.Meta = src.Meta;
@@ -209,24 +195,21 @@ namespace VRM
 
             {
                 // firstPerson
-                var src = go.GetComponent<VRMFirstPerson>();
-                if (src != null)
+                if (go.TryGetComponent<VRMFirstPerson>(out var src))
                 {
                     src.CopyTo(root, map);
                 }
             }
             {
                 // look at
-                var src = go.GetComponent<VRMLookAtHead>();
-                if (src != null)
+                if (go.TryGetComponent<VRMLookAtHead>(out var src))
                 {
                     var dst = root.AddComponent<VRMLookAtHead>();
                 }
             }
             {
                 // bone applier
-                var src = go.GetComponent<VRMLookAtBoneApplyer>();
-                if (src != null)
+                if (go.TryGetComponent<VRMLookAtBoneApplyer>(out var src))
                 {
                     var dst = root.AddComponent<VRMLookAtBoneApplyer>();
                     dst.HorizontalInner.Assign(src.HorizontalInner);
@@ -237,8 +220,7 @@ namespace VRM
             }
             {
                 // blendshape applier
-                var src = go.GetComponent<VRMLookAtBlendShapeApplyer>();
-                if (src != null)
+                if (go.TryGetComponent<VRMLookAtBlendShapeApplyer>(out var src))
                 {
                     var dst = root.AddComponent<VRMLookAtBlendShapeApplyer>();
                     dst.Horizontal.Assign(src.Horizontal);
@@ -250,16 +232,14 @@ namespace VRM
             {
                 // humanoid
                 var dst = root.AddComponent<VRMHumanoidDescription>();
-                var src = go.GetComponent<VRMHumanoidDescription>();
-                if (src != null)
+                if (go.TryGetComponent<VRMHumanoidDescription>(out var src))
                 {
                     dst.Avatar = src.Avatar;
                     dst.Description = src.Description;
                 }
                 else
                 {
-                    var animator = go.GetComponent<Animator>();
-                    if (animator != null)
+                    if (go.TryGetComponent<Animator>(out var animator))
                     {
                         dst.Avatar = animator.avatar;
                     }

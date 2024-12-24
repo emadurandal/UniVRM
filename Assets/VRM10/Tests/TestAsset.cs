@@ -16,16 +16,8 @@ namespace UniVRM10
 
         public static Vrm10Instance LoadAlicia()
         {
-            Vrm10Data.TryParseOrMigrate(AliciaPath, true, out Vrm10Data vrm);
-            using (var loader = new Vrm10Importer(vrm))
-            {
-                var task = loader.LoadAsync(new VRMShaders.ImmediateCaller());
-                task.Wait();
-
-                var instance = task.Result;
-
-                return instance.GetComponent<Vrm10Instance>();
-            }
+            var instance = TestVrm10.LoadPathAsBuiltInRP(AliciaPath, canLoadVrm0X: true);
+            return instance.GetComponent<Vrm10Instance>();
         }
     }
 }

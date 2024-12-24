@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Linq;
-using System;
+using UniGLTF.Utils;
 
 namespace UniHumanoid
 {
@@ -21,12 +21,11 @@ namespace UniHumanoid
         {
             Bones = new GameObject[(int)HumanBodyBones.LastBone];
 
-            var animator = GetComponent<Animator>();
-            if (animator != null)
+            if (TryGetComponent<Animator>(out var animator))
             {
                 if (animator.avatar != null)
                 {
-                    foreach (HumanBodyBones key in Enum.GetValues(typeof(HumanBodyBones)))
+                    foreach (var key in CachedEnum.GetValues<HumanBodyBones>())
                     {
                         if (key == HumanBodyBones.LastBone)
                         {
@@ -94,7 +93,7 @@ namespace UniHumanoid
         private void Awake()
         {
             if (Bones == null
-                || Bones.All(x => x==null))
+                || Bones.All(x => x == null))
             {
                 GetBones();
             }

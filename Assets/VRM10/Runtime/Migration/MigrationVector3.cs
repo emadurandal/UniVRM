@@ -2,7 +2,7 @@ using UniJSON;
 
 namespace UniVRM10
 {
-    public static class MigrateVector3
+    internal static class MigrateVector3
     {
         /// <summary>
         /// VRM0は本来 (x, y, -z) と座標変換するべきところをしていない。
@@ -20,6 +20,15 @@ namespace UniVRM10
                 vrm0["y"].GetSingle(),
                 vrm0["z"].GetSingle(),
             };
+        }
+
+        public static float[] Migrate(JsonNode parent, string key)
+        {
+            if (!parent.ContainsKey(key))
+            {
+                return new float[] { 0, 0, 0 };
+            }
+            return Migrate(parent[key]);
         }
     }
 }

@@ -4,7 +4,6 @@ using UnityEngine;
 using UniJSON;
 using System;
 using UniGLTF;
-using System.Runtime.InteropServices;
 using System.Collections.Generic;
 
 namespace UniVRM10
@@ -22,9 +21,11 @@ namespace UniVRM10
 
         static JsonNode GetVRM0(byte[] bytes)
         {
-            var glb = UniGLTF.Glb.Parse(bytes);
-            var json = glb.Json.Bytes.ParseAsJson();
-            return json["extensions"]["VRM"];
+            using (var glb = new GlbBinaryParser(bytes, "vrm0").Parse())
+            {
+                var json = glb.Json.ParseAsJson();
+                return json["extensions"]["VRM"];
+            }
         }
 
         T GetExtension<T>(UniGLTF.glTFExtension extensions, UniJSON.Utf8String key, Func<JsonNode, T> deserializer)
@@ -50,14 +51,16 @@ namespace UniVRM10
             var vrm0Json = GetVRM0(vrm0Bytes);
 
             var vrm1 = MigrationVrm.Migrate(vrm0Bytes);
-            var glb = UniGLTF.Glb.Parse(vrm1);
-            var json = glb.Json.Bytes.ParseAsJson();
-            var gltf = UniGLTF.GltfDeserializer.Deserialize(json);
+            using (var glb = new GlbBinaryParser(vrm1, "vrm1").Parse())
+            {
+                var json = glb.Json.ParseAsJson();
+                var gltf = UniGLTF.GltfDeserializer.Deserialize(json);
 
-            MigrationVrm.Check(vrm0Json, GetExtension(gltf.extensions, UniGLTF.Extensions.VRMC_vrm.GltfDeserializer.ExtensionNameUtf8,
-                UniGLTF.Extensions.VRMC_vrm.GltfDeserializer.Deserialize), MigrationVrm.CreateMeshToNode(gltf));
-            MigrationVrm.Check(vrm0Json, GetExtension(gltf.extensions, UniGLTF.Extensions.VRMC_springBone.GltfDeserializer.ExtensionNameUtf8,
-                UniGLTF.Extensions.VRMC_springBone.GltfDeserializer.Deserialize), gltf.nodes);
+                MigrationVrm.Check(vrm0Json, GetExtension(gltf.extensions, UniGLTF.Extensions.VRMC_vrm.GltfDeserializer.ExtensionNameUtf8,
+                    UniGLTF.Extensions.VRMC_vrm.GltfDeserializer.Deserialize), MigrationVrm.CreateMeshToNode(gltf));
+                MigrationVrm.Check(vrm0Json, GetExtension(gltf.extensions, UniGLTF.Extensions.VRMC_springBone.GltfDeserializer.ExtensionNameUtf8,
+                    UniGLTF.Extensions.VRMC_springBone.GltfDeserializer.Deserialize), gltf.nodes);
+            }
         }
 
         const float EPS = 1e-4f;
@@ -88,8 +91,8 @@ namespace UniVRM10
             };
             RotateY180.Rotate(node);
 
-            Assert.AreEqual(new Vector3(-1, 2, -3), node.translation.ToVector3().ToUnityVector3());
-            Assert.AreEqual(new Vector3(1, 2, 3), node.scale.ToVector3().ToUnityVector3());
+            Assert.AreEqual(new Vector3(-1, 2, -3), node.translation.ToVector3());
+            Assert.AreEqual(new Vector3(1, 2, 3), node.scale.ToVector3());
 
             // var result = node.rotation.ToQuaternion().ToUnityQuaternion().eulerAngles;
             // Debug.LogFormat($"{result}");
@@ -194,11 +197,7 @@ namespace UniVRM10
             {
                 try
                 {
-                    Vrm10Data.TryParseOrMigrate(gltf.FullName, true, out Vrm10Data vrm);
-                    using (var loader = new Vrm10Importer(vrm))
-                    {
-                        loader.LoadAsync().Wait();
-                    }
+                    TestVrm10.LoadPathAsBuiltInRP(gltf.FullName);
                 }
                 catch (UnNormalizedException)
                 {
@@ -218,41 +217,193 @@ namespace UniVRM10
             //
             var VALUE = new Vector3(-0.0359970331f, -0.0188314915f, 0.00566166639f);
             var bytes0 = File.ReadAllBytes(AliciaPath);
-            var data0 = new GlbLowLevelParser(AliciaPath, bytes0).Parse();
-            var json0 = data0.Json.ParseAsJson();
-            var groupIndex = json0["extensions"]["VRM"]["secondaryAnimation"]["boneGroups"][0]["colliderGroups"][0].GetInt32();
-            var x = json0["extensions"]["VRM"]["secondaryAnimation"]["colliderGroups"][groupIndex]["colliders"][0]["offset"]["x"].GetSingle();
-            var y = json0["extensions"]["VRM"]["secondaryAnimation"]["colliderGroups"][groupIndex]["colliders"][0]["offset"]["y"].GetSingle();
-            var z = json0["extensions"]["VRM"]["secondaryAnimation"]["colliderGroups"][groupIndex]["colliders"][0]["offset"]["z"].GetSingle();
-            Assert.AreEqual(VALUE.x, x);
-            Assert.AreEqual(VALUE.y, y);
-            Assert.AreEqual(VALUE.z, z);
+            int groupIndex = default;
+            using (var data0 = new GlbLowLevelParser(AliciaPath, bytes0).Parse())
+            {
+                var json0 = data0.Json.ParseAsJson();
+                groupIndex = json0["extensions"]["VRM"]["secondaryAnimation"]["boneGroups"][0]["colliderGroups"][0].GetInt32();
+                var x = json0["extensions"]["VRM"]["secondaryAnimation"]["colliderGroups"][groupIndex]["colliders"][0]["offset"]["x"].GetSingle();
+                var y = json0["extensions"]["VRM"]["secondaryAnimation"]["colliderGroups"][groupIndex]["colliders"][0]["offset"]["y"].GetSingle();
+                var z = json0["extensions"]["VRM"]["secondaryAnimation"]["colliderGroups"][groupIndex]["colliders"][0]["offset"]["z"].GetSingle();
+                Assert.AreEqual(VALUE.x, x);
+                Assert.AreEqual(VALUE.y, y);
+                Assert.AreEqual(VALUE.z, z);
+            }
 
             //
             // vrm1 に migrate
             //
             var bytes1 = MigrationVrm.Migrate(bytes0);
-            var data1 = new GlbLowLevelParser(AliciaPath, bytes1).Parse();
-            Assert.True(UniGLTF.Extensions.VRMC_springBone.GltfDeserializer.TryGet(data1.GLTF.extensions, out UniGLTF.Extensions.VRMC_springBone.VRMC_springBone springBone));
-            var spring = springBone.Springs[0];
-            // var colliderNodeIndex = spring.ColliderGroups[0];
-            // x軸だけが反転する
-
-            var colliderIndex = 0;
-            for (int i = 0; i < groupIndex; ++i)
+            using (var data1 = new GlbLowLevelParser(AliciaPath, bytes1).Parse())
             {
-                colliderIndex += springBone.ColliderGroups[i].Colliders.Length;
-            }
+                Assert.True(UniGLTF.Extensions.VRMC_springBone.GltfDeserializer.TryGet(data1.GLTF.extensions, out UniGLTF.Extensions.VRMC_springBone.VRMC_springBone springBone));
+                var spring = springBone.Springs[0];
+                // var colliderNodeIndex = spring.ColliderGroups[0];
+                // x軸だけが反転する
 
-            Assert.AreEqual(-VALUE.x, springBone.Colliders[colliderIndex].Shape.Sphere.Offset[0]);
-            Assert.AreEqual(VALUE.y, springBone.Colliders[colliderIndex].Shape.Sphere.Offset[1]);
-            Assert.AreEqual(VALUE.z, springBone.Colliders[colliderIndex].Shape.Sphere.Offset[2]);
+                var colliderIndex = 0;
+                for (int i = 0; i < groupIndex; ++i)
+                {
+                    colliderIndex += springBone.ColliderGroups[i].Colliders.Length;
+                }
+
+                Assert.AreEqual(-VALUE.x, springBone.Colliders[colliderIndex].Shape.Sphere.Offset[0]);
+                Assert.AreEqual(VALUE.y, springBone.Colliders[colliderIndex].Shape.Sphere.Offset[1]);
+                Assert.AreEqual(VALUE.z, springBone.Colliders[colliderIndex].Shape.Sphere.Offset[2]);
+            }
         }
 
         [Test]
         public void MigrateMeta()
         {
-            Assert.True(Vrm10Data.TryParseOrMigrate(AliciaPath, true, out Vrm10Data vrm));
+            using (var data = new GlbFileParser(AliciaPath).Parse())
+            {
+                using (var migrated = Vrm10Data.Migrate(data, out Vrm10Data vrm, out MigrationData migration))
+                {
+                    Assert.NotNull(vrm);
+                    Assert.NotNull(migration);
+                }
+            }
+        }
+
+        class TempFile : IDisposable
+        {
+            public string Path { get; }
+
+            TempFile(string path)
+            {
+                Path = path;
+            }
+
+            public void Dispose()
+            {
+                // File.Delete(Path);
+            }
+
+            public static TempFile Create(string path, byte[] bytes)
+            {
+                File.WriteAllBytes(path, bytes);
+                return new TempFile(path);
+            }
+        }
+
+        [Test]
+        public void GltfValidator()
+        {
+            if (!PathObject.TryGetFromEnvironmentVariable("GLTF_VALIDATOR", out var exe))
+            {
+                return;
+            }
+            if (!exe.Exists)
+            {
+                return;
+            }
+            using (var data = new GlbFileParser(AliciaPath).Parse())
+            using (var migrated = Vrm10Data.Migrate(data, out Vrm10Data vrm, out MigrationData migration))
+            {
+                var json = GltfJsonUtil.FindUsedExtensionsAndUpdateJson(migrated.Json);
+                var glb = Glb.Create(json, new ArraySegment<byte>(migrated.Bin.ToArray())).ToBytes();
+                using (var tmp = TempFile.Create("GltfValidator_tmp.glb", glb))
+                {
+                    var processStartInfo = new System.Diagnostics.ProcessStartInfo(exe.FullPath, $"{tmp.Path} -o")
+                    {
+                        CreateNoWindow = true,
+                        UseShellExecute = false,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                    };
+
+                    var process = System.Diagnostics.Process.Start(processStartInfo);
+                    string standardOutput = process.StandardOutput.ReadToEnd();
+                    string standardError = process.StandardError.ReadToEnd();
+                    int exitCode = process.ExitCode;
+                    Debug.Log($"{exitCode}\n{standardOutput}\n{standardError}\n");
+                    Assert.AreEqual(0, exitCode);
+                }
+            }
+        }
+
+        [Test]
+        public void MigrateMaterials()
+        {
+            // NOTE: Standard Shader の emission の値がそのまま gamma value として emissiveFactor に出力されていた v0.106.0 のファイル
+            var model106 = File.ReadAllBytes(Path.Combine(Application.dataPath, "../Tests/Models/Materials/EmissionMigration_v0.106.0.vrm"));
+            // NOTE: Standard Shader の emission の値が linear value に変換されて emissiveFactor に出力される v0.107.0 のファイル
+            var model107 = File.ReadAllBytes(Path.Combine(Application.dataPath, "../Tests/Models/Materials/EmissionMigration_v0.107.0.vrm"));
+
+            var materialCount = 6;
+
+            var correctMaterialNames = new string[]
+            {
+                "Unlit_SRGB_0.5",
+                "Standard_Emission_0.5",
+                "Standard_Emission_2.0",
+                "Unlit_Linear_0.5",
+                "MToon_Emission_0.5",
+                "MToon_Emission_2.0",
+            };
+            var correctShaderNames = new string[]
+            {
+                "UniGLTF/UniUnlit",
+                "Standard",
+                "Standard",
+                "UniGLTF/UniUnlit",
+                "VRM10/MToon10",
+                "VRM10/MToon10",
+            };
+            var colorName = "_Color";
+            var correctColors = new Color[]
+            {
+                new Color(0.5f, 0.5f, 0.5f, 1),
+                new Color(0f, 0f, 0f, 1),
+                new Color(0f, 0f, 0f, 1),
+                new Color(Mathf.LinearToGammaSpace(0.5f), Mathf.LinearToGammaSpace(0.5f), Mathf.LinearToGammaSpace(0.5f), 1),
+                new Color(0f, 0f, 0f, 1),
+                new Color(0f, 0f, 0f, 1),
+            };
+            var emissionName = "_EmissionColor";
+            var correctEmissions = new Color?[]
+            {
+                null,
+                new Color(0.5f, 0.5f, 0.5f, 1),
+                new Color(2.0f, 2.0f, 2.0f, 1),
+                null,
+                new Color(0.5f, 0.5f, 0.5f, 1),
+                new Color(2.0f, 2.0f, 2.0f, 1),
+            };
+
+            var instance106 = TestVrm10.LoadBytesAsBuiltInRP(model106);
+            var materials106 = instance106.GetComponent<RuntimeGltfInstance>().Materials;
+            Assert.AreEqual(materialCount, materials106.Count);
+            for (var idx = 0; idx < materialCount; ++idx)
+            {
+                var material = materials106[idx];
+                Assert.AreEqual(correctMaterialNames[idx], material.name);
+                Assert.AreEqual(correctShaderNames[idx], material.shader.name);
+                AssertAreApproximatelyEqualColor(correctColors[idx], material.GetColor(colorName));
+                if (correctEmissions[idx].HasValue) AssertAreApproximatelyEqualColor(correctEmissions[idx].Value, material.GetColor(emissionName));
+            }
+
+            var instance107 = TestVrm10.LoadBytesAsBuiltInRP(model107);
+            var materials107 = instance107.GetComponent<RuntimeGltfInstance>().Materials;
+            Assert.AreEqual(materialCount, materials107.Count);
+            for (var idx = 0; idx < materialCount; ++idx)
+            {
+                var material = materials107[idx];
+                Assert.AreEqual(correctMaterialNames[idx], material.name);
+                Assert.AreEqual(correctShaderNames[idx], material.shader.name);
+                AssertAreApproximatelyEqualColor(correctColors[idx], material.GetColor(colorName));
+                if (correctEmissions[idx].HasValue) AssertAreApproximatelyEqualColor(correctEmissions[idx].Value, material.GetColor(emissionName));
+            }
+        }
+
+        private void AssertAreApproximatelyEqualColor(Color expected, Color actual)
+        {
+            const float colorEpsilon = 0.5f / 255f;
+
+            Assert.That(actual.r, Is.EqualTo(expected.r).Within(colorEpsilon));
+            Assert.That(actual.g, Is.EqualTo(expected.g).Within(colorEpsilon));
+            Assert.That(actual.b, Is.EqualTo(expected.b).Within(colorEpsilon));
         }
     }
 }

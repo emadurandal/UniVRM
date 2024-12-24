@@ -37,7 +37,6 @@ namespace UniVRM10
         {
             if (m_scene != null)
             {
-                //Debug.Log("Bake");
                 m_scene.Bake(CurrentExpression(), 1.0f);
             }
         }
@@ -46,7 +45,6 @@ namespace UniVRM10
         {
             if (m_scene != null)
             {
-                //Debug.LogFormat("OnDestroy");
                 m_scene.Clean();
                 GameObject.DestroyImmediate(m_scene.gameObject);
                 m_scene = null;
@@ -60,23 +58,36 @@ namespace UniVRM10
             {
                 return;
             }
-            ClearScene();
+            ClearPreview();
             m_target.Prefab = prefab;
+            Initialize();
         }
 
         void OnEnable()
+        {
+            Initialize();
+        }
+
+        void OnDisable()
+        {
+            ClearPreview();
+        }
+
+        void Initialize()
         {
             m_target = (VRM10Expression)target;
             m_renderer = new PreviewFaceRenderer();
         }
 
-        void OnDisable()
+        void ClearPreview()
         {
             if (m_renderer != null)
             {
                 m_renderer.Dispose();
                 m_renderer = null;
             }
+
+            m_serializedEditor = null;
             ClearScene();
         }
 
@@ -177,7 +188,6 @@ namespace UniVRM10
                         break;
 
                     case EventType.ScrollWheel:
-                        //Debug.LogFormat("wheel: {0}", current.delta);
                         if (r.Contains(e.mousePosition))
                         {
                             if (e.delta.y > 0)
@@ -195,7 +205,6 @@ namespace UniVRM10
                 }
                 //return scrollPosition;
             }
-            //Debug.LogFormat("{0}", previewDir);
 
             if (Event.current.type != EventType.Repaint)
             {
@@ -316,6 +325,12 @@ namespace UniVRM10
             }
 
             serializedObject.ApplyModifiedProperties();
+        }
+
+        public override string GetInfoString()
+        {
+            if (m_scene == null) return "";
+            return m_scene.hasError ? "An error occurred while previewing. Check the console log for details." : "";
         }
     }
 }

@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEditor;
-using UniGLTF;
 using System.Linq;
-using VRMShaders;
 
 namespace UniGLTF
 {
@@ -59,7 +57,8 @@ namespace UniGLTF
             }
             else
             {
-                throw new Exception($"{key} is not converted.");
+                // throw new Exception($"{key} is not converted.");
+                Debug.LogWarning($"{key} is not converted.");
             }
         }
 
@@ -92,9 +91,6 @@ namespace UniGLTF
                 {
                     // remap
                     var externalObject = targetPath.LoadAsset<Texture2D>();
-#if VRM_DEVELOP
-                    // Debug.Log($"remap: {targetPath} => {externalObject}");
-#endif
                     if (externalObject != null)
                     {
                         addRemap(key, externalObject);

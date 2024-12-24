@@ -4,7 +4,6 @@ using System.IO;
 using NUnit.Framework;
 using UniGLTF;
 using UnityEngine;
-using VRMShaders;
 
 namespace VRM
 {
@@ -72,6 +71,7 @@ namespace VRM
 
             try
             {
+                using (data)
                 using (var importer = new VRMImporterContext(new VRMData(data)))
                 {
                     return importer.Load().gameObject;

@@ -110,11 +110,13 @@ namespace UniGLTF
                 m_weights.Add(new Vector4(boneWeight.weight0, boneWeight.weight1, boneWeight.weight2, boneWeight.weight3));
             }
 
-            public glTFPrimitives ToGltfPrimitive(ExportingGltfData data, int materialIndex, IEnumerable<int> indices)
+            public glTFPrimitives ToGltfPrimitive(ExportingGltfData data, int? materialIndex, IEnumerable<int> indices)
             {
                 var indicesAccessorIndex = data.ExtendBufferAndGetAccessorIndex(indices.Select(x => (uint)m_vertexIndexMap[x]).ToArray(), glBufferTarget.ELEMENT_ARRAY_BUFFER);
                 var positions = m_positions.ToArray();
                 var positionAccessorIndex = data.ExtendBufferAndGetAccessorIndex(positions, glBufferTarget.ARRAY_BUFFER);
+                AccessorsBounds.UpdatePositionAccessorsBounds(data.Gltf.accessors[positionAccessorIndex], positions);
+
                 var normals = m_normals.ToArray();
                 var normalAccessorIndex = data.ExtendBufferAndGetAccessorIndex(normals, glBufferTarget.ARRAY_BUFFER);
                 var uvAccessorIndex0 = data.ExtendBufferAndGetAccessorIndex(m_uv.ToArray(), glBufferTarget.ARRAY_BUFFER);

@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using NUnit.Framework;
 using UnityEngine;
-using VRMShaders;
 
 namespace UniGLTF
 {
@@ -23,7 +22,7 @@ namespace UniGLTF
             var material = new Material(Shader.Find("Standard"));
             material.mainTexture = tex0;
 
-            var materialExporter = new MaterialExporter();
+            var materialExporter = new BuiltInGltfMaterialExporter();
             materialExporter.ExportMaterial(material, textureExporter, new GltfExportSettings());
 
             var exported = textureExporter.Export();
@@ -88,10 +87,7 @@ namespace UniGLTF
                 return;
             }
 
-            // parse
-            var data = new GlbFileParser(path.FullName).Parse();
-
-            // load
+            using (var data = new GlbFileParser(path.FullName).Parse())
             using (var context = new ImporterContext(data))
             {
                 var instance = context.Load();

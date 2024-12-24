@@ -8,6 +8,7 @@ namespace VRM
 {
     public static class VRMHumanoidNormalizerMenu
     {
+        public const string MENU_NAME = "VRM 0.x Freeze T-Pose";
         public static bool NormalizeValidation()
         {
             var root = Selection.activeObject as GameObject;
@@ -16,37 +17,37 @@ namespace VRM
                 return false;
             }
 
-            var animator = root.GetComponent<Animator>();
-            if (animator == null)
+            if (root.TryGetComponent<Animator>(out var animator))
+            {
+                var avatar = animator.avatar;
+                if (avatar == null)
+                {
+                    return false;
+                }
+
+                if (!avatar.isValid)
+                {
+                    return false;
+                }
+
+                if (!avatar.isHuman)
+                {
+                    return false;
+                }
+
+                return true;
+            }
+            else
             {
                 return false;
             }
-
-            var avatar = animator.avatar;
-            if (avatar == null)
-            {
-                return false;
-            }
-
-            if (!avatar.isValid)
-            {
-                return false;
-            }
-
-            if (!avatar.isHuman)
-            {
-                return false;
-            }
-
-            return true;
         }
 
-        public static void Normalize()
+        public static void Normalize(bool bakeCurrentBlendShape)
         {
             var go = Selection.activeObject as GameObject;
 
-            // BoneNormalizer.Execute はコピーを正規化する。UNDO無用
-            Selection.activeGameObject = VRMBoneNormalizer.Execute(go, true);
+            VRMBoneNormalizer.Execute(go, true, bakeCurrentBlendShape);
         }
     }
 }
