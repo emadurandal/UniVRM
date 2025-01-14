@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UniJSON;
 using UnityEngine;
-using VRMShaders;
 
 namespace UniGLTF
 {
@@ -101,23 +100,20 @@ namespace UniGLTF
 
             // export
             var data = new ExportingGltfData();
+            using var exporter = new gltfExporter(
+                data,
+                new GltfExportSettings(),
+                materialExporter: new BuiltInGltfMaterialExporter());
+            exporter.Prepare(go);
+            exporter.Export();
 
-            string json = null;
-            using (var exporter = new gltfExporter(data, new GltfExportSettings()))
-            {
-                exporter.Prepare(go);
-                exporter.Export(new EditorTextureSerializer());
+            // remove empty buffer
+            data.Gltf.buffers.Clear();
 
-                // remove empty buffer
-                data.GLTF.buffers.Clear();
-
-                json = data.GLTF.ToJson();
-            }
+            var json = data.Gltf.ToJson();
 
             // parse
-            var parsed = GltfData.CreateFromExportForTest(data);
-
-            // import
+            using (var parsed = GltfData.CreateFromExportForTest(data))
             using (var context = new ImporterContext(parsed))
             using (var loaded = context.Load())
             {
@@ -143,7 +139,7 @@ namespace UniGLTF
                 data.ExtendBufferAndGetView(bytes, glBufferTarget.NONE);
             }
 
-            Assert.AreEqual(values.Count, data.GLTF.buffers[0].byteLength);
+            Assert.AreEqual(values.Count, data.Gltf.buffers[0].byteLength);
             Assert.True(Enumerable.SequenceEqual(values, data.BinBytes.ToArray()));
         }
 
@@ -161,25 +157,87 @@ namespace UniGLTF
         }
 
         [Test]
+        [Category("UnityPath")]
         public void UnityPathTest()
         {
+            // 不正なパス
+            var nullPath = UnityPath.FromUnityPath(null);
+            Assert.IsTrue(nullPath.IsNull);
+            Assert.IsFalse(nullPath.IsUnderWritableFolder);
+            Assert.AreEqual(UnityPath.FromUnityPath(null), nullPath);
+
+            // Application.dataPath のひとつ上
+            var dataPath = UnityPath.FromUnityPath("");
+            Assert.IsFalse(dataPath.IsNull);
+            Assert.IsFalse(dataPath.IsUnderWritableFolder);
+            Assert.AreNotEqual(nullPath, dataPath);
+
+            // Application.dataPath のひとつ上
             var root = UnityPath.FromUnityPath(".");
             Assert.IsFalse(root.IsNull);
-            Assert.IsFalse(root.IsUnderAssetsFolder);
-            Assert.AreEqual(UnityPath.FromUnityPath("."), root);
+            Assert.IsFalse(root.IsUnderWritableFolder);
+            Assert.AreEqual(dataPath, root);
 
             var assets = UnityPath.FromUnityPath("Assets");
             Assert.IsFalse(assets.IsNull);
-            Assert.IsTrue(assets.IsUnderAssetsFolder);
+            Assert.IsTrue(assets.IsUnderWritableFolder);
 
-            var rootChild = root.Child("Assets");
-            Assert.AreEqual(assets, rootChild);
+            var rootChildAssets = root.Child("Assets");
+            Assert.AreEqual(assets, rootChildAssets);
 
-            var assetsChild = assets.Child("Hoge");
-            var hoge = UnityPath.FromUnityPath("Assets/Hoge");
-            Assert.AreEqual(assetsChild, hoge);
+            var assetsChildHoge = assets.Child("Hoge");
+            var assetsHoge = UnityPath.FromUnityPath("Assets/Hoge");
+            Assert.IsTrue(assetsChildHoge.IsUnderWritableFolder);
+            Assert.IsTrue(assetsHoge.IsUnderWritableFolder);
+            Assert.AreEqual(assetsChildHoge, assetsHoge);
+
+
+            var packages = UnityPath.FromUnityPath("Packages");
+            Assert.IsFalse(packages.IsNull);
+            Assert.IsFalse(packages.IsUnderWritableFolder);
+
+            var rootChildPackages = root.Child("Packages");
+            Assert.AreEqual(packages, rootChildPackages);
+
+            var packagesChildNUnit = packages.Child("com.unity.ext.nunit");
+            var packagesNUnit = UnityPath.FromUnityPath("Packages/com.unity.ext.nunit");
+            Assert.IsFalse(packages.IsUnderWritableFolder);
+            Assert.IsFalse(packagesNUnit.IsUnderWritableFolder);
+            Assert.AreEqual(packagesChildNUnit, packagesNUnit);
+
+            var packagesChildHoge = packages.Child("Hoge");
+            var packagesHoge = UnityPath.FromUnityPath("Packages/Hoge");
+            Assert.IsFalse(packagesChildHoge.IsUnderWritableFolder);
+            Assert.IsFalse(packagesHoge.IsUnderWritableFolder);
+            Assert.AreEqual(packagesChildHoge, packagesHoge);
 
             //var children = root.TraverseDir().ToArray();
+        }
+
+        [Test]
+        [Category("UnityPath")]
+        [TestCase("", PathType.Unsupported)]
+        [TestCase("Assets", PathType.Assets)]
+        [TestCase("Assets/何らかの/パス", PathType.Assets)]
+        [TestCase("Packages", PathType.Unsupported)]
+        [TestCase("Packages/ローカルパッケージ", PathType.Packages)]
+        public void UnityPathPathType(string path, PathType pathType)
+        {
+            var assets = UnityPath.FromUnityPath(path);
+            Assert.AreEqual(pathType, assets.PathType);
+        }
+
+        [Test]
+        [Category("UnityPath")]
+        [TestCase("", false)]
+        [TestCase("Assets", true)]
+        [TestCase("Assets/何らかの/パス", true)]
+        [TestCase("Packages", false)]
+        // [TestCase("Packages/存在するローカルパッケージ", true)]
+        public void UnityPathWritableTest(string path, bool expected)
+        {
+            var assets = UnityPath.FromUnityPath(path);
+            Assert.AreEqual(expected, assets.IsUnderWritableFolder);
         }
 
         [Test]
@@ -212,7 +270,7 @@ namespace UniGLTF
             };
 
             var json = model.ToJson();
-            Assert.AreEqual(@"{""name"":""mesh"",""primitives"":[{""mode"":0,""indices"":0,""attributes"":{""POSITION"":1},""material"":0}]}", json);
+            Assert.AreEqual(@"{""name"":""mesh"",""primitives"":[{""mode"":0,""indices"":0,""attributes"":{""POSITION"":1}}]}", json);
             Debug.Log(json);
         }
 
@@ -230,7 +288,7 @@ namespace UniGLTF
             };
 
             var json = model.ToJson();
-            Assert.AreEqual(@"{""mode"":0,""indices"":0,""attributes"":{""POSITION"":1},""material"":0,""extras"":{""targetNames"":[""aaa""]}}", json);
+            Assert.AreEqual(@"{""mode"":0,""indices"":0,""attributes"":{""POSITION"":1},""extras"":{""targetNames"":[""aaa""]}}", json);
             Debug.Log(json);
         }
 
@@ -294,14 +352,9 @@ namespace UniGLTF
         [Test]
         public void GlTFToJsonTest()
         {
-            var data = new ExportingGltfData();
-            using (var exporter = new gltfExporter(data, new GltfExportSettings()))
-            {
-                exporter.Prepare(CreateSimpleScene());
-                exporter.Export(new EditorTextureSerializer());
-            }
+            var data = TestGltf.ExportAsBuiltInRP(CreateSimpleScene());
 
-            var expected = data.GLTF.ToJson().ParseAsJson();
+            var expected = data.Gltf.ToJson().ParseAsJson();
             expected.AddKey(Utf8String.From("meshes"));
             expected.AddValue(default(ArraySegment<byte>), ValueNodeType.Array);
             expected["meshes"].AddValue(default(ArraySegment<byte>), ValueNodeType.Object);
@@ -318,8 +371,6 @@ namespace UniGLTF
             primitive.AddValue(Utf8String.From("0").Bytes, ValueNodeType.Integer);
             primitive.AddKey(Utf8String.From("indices"));
             primitive.AddValue(Utf8String.From("0").Bytes, ValueNodeType.Integer);
-            primitive.AddKey(Utf8String.From("material"));
-            primitive.AddValue(Utf8String.From("0").Bytes, ValueNodeType.Integer);
             primitive.AddKey(Utf8String.From("attributes"));
             primitive.AddValue(default(ArraySegment<byte>), ValueNodeType.Object);
             primitive["attributes"].AddKey(Utf8String.From("POSITION"));
@@ -335,7 +386,7 @@ namespace UniGLTF
             primitive["targets"][1].AddKey(Utf8String.From("TANGENT"));
             primitive["targets"][1].AddValue(Utf8String.From("0").Bytes, ValueNodeType.Integer);
 
-            data.GLTF.meshes.Add(new glTFMesh("test")
+            data.Gltf.meshes.Add(new glTFMesh("test")
             {
                 primitives = new List<glTFPrimitives>
                 {
@@ -363,7 +414,7 @@ namespace UniGLTF
                     }
                 }
             });
-            var actual = data.GLTF.ToJson().ParseAsJson();
+            var actual = data.Gltf.ToJson().ParseAsJson();
 
             Assert.AreEqual(expected, actual);
         }
@@ -508,7 +559,7 @@ namespace UniGLTF
             {
                 var shader = Shader.Find("Unlit/Color");
 
-                var cubeA = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                var cubeA = TestGltf.CreatePrimitiveAsBuiltInRP(PrimitiveType.Cube);
                 {
                     cubeA.transform.SetParent(go.transform);
                     var material = new Material(shader);
@@ -529,23 +580,15 @@ namespace UniGLTF
                 }
 
                 // export
-                var data = new ExportingGltfData();
-                var gltf = data.GLTF;
-                var json = default(string);
-                using (var exporter = new gltfExporter(data, new GltfExportSettings()))
-                {
-                    exporter.Prepare(go);
-                    exporter.Export(new EditorTextureSerializer());
-
-                    json = gltf.ToJson();
-                }
+                var data = TestGltf.ExportAsBuiltInRP(go);
+                var gltf = data.Gltf;
 
                 Assert.AreEqual(2, gltf.meshes.Count);
 
-                var red = gltf.materials[gltf.meshes[0].primitives[0].material];
+                var red = gltf.materials[gltf.meshes[0].primitives[0].material.Value];
                 Assert.AreEqual(new float[] { 1, 0, 0, 1 }, red.pbrMetallicRoughness.baseColorFactor);
 
-                var blue = gltf.materials[gltf.meshes[1].primitives[0].material];
+                var blue = gltf.materials[gltf.meshes[1].primitives[0].material.Value];
                 Assert.AreEqual(new float[] { 0, 0, 1, 1 }, blue.pbrMetallicRoughness.baseColorFactor);
 
                 Assert.AreEqual(2, gltf.nodes.Count);
@@ -553,8 +596,8 @@ namespace UniGLTF
                 Assert.AreNotEqual(gltf.nodes[0].mesh, gltf.nodes[1].mesh);
 
                 // import
+                using (var parsed = GltfData.CreateFromExportForTest(data))
                 {
-                    var parsed = GltfData.CreateFromExportForTest(data);
                     using (var context = new ImporterContext(parsed))
                     using (var loaded = context.Load())
                     {
@@ -571,8 +614,8 @@ namespace UniGLTF
                 }
 
                 // import new version
+                using (var parsed = GltfData.CreateFromExportForTest(data))
                 {
-                    var parsed = GltfData.CreateFromExportForTest(data);
                     using (var context = new ImporterContext(parsed))
                     using (var loaded = context.Load())
                     {
@@ -601,31 +644,23 @@ namespace UniGLTF
             try
             {
                 {
-                    var cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                    var cube = TestGltf.CreatePrimitiveAsBuiltInRP(PrimitiveType.Cube);
                     cube.transform.SetParent(go.transform);
                     UnityEngine.Object.DestroyImmediate(cube.GetComponent<MeshRenderer>());
                 }
 
                 // export
-                var data = new ExportingGltfData();
-                var gltf = data.GLTF;
-                string json;
-                using (var exporter = new gltfExporter(data, new GltfExportSettings()))
-                {
-                    exporter.Prepare(go);
-                    exporter.Export(new EditorTextureSerializer());
-
-                    json = gltf.ToJson();
-                }
+                var data = TestGltf.ExportAsBuiltInRP(go);
+                var gltf = data.Gltf;
 
                 Assert.AreEqual(0, gltf.meshes.Count);
                 Assert.AreEqual(1, gltf.nodes.Count);
                 Assert.AreEqual(-1, gltf.nodes[0].mesh);
 
                 // import
+                using (var parsed = GltfData.CreateFromExportForTest(data))
                 {
-                    var parsed = GltfData.CreateFromExportForTest(data);
-                    using (var context = new ImporterContext(parsed))
+                    using (var context = new ImporterContext(parsed, materialGenerator: new BuiltInGltfMaterialDescriptorGenerator()))
                     using (var loaded = context.Load())
                     {
                         Assert.AreEqual(1, loaded.transform.GetChildren().Count());
@@ -651,14 +686,14 @@ namespace UniGLTF
             try
             {
                 {
-                    var child = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                    var child = TestGltf.CreatePrimitiveAsBuiltInRP(PrimitiveType.Cube);
                     child.transform.SetParent(root.transform);
                     // remove MeshFilter
                     Component.DestroyImmediate(child.GetComponent<MeshFilter>());
                 }
 
                 {
-                    var child = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                    var child = TestGltf.CreatePrimitiveAsBuiltInRP(PrimitiveType.Cube);
                     child.transform.SetParent(root.transform);
                     // set null
                     child.GetComponent<MeshFilter>().sharedMesh = null;
@@ -670,16 +705,9 @@ namespace UniGLTF
                 Assert.True(vs.All(x => x.CanExport));
 
                 // export
-                var data = new ExportingGltfData();
-                var gltf = data.GLTF;
-                string json;
-                using (var exporter = new gltfExporter(data, new GltfExportSettings()))
-                {
-                    exporter.Prepare(root);
-                    exporter.Export(new EditorTextureSerializer());
-
-                    json = gltf.ToJson();
-                }
+                var data = TestGltf.ExportAsBuiltInRP(root);
+                var gltf = data.Gltf;
+                var json = gltf.ToJson();
 
                 Assert.AreEqual(0, gltf.meshes.Count);
                 Assert.AreEqual(2, gltf.nodes.Count);
@@ -687,8 +715,8 @@ namespace UniGLTF
                 Assert.AreEqual(-1, gltf.nodes[1].mesh);
 
                 // import
+                using (var parsed = GltfData.CreateFromExportForTest(data))
                 {
-                    var parsed = GltfData.CreateFromExportForTest(data);
                     using (var context = new ImporterContext(parsed))
                     using (var loaded = context.Load())
                     {
@@ -705,6 +733,42 @@ namespace UniGLTF
                         }
                     }
                 }
+            }
+            finally
+            {
+                GameObject.DestroyImmediate(root);
+                ScriptableObject.DestroyImmediate(validator);
+            }
+        }
+
+        //
+        // https://github.com/vrm-c/UniVRM/pull/2413
+        //
+        [Test]
+        public void ExportingMeshByteLengthTest()
+        {
+            var validator = ScriptableObject.CreateInstance<MeshExportValidator>();
+            var root = new GameObject("root");
+            try
+            {
+                {
+                    var child = TestGltf.CreatePrimitiveAsBuiltInRP(PrimitiveType.Cube);
+                    child.transform.SetParent(root.transform);
+                }
+                // export
+                var data = TestGltf.ExportAsBuiltInRP(root);
+                var gltf = data.Gltf;
+                // cube
+                var expected =  
+                // pos
+                (4*3)*24
+                // normal
+                +(4*3)*24
+                // uv
+                +(4*2)*24
+                // indices
+                 + 4 * 36;
+                Assert.AreEqual(expected, gltf.buffers[0].byteLength);
             }
             finally
             {
@@ -736,6 +800,29 @@ namespace UniGLTF
             var dummy = JsonUtility.FromJson<Dummy>("{}");
             Assert.NotNull(dummy.Value);
             Assert.False(dummy.Value.Value);
+        }
+
+        [Test]
+        public void UVTest()
+        {
+            var v = new Vector2(0.1f, 0.2f);
+            var r = v.UVVerticalFlip();
+            Assert.AreEqual(new Vector2(0.1f, 0.8f), r);
+        }
+
+        [Test]
+        public void MatrixTest()
+        {
+            var t = new Vector3(1, 2, 3);
+            var orgAxis = Vector3.Normalize(new Vector3(1, 2, 3));
+            var orgAngle = 90 * NumericsExtensions.TO_RAD;
+            var r = Quaternion.AngleAxis(orgAngle, orgAxis);
+            var s = new Vector3(2, 3, 4);
+            var m = Matrix4x4.TRS(t, r, s);
+            var (tt, rr, ss) = m.Decompose();
+            Assert.True(s.NearlyEqual(ss));
+            Assert.True(r.NearlyEqual(rr));
+            Assert.AreEqual(t, tt);
         }
     }
 }

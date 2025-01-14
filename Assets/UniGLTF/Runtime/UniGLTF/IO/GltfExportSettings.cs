@@ -1,6 +1,7 @@
 
 
 using System;
+using UnityEngine;
 
 namespace UniGLTF
 {
@@ -28,7 +29,7 @@ namespace UniGLTF
         public bool ExportOnlyBlendShapePosition;
 
         /// <summary>
-        /// tangent を出力する
+        /// Export TANGENT
         /// </summary>
         public bool ExportTangents
 #if GLTF_EXPORT_TANGENTS
@@ -37,13 +38,32 @@ namespace UniGLTF
         ;
 
         /// <summary>
-        /// VRMC_materials_hdr_emissiveMultiplier
+        /// Export COLOR_0
         /// </summary>
-        public bool UseEmissiveMultiplier;
+        public bool ExportVertexColor;
 
         /// <summary>
-        /// Keep VertexColor
+        /// https://github.com/vrm-c/UniVRM/issues/1582
+        /// 
+        /// Allowed hide flags for MeshFilters to be exported
         /// </summary>
-        public bool KeepVertexColor;
+        public HideFlags MeshFilterAllowedHideFlags = HideFlags.None;
+
+        /// <summary>
+        /// Export TEXCOORD_1
+        /// </summary>
+        public bool ExportUvSecondary;
+
+        [Tooltip("freeze mesh")]
+        public bool FreezeMesh = false;
+
+        [Tooltip("when freeze mesh, keep rotation")]
+        public bool FreezeMeshKeepRotation = false;
+
+        /// <summary>
+        /// FreezeBlendShape
+        /// </summary>
+        [Tooltip("when freeze mesh, blendShpae base use current weight")]
+        public bool FreezeMeshUseCurrentBlendShapeWeight = false;
     }
 }

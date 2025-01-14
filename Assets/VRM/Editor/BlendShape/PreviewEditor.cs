@@ -4,6 +4,7 @@ using UnityEditorInternal;
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.IO;
 
 namespace VRM
 {
@@ -49,12 +50,10 @@ namespace VRM
             {
                 if (m_prefab == value) return;
 
-                //Debug.LogFormat("Prefab = {0}", value);
                 m_prefab = value;
 
                 if (m_scene != null)
                 {
-                    //Debug.LogFormat("OnDestroy");
                     GameObject.DestroyImmediate(m_scene.gameObject);
                     m_scene = null;
                 }
@@ -88,26 +87,7 @@ namespace VRM
 
         protected virtual GameObject GetPrefab()
         {
-            var assetPath = AssetDatabase.GetAssetPath(target);
-            if (string.IsNullOrEmpty(assetPath))
-            {
-                return null;
-            }
-
-            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
-            // search prefab if nothing
-            if (prefab == null && 0 < (target as BlendShapeAvatar).Clips.Count)
-            {
-                prefab = (target as BlendShapeAvatar).Clips[0].Prefab;
-            }
-            // once more, with string-based method
-            if (prefab == null)
-            {
-                var parent = UniGLTF.UnityPath.FromUnityPath(assetPath).Parent;
-                var prefabPath = parent.Parent.Child(parent.FileNameWithoutExtension + ".prefab");
-                prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath.Value);
-            }
-            return prefab;
+            return BlendShapeClip.VrmPrefabSearch(target);
         }
 
         protected virtual void OnEnable()
@@ -130,7 +110,6 @@ namespace VRM
         {
             if (m_scene != null)
             {
-                //Debug.LogFormat("OnDestroy");
                 m_scene.Clean();
                 GameObject.DestroyImmediate(m_scene.gameObject);
                 m_scene = null;
@@ -237,7 +216,6 @@ namespace VRM
                         break;
 
                     case EventType.ScrollWheel:
-                        //Debug.LogFormat("wheel: {0}", current.delta);
                         if (r.Contains(e.mousePosition))
                         {
                             if (e.delta.y > 0)
@@ -255,7 +233,6 @@ namespace VRM
                 }
                 //return scrollPosition;
             }
-            //Debug.LogFormat("{0}", previewDir);
 
             if (Event.current.type != EventType.Repaint)
             {

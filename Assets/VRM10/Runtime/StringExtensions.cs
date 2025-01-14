@@ -45,7 +45,6 @@ namespace UniVRM10
                 return path.Substring(UnityBasePath.Length + 1);
             }
 
-            //Debug.LogWarningFormat("{0} is starts with {1}", path, basePath);
             return path;
         }
 
@@ -67,6 +66,10 @@ namespace UniVRM10
             {
                 path = path.Replace(x, '+');
             }
+            if (path.StartsWith('.'))
+                path = '+' + path;
+            if (path == "")
+                path = "(empty)";
             return path;
         }
     }

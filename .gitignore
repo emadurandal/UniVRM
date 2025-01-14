@@ -54,6 +54,7 @@ Assets/StreamingAssets/crashlytics-build.properties
 .idea/
 Assets/_Private/
 Assets/_Private.meta
+UserSettings/
 
 # Unity
 /ProjectSettings/BurstAotSettings_StandaloneWindows.json
@@ -61,4 +62,4 @@ Assets/_Private.meta
 # sphinx build
 public
 *.pyc
-
+.venv

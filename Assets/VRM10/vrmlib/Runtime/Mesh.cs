@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using UniGLTF;
+using UnityEngine;
 
 namespace VrmLib
 {
@@ -35,18 +35,18 @@ namespace VrmLib
     {
         public int Offset;
         public int DrawCount;
-        public int Material;
+        public int? Material;
 
         public override string ToString()
         {
             return $"{Material}({DrawCount})";
         }
 
-        public Submesh(int material) : this(0, 0, material)
+        public Submesh(int? material) : this(0, 0, material)
         {
         }
 
-        public Submesh(int offset, int drawCount, int material)
+        public Submesh(int offset, int drawCount, int? material)
         {
             Offset = offset;
             DrawCount = drawCount;
@@ -60,138 +60,9 @@ namespace VrmLib
 
         public BufferAccessor IndexBuffer;
 
-        /// <summary>
-        /// indicesの最大値が65535未満(-1を避ける)ならばushort 型で、
-        /// そうでなければ int型で IndexBufferを代入する
-        /// </summary>
-        public void AssignIndexBuffer(SpanLike<int> indices)
-        {
-            bool isInt = false;
-            foreach (var i in indices)
-            {
-                if (i >= short.MaxValue)
-                {
-                    isInt = true;
-                    break;
-                }
-            }
-
-            if (isInt)
-            {
-                if (IndexBuffer.Stride != 4)
-                {
-                    IndexBuffer.ComponentType = AccessorValueType.UNSIGNED_INT;
-                    if (IndexBuffer.AccessorType != AccessorVectorType.SCALAR)
-                    {
-                        throw new Exception();
-                    }
-                }
-                // 変換なし
-                IndexBuffer.Assign(indices);
-            }
-            else
-            {
-                // int to ushort
-                IndexBuffer.AssignAsShort(indices);
-            }
-        }
-
         public TopologyType Topology = TopologyType.Triangles;
 
         public List<Submesh> Submeshes { private set; get; } = new List<Submesh>();
-
-        public int SubmeshTotalDrawCount => Submeshes.Sum(x => x.DrawCount);
-
-        public IEnumerable<Triangle> GetTriangles(int i)
-        {
-            var indices = IndexBuffer.GetAsIntArray();
-
-            var submesh = Submeshes[i];
-            var submeshEnd = submesh.Offset + submesh.DrawCount;
-            for (int j = submesh.Offset; j < submeshEnd; j += 3)
-            {
-                var triangle = new Triangle(
-                    indices[j],
-                    indices[j + 1],
-                    indices[j + 2]
-                );
-                yield return triangle;
-            }
-        }
-
-        public IEnumerable<ValueTuple<int, Triangle>> Triangles
-        {
-            get
-            {
-                if (Topology != TopologyType.Triangles)
-                {
-                    throw new InvalidOperationException();
-                }
-
-                var indices = IndexBuffer.GetAsIntArray();
-
-                for (int i = 0; i < Submeshes.Count; ++i)
-                {
-                    var submesh = Submeshes[i];
-                    var submeshEnd = submesh.Offset + submesh.DrawCount;
-                    for (int j = submesh.Offset; j < submeshEnd; j += 3)
-                    {
-                        var triangle = new Triangle(
-                            indices[j],
-                            indices[j + 1],
-                            indices[j + 2]
-                        );
-                        yield return (i, triangle);
-                    }
-                }
-            }
-        }
-
-        bool GetSubmeshOverlapped<T>() where T : struct
-        {
-            var indices = IndexBuffer.GetSpan<ushort>();
-            var offset = 0;
-            var max = 0;
-            foreach (var x in Submeshes)
-            {
-                var submeshIndices = indices.Slice(offset, x.DrawCount);
-                var currentMax = 0;
-                foreach (var y in submeshIndices)
-                {
-                    if (y < max)
-                    {
-                        return true;
-                    }
-                    currentMax = Math.Max(y, currentMax);
-                }
-                offset += x.DrawCount;
-                max = currentMax;
-            }
-            return false;
-        }
-
-        public bool IsSubmeshOverlapped
-        {
-            get
-            {
-                if (Submeshes.Count <= 1)
-                {
-                    return false;
-                }
-
-                switch (IndexBuffer.ComponentType)
-                {
-                    case AccessorValueType.UNSIGNED_SHORT:
-                        return GetSubmeshOverlapped<ushort>();
-
-                    case AccessorValueType.UNSIGNED_INT:
-                        return GetSubmeshOverlapped<uint>();
-
-                    default:
-                        throw new NotImplementedException();
-                }
-            }
-        }
 
         public List<MorphTarget> MorphTargets = new List<MorphTarget>();
 
@@ -236,47 +107,23 @@ namespace VrmLib
             Topology = topology;
         }
 
-        public void RemoveUnusedSubmesh()
+        // Skin.Normalize
+        public void ApplyRotationAndScaling(Matrix4x4 m)
         {
-            Submeshes = Submeshes.Where(x => x.DrawCount != 0).ToList();
-        }
-    }
+            m.SetColumn(3, new Vector4(0, 0, 0, 1));
 
-    public class MeshGroup: GltfId
-    {
-        public readonly string Name;
+            var position = VertexBuffer.Positions.Bytes.Reinterpret<Vector3>(1);
+            var normal = VertexBuffer.Normals.Bytes.Reinterpret<Vector3>(1);
 
-        public readonly List<Mesh> Meshes = new List<Mesh>();
-
-        public Skin Skin;
-
-        public override string ToString()
-        {
-            var sb = new StringBuilder();
-            sb.Append(Name);
-            if (Skin != null)
+            for (int i = 0; i < position.Length; ++i)
             {
-                sb.Append("(skinned)");
-            }
-            var isFirst = true;
-            foreach (var mesh in Meshes)
-            {
-                if (isFirst)
                 {
-                    isFirst = false;
+                    position[i] = m.MultiplyPoint(position[i]);
                 }
-                else
                 {
-                    sb.Append(", ");
+                    normal[i] = m.MultiplyVector(normal[i]);
                 }
-                sb.Append(mesh);
             }
-            return sb.ToString();
-        }
-
-        public MeshGroup(string name)
-        {
-            Name = name;
         }
     }
 }

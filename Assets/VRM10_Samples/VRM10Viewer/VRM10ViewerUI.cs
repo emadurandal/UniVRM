@@ -1,60 +1,199 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using UniGLTF;
-using UniHumanoid;
+using UniGLTF.SpringBoneJobs.Blittables;
 using UnityEngine;
 using UnityEngine.UI;
-using VRMShaders;
 
 namespace UniVRM10.VRM10Viewer
 {
     public class VRM10ViewerUI : MonoBehaviour
     {
-        [Header("UI")]
-        [SerializeField]
-        Text m_version = default;
-
-        [SerializeField]
-        Button m_open = default;
-
-        [SerializeField]
-        Toggle m_enableLipSync = default;
-
-        [SerializeField]
-        Toggle m_enableAutoBlink = default;
-
-        [SerializeField]
-        Toggle m_enableAutoExpression = default;
-
-        [SerializeField]
-        Toggle m_useUrpMaterial = default;
-
-        [SerializeField]
-        Toggle m_useNormalization = default;
-
-        [Header("Runtime")]
-        [SerializeField]
-        HumanPoseTransfer m_src = default;
-
-        [SerializeField]
-        GameObject m_target = default;
-
         [SerializeField]
         GameObject Root = default;
+        [SerializeField]
+        Text m_version = default;
+        [SerializeField]
+        Transform m_faceCamera = default;
+
+        [Header("UI")]
+        [SerializeField]
+        Button m_openModel = default;
+
+        [SerializeField]
+        Button m_openMotion = default;
+
+        [SerializeField]
+        Button m_pastePose = default;
+
+        [SerializeField]
+        Toggle m_showBoxMan = default;
+
+        [SerializeField]
+        Toggle m_useAsync = default;
 
         [SerializeField]
         TextAsset m_motion;
 
+        [SerializeField, Header("springbone")]
+        Toggle m_useSpringboneSingelton = default;
+        [SerializeField]
+        Toggle m_springbonePause = default;
+        [SerializeField]
+        Toggle m_springboneScaling = default;
+        [SerializeField]
+        Slider m_springboneExternalX = default;
+        [SerializeField]
+        Slider m_springboneExternalY = default;
+        [SerializeField]
+        Slider m_springboneExternalZ = default;
+
+        [SerializeField]
+        Button m_resetSpringBone = default;
+        [SerializeField]
+        Button m_reconstructSpringBone = default;
+
+        [SerializeField, Header("expression")]
+        Toggle m_enableAutoExpression = default;
+        [Serializable]
+        class EmotionFields
+        {
+            public Slider m_expression;
+            public Toggle m_binary;
+            public bool m_useOverride;
+            public Dropdown m_overrideMouth;
+            public Dropdown m_overrideBlink;
+            public Dropdown m_overrideLookAt;
+
+            public void Reset(ObjectMap map, string name, bool useOveride)
+            {
+                m_expression = map.Get<Slider>($"Slider{name}");
+                m_binary = map.Get<Toggle>($"Binary{name}");
+                m_useOverride = useOveride;
+                if (useOveride)
+                {
+                    m_overrideMouth = map.Get<Dropdown>($"Override{name}Mouth");
+                    m_overrideBlink = map.Get<Dropdown>($"Override{name}Blink");
+                    m_overrideLookAt = map.Get<Dropdown>($"Override{name}LookAt");
+                }
+            }
+
+            static int GetOverrideIndex(UniGLTF.Extensions.VRMC_vrm.ExpressionOverrideType value)
+            {
+                switch (value)
+                {
+                    case UniGLTF.Extensions.VRMC_vrm.ExpressionOverrideType.none: return 0;
+                    case UniGLTF.Extensions.VRMC_vrm.ExpressionOverrideType.block: return 1;
+                    case UniGLTF.Extensions.VRMC_vrm.ExpressionOverrideType.blend: return 2;
+                    default: return -1;
+                }
+            }
+
+            static UniGLTF.Extensions.VRMC_vrm.ExpressionOverrideType ToOverrideType(int index)
+            {
+                switch (index)
+                {
+                    case 0: return UniGLTF.Extensions.VRMC_vrm.ExpressionOverrideType.none;
+                    case 1: return UniGLTF.Extensions.VRMC_vrm.ExpressionOverrideType.block;
+                    case 2: return UniGLTF.Extensions.VRMC_vrm.ExpressionOverrideType.blend;
+                    default: throw new ArgumentException();
+                }
+            }
+
+            public void OnLoad(VRM10Expression expression)
+            {
+                m_binary.isOn = expression.IsBinary;
+                if (m_useOverride)
+                {
+                    m_overrideMouth.SetValueWithoutNotify(GetOverrideIndex(expression.OverrideMouth));
+                    m_overrideBlink.SetValueWithoutNotify(GetOverrideIndex(expression.OverrideBlink));
+                    m_overrideLookAt.SetValueWithoutNotify(GetOverrideIndex(expression.OverrideLookAt));
+                }
+            }
+
+            public void ApplyRuntime(VRM10Expression expression)
+            {
+                expression.IsBinary = m_binary.isOn;
+                if (m_useOverride)
+                {
+                    expression.OverrideMouth = ToOverrideType(m_overrideMouth.value);
+                    expression.OverrideBlink = ToOverrideType(m_overrideBlink.value);
+                    expression.OverrideLookAt = ToOverrideType(m_overrideLookAt.value);
+                }
+            }
+        }
+        [SerializeField]
+        EmotionFields m_happy;
+        [SerializeField]
+        EmotionFields m_angry;
+        [SerializeField]
+        EmotionFields m_sad;
+        [SerializeField]
+        EmotionFields m_relaxed;
+        [SerializeField]
+        EmotionFields m_surprised;
+
+        [SerializeField]
+        Toggle m_enableLipSync = default;
+        [SerializeField]
+        EmotionFields m_lipAa = default;
+        [SerializeField]
+        EmotionFields m_lipIh = default;
+        [SerializeField]
+        EmotionFields m_lipOu = default;
+        [SerializeField]
+        EmotionFields m_lipEe = default;
+        [SerializeField]
+        EmotionFields m_lipOh = default;
+
+        [SerializeField]
+        Toggle m_enableAutoBlink = default;
+        [SerializeField]
+        EmotionFields m_blink = default;
+
+        [SerializeField]
+        GameObject m_lookAtTarget = default;
+        [SerializeField]
+        Toggle m_useLookAtTarget = default;
+        [SerializeField]
+        Slider m_yaw = default;
+        [SerializeField]
+        Slider m_pitch = default;
+
+        IVrm10Animation m_src = default;
+        public IVrm10Animation Motion
+        {
+            get { return m_src; }
+            set
+            {
+                if (m_src != null)
+                {
+                    m_src.Dispose();
+                }
+                m_src = value;
+
+                TPose = new Vrm10TPose(m_src.ControlRig.Item1.GetRawHipsPosition());
+            }
+        }
+
+        public IVrm10Animation TPose;
+
+        private CancellationTokenSource _cancellationTokenSource;
+
         [Serializable]
         class TextFields
         {
-            [SerializeField, Header("Info")]
+            [SerializeField]
             Text m_textModelTitle = default;
             [SerializeField]
             Text m_textModelVersion = default;
             [SerializeField]
             Text m_textModelAuthor = default;
+            [SerializeField]
+            Text m_textModelCopyright = default;
             [SerializeField]
             Text m_textModelContact = default;
             [SerializeField]
@@ -78,11 +217,38 @@ namespace UniVRM10.VRM10Viewer
             [SerializeField]
             Text m_textDistributionOther = default;
 
+            public void Reset(ObjectMap map)
+            {
+                m_textModelTitle = map.Get<Text>("Title (1)");
+                m_textModelVersion = map.Get<Text>("Version (1)");
+                m_textModelAuthor = map.Get<Text>("Author (1)");
+                m_textModelCopyright = map.Get<Text>("Copyright (1)");
+                m_textModelContact = map.Get<Text>("Contact (1)");
+                m_textModelReference = map.Get<Text>("Reference (1)");
+
+                m_textPermissionAllowed = map.Get<Text>("AllowedUser (1)");
+                m_textPermissionViolent = map.Get<Text>("Violent (1)");
+                m_textPermissionSexual = map.Get<Text>("Sexual (1)");
+                m_textPermissionCommercial = map.Get<Text>("Commercial (1)");
+                m_textPermissionOther = map.Get<Text>("Other (1)");
+
+                m_textDistributionLicense = map.Get<Text>("LicenseType (1)");
+                m_textDistributionOther = map.Get<Text>("OtherLicense (1)");
+
+#if UNITY_2022_3_OR_NEWER
+                var images = GameObject.FindObjectsByType<RawImage>(FindObjectsSortMode.InstanceID);
+#else
+                var images = GameObject.FindObjectsOfType<RawImage>();
+#endif
+                m_thumbnail = images.First(x => x.name == "RawImage");
+            }
+
             public void Start()
             {
                 m_textModelTitle.text = "";
                 m_textModelVersion.text = "";
                 m_textModelAuthor.text = "";
+                m_textModelCopyright.text = "";
                 m_textModelContact.text = "";
                 m_textModelReference.text = "";
 
@@ -96,55 +262,46 @@ namespace UniVRM10.VRM10Viewer
                 m_textDistributionOther.text = "";
             }
 
-            public void UpdateMeta(Migration.Vrm0Meta meta, Texture2D thumbnail)
+            public void UpdateMeta(Texture2D thumbnail, UniGLTF.Extensions.VRMC_vrm.Meta meta, Migration.Vrm0Meta meta0)
             {
-                if (meta == null)
-                {
-                    return;
-                }
-
-                m_textModelTitle.text = meta.title;
-                m_textModelVersion.text = meta.version;
-                m_textModelAuthor.text = meta.author;
-                m_textModelContact.text = meta.contactInformation;
-                m_textModelReference.text = meta.reference;
-                m_textPermissionAllowed.text = meta.allowedUser.ToString();
-                m_textPermissionViolent.text = meta.violentUsage.ToString();
-                m_textPermissionSexual.text = meta.sexualUsage.ToString();
-                m_textPermissionCommercial.text = meta.commercialUsage.ToString();
-                m_textPermissionOther.text = meta.otherPermissionUrl;
-
-                // m_textDistributionLicense.text = meta.ModificationLicense.ToString();
-                m_textDistributionOther.text = meta.otherLicenseUrl;
-
                 m_thumbnail.texture = thumbnail;
-            }
 
-            public void UpdateMeta(UniGLTF.Extensions.VRMC_vrm.Meta meta, Texture2D thumbnail)
-            {
-                if (meta == null)
+                if (meta != null)
                 {
-                    return;
+                    m_textModelTitle.text = meta.Name;
+                    m_textModelVersion.text = meta.Version;
+                    m_textModelAuthor.text = meta.Authors[0];
+                    m_textModelCopyright.text = meta.CopyrightInformation;
+                    m_textModelContact.text = meta.ContactInformation;
+                    if (meta.References != null && meta.References.Count > 0)
+                    {
+                        m_textModelReference.text = meta.References[0];
+                    }
+                    m_textPermissionAllowed.text = meta.AvatarPermission.ToString();
+                    m_textPermissionViolent.text = meta.AllowExcessivelyViolentUsage.ToString();
+                    m_textPermissionSexual.text = meta.AllowExcessivelySexualUsage.ToString();
+                    m_textPermissionCommercial.text = meta.CommercialUsage.ToString();
+                    // m_textPermissionOther.text = meta.OtherPermissionUrl;
+
+                    // m_textDistributionLicense.text = meta.ModificationLicense.ToString();
+                    m_textDistributionOther.text = meta.OtherLicenseUrl;
                 }
 
-                m_textModelTitle.text = meta.Name;
-                m_textModelVersion.text = meta.Version;
-                m_textModelAuthor.text = meta.Authors[0];
-                m_textModelContact.text = meta.ContactInformation;
-                if (meta.References != null && meta.References.Count > 0)
+                if (meta0 != null)
                 {
-                    m_textModelReference.text = meta.References[0];
+                    m_textModelTitle.text = meta0.title;
+                    m_textModelVersion.text = meta0.version;
+                    m_textModelAuthor.text = meta0.author;
+                    m_textModelContact.text = meta0.contactInformation;
+                    m_textModelReference.text = meta0.reference;
+                    m_textPermissionAllowed.text = meta0.allowedUser.ToString();
+                    m_textPermissionViolent.text = meta0.violentUsage.ToString();
+                    m_textPermissionSexual.text = meta0.sexualUsage.ToString();
+                    m_textPermissionCommercial.text = meta0.commercialUsage.ToString();
+                    m_textPermissionOther.text = meta0.otherPermissionUrl;
+                    // m_textDistributionLicense.text = meta0.ModificationLicense.ToString();
+                    m_textDistributionOther.text = meta0.otherLicenseUrl;
                 }
-                // m_textPermissionAllowed.text = meta.AllowedUser.ToString();
-                m_textPermissionViolent.text = meta.AllowExcessivelyViolentUsage.ToString();
-                m_textPermissionSexual.text = meta.AllowExcessivelySexualUsage.ToString();
-                m_textPermissionCommercial.text = meta.CommercialUsage.ToString();
-                // m_textPermissionOther.text = meta.OtherPermissionUrl;
-
-                // m_textDistributionLicense.text = meta.ModificationLicense.ToString();
-                m_textDistributionOther.text = meta.OtherLicenseUrl;
-
-                m_thumbnail.texture = thumbnail;
             }
         }
         [SerializeField]
@@ -162,211 +319,330 @@ namespace UniVRM10.VRM10Viewer
             [SerializeField]
             ToggleGroup ToggleMotion = default;
 
-            Toggle m_activeToggleMotion = default;
-
-            public void UpdateToggle(Action onBvh, Action onTPose)
+            public void Reset(ObjectMap map)
             {
-                var value = ToggleMotion.ActiveToggles().FirstOrDefault();
-                if (value == m_activeToggleMotion)
-                    return;
+                ToggleMotionTPose = map.Get<Toggle>("TPose");
+                ToggleMotionBVH = map.Get<Toggle>("BVH");
+                ToggleMotion = map.Get<ToggleGroup>("_Motion_");
+            }
 
-                m_activeToggleMotion = value;
-                if (value == ToggleMotionTPose)
+            public bool IsTPose
+            {
+                get => ToggleMotion.ActiveToggles().FirstOrDefault() == ToggleMotionTPose;
+                set
                 {
-                    onTPose();
-                }
-                else if (value == ToggleMotionBVH)
-                {
-                    onBvh();
-                }
-                else
-                {
-                    Debug.Log("motion: no toggle");
+                    ToggleMotionTPose.isOn = value;
+                    ToggleMotionBVH.isOn = !value;
                 }
             }
         }
         [SerializeField]
         UIFields m_ui = default;
 
-        [SerializeField]
-        HumanPoseClip m_pose = default;
+        class ObjectMap
+        {
+            Dictionary<string, GameObject> _map = new();
+            public IReadOnlyDictionary<string, GameObject> Objects => _map;
+
+            public ObjectMap(GameObject root)
+            {
+                foreach (var x in root.GetComponentsInChildren<Transform>())
+                {
+                    _map[x.name] = x.gameObject;
+                }
+            }
+
+            public T Get<T>(string name) where T : Component
+            {
+                return _map[name].GetComponent<T>();
+            }
+        }
 
         private void Reset()
         {
-            var buttons = GameObject.FindObjectsOfType<Button>();
-            m_open = buttons.First(x => x.name == "Open");
+            var map = new ObjectMap(gameObject);
+            Root = map.Objects["Root"];
+            m_openModel = map.Get<Button>("OpenModel");
+            m_openMotion = map.Get<Button>("OpenMotion");
+            m_pastePose = map.Get<Button>("PastePose");
+            m_showBoxMan = map.Get<Toggle>("ShowBoxMan");
+            m_useAsync = map.Get<Toggle>("UseAsync");
+            m_useSpringboneSingelton = map.Get<Toggle>("UseSingleton");
+            m_springbonePause = map.Get<Toggle>("PauseSpringBone");
+            m_resetSpringBone = map.Get<Button>("ResetSpringBone");
+            m_reconstructSpringBone = map.Get<Button>("ReconstructSpringBone");
+            m_version = map.Get<Text>("VrmVersion");
 
-            var toggles = GameObject.FindObjectsOfType<Toggle>();
-            m_enableLipSync = toggles.First(x => x.name == "EnableLipSync");
-            m_enableAutoBlink = toggles.First(x => x.name == "EnableAutoBlink");
-            m_enableAutoExpression = toggles.First(x => x.name == "EnableAutoExpression");
+            m_texts.Reset(map);
+            m_ui.Reset(map);
+            m_springboneScaling = map.Get<Toggle>("ScalingSpringBone");
+            m_springboneExternalX = map.Get<Slider>("SliderExternalX");
+            m_springboneExternalY = map.Get<Slider>("SliderExternalY");
+            m_springboneExternalZ = map.Get<Slider>("SliderExternalZ");
+            m_enableAutoExpression = map.Get<Toggle>("EnableAutoExpression");
+            m_happy.Reset(map, "Happy", true);
+            m_angry.Reset(map, "Angry", true);
+            m_sad.Reset(map, "Sad", true);
+            m_relaxed.Reset(map, "Relaxed", true);
+            m_surprised.Reset(map, "Surprised", true);
 
-            var texts = GameObject.FindObjectsOfType<Text>();
-            m_version = texts.First(x => x.name == "Version");
+            m_enableLipSync = map.Get<Toggle>("EnableLipSync");
+            m_lipAa.Reset(map, "Aa", false);
+            m_lipIh.Reset(map, "Ih", false);
+            m_lipOu.Reset(map, "Ou", false);
+            m_lipEe.Reset(map, "Ee", false);
+            m_lipOh.Reset(map, "Oh", false);
 
-            m_src = GameObject.FindObjectOfType<HumanPoseTransfer>();
+            m_enableAutoBlink = map.Get<Toggle>("EnableAutoBlink");
+            m_blink.Reset(map, "Blink", false);
 
-            m_target = GameObject.FindObjectOfType<VRM10TargetMover>().gameObject;
+            m_useLookAtTarget = map.Get<Toggle>("UseLookAtTarget");
+            m_yaw = map.Get<Slider>("SliderYaw");
+            m_pitch = map.Get<Slider>("SliderPitch");
+
+#if UNITY_2022_3_OR_NEWER
+            m_lookAtTarget = GameObject.FindFirstObjectByType<VRM10TargetMover>().gameObject;
+#else
+            m_lookAtTarget = GameObject.FindObjectOfType<VRM10TargetMover>().gameObject;
+#endif
         }
 
-        class Loaded : IDisposable
-        {
-            RuntimeGltfInstance m_instance;
-            HumanPoseTransfer m_pose;
-            Vrm10Instance m_controller;
-
-            VRM10AIUEO m_lipSync;
-            bool m_enableLipSyncValue;
-            public bool EnableLipSyncValue
-            {
-                set
-                {
-                    if (m_enableLipSyncValue == value) return;
-                    m_enableLipSyncValue = value;
-                    if (m_lipSync != null)
-                    {
-                        m_lipSync.enabled = m_enableLipSyncValue;
-                    }
-                }
-            }
-
-            VRM10AutoExpression m_autoExpression;
-            bool m_enableAutoExpressionValue;
-            public bool EnableAutoExpressionValue
-            {
-                set
-                {
-                    if (m_enableAutoExpressionValue == value) return;
-                    m_enableAutoExpressionValue = value;
-                    if (m_autoExpression != null)
-                    {
-                        m_autoExpression.enabled = m_enableAutoExpressionValue;
-                    }
-                }
-            }
-
-            VRM10Blinker m_blink;
-            bool m_enableBlinkValue;
-            public bool EnableBlinkValue
-            {
-                set
-                {
-                    if (m_blink == value) return;
-                    m_enableBlinkValue = value;
-                    if (m_blink != null)
-                    {
-                        m_blink.enabled = m_enableBlinkValue;
-                    }
-                }
-            }
-
-            public Loaded(RuntimeGltfInstance instance, HumanPoseTransfer src, Transform lookAtTarget)
-            {
-                m_instance = instance;
-
-                m_controller = instance.GetComponent<Vrm10Instance>();
-                if (m_controller != null)
-                {
-                    // VRM
-                    m_controller.UpdateType = Vrm10Instance.UpdateTypes.LateUpdate; // after HumanPoseTransfer's setPose
-                    {
-                        m_pose = instance.gameObject.AddComponent<HumanPoseTransfer>();
-                        m_pose.Source = src;
-                        m_pose.SourceType = HumanPoseTransfer.HumanPoseTransferSourceType.HumanPoseTransfer;
-
-                        m_lipSync = instance.gameObject.AddComponent<VRM10AIUEO>();
-                        m_blink = instance.gameObject.AddComponent<VRM10Blinker>();
-                        m_autoExpression = instance.gameObject.AddComponent<VRM10AutoExpression>();
-
-                        m_controller.LookAtTargetType = VRM10ObjectLookAt.LookAtTargetTypes.CalcYawPitchToGaze;
-                        m_controller.Gaze = lookAtTarget;
-                    }
-                }
-
-                var animation = instance.GetComponent<Animation>();
-                if (animation && animation.clip != null)
-                {
-                    // GLTF animation
-                    animation.Play(animation.clip.name);
-                }
-            }
-
-            public void Dispose()
-            {
-                // destroy GameObject
-                GameObject.Destroy(m_instance.gameObject);
-            }
-
-            public void EnableBvh(HumanPoseTransfer src)
-            {
-                if (m_pose != null)
-                {
-                    m_pose.Source = src;
-                    m_pose.SourceType = HumanPoseTransfer.HumanPoseTransferSourceType.HumanPoseTransfer;
-                }
-            }
-
-            public void EnableTPose(HumanPoseClip pose)
-            {
-                if (m_pose != null)
-                {
-                    m_pose.PoseClip = pose;
-                    m_pose.SourceType = HumanPoseTransfer.HumanPoseTransferSourceType.HumanPoseClip;
-                }
-            }
-        }
         Loaded m_loaded;
+
+        static class ArgumentChecker
+        {
+            static string[] Supported = {
+                ".gltf",
+                ".glb",
+                ".vrm",
+                ".zip",
+            };
+
+            static string UnityHubPath => System.Environment.GetEnvironmentVariable("ProgramFiles") + "\\Unity\\Hub";
+
+            public static bool IsLoadable(string path)
+            {
+                if (!File.Exists(path))
+                {
+                    // not exists
+                    return false;
+                }
+
+                if (Application.isEditor)
+                {
+                    // skip editor argument
+                    // {UnityHub_Resources}\PackageManager\ProjectTemplates\com.unity.template.3d-5.0.4.tgz
+                    if (path.StartsWith(UnityHubPath))
+                    {
+                        return false;
+                    }
+                }
+
+                var ext = Path.GetExtension(path).ToLower();
+                if (!Supported.Contains(ext))
+                {
+                    // unknown extension
+                    return false;
+                }
+
+                return true;
+            }
+
+            public static bool TryGetFirstLoadable(out string cmd)
+            {
+                foreach (var arg in System.Environment.GetCommandLineArgs())
+                {
+                    if (ArgumentChecker.IsLoadable(arg))
+                    {
+                        cmd = arg;
+                        return true;
+                    }
+                }
+
+                cmd = default;
+                return false;
+            }
+        }
+
+        VRM10AutoExpression m_autoEmotion;
+        VRM10Blinker m_autoBlink;
+        VRM10AIUEO m_autoLipsync;
 
         private void Start()
         {
+            m_autoEmotion = gameObject.AddComponent<VRM10AutoExpression>();
+            m_autoBlink = gameObject.AddComponent<VRM10Blinker>();
+            m_autoLipsync = gameObject.AddComponent<VRM10AIUEO>();
+
             m_version.text = string.Format("VRMViewer {0}.{1}",
-                VRMVersion.MAJOR, VRMVersion.MINOR);
-            m_open.onClick.AddListener(OnOpenClicked);
+                    VRM10SpecVersion.MAJOR, VRM10SpecVersion.MINOR);
+
+            m_openModel.onClick.AddListener(OnOpenModelClicked);
+            m_openMotion.onClick.AddListener(OnOpenMotionClicked);
+            m_pastePose.onClick.AddListener(OnPastePoseClicked);
+            m_resetSpringBone.onClick.AddListener(OnResetSpringBoneClicked);
+            m_reconstructSpringBone.onClick.AddListener(OnReconstructSpringBoneClicked);
 
             // load initial bvh
             if (m_motion != null)
             {
-                LoadMotion(m_motion.text);
+                Motion = BvhMotion.LoadBvhFromText(m_motion.text);
             }
 
-            string[] cmds = System.Environment.GetCommandLineArgs();
-            if (cmds.Length > 1)
+            if (ArgumentChecker.TryGetFirstLoadable(out var cmd))
             {
-                LoadModel(cmds[1]);
+                LoadModel(cmd);
             }
 
             m_texts.Start();
         }
 
-        private void LoadMotion(string source)
+        private void OnDestroy()
         {
-            var context = new UniHumanoid.BvhImporterContext();
-            context.Parse("tmp.bvh", source);
-            context.Load();
-            SetMotion(context.Root.GetComponent<HumanPoseTransfer>());
+            _cancellationTokenSource?.Dispose();
         }
+
 
         private void Update()
         {
-            if (m_loaded != null)
-            {
-                m_loaded.EnableLipSyncValue = m_enableLipSync.isOn;
-                m_loaded.EnableBlinkValue = m_enableAutoBlink.isOn;
-                m_loaded.EnableAutoExpressionValue = m_enableAutoExpression.isOn;
-            }
-
             if (Input.GetKeyDown(KeyCode.Tab))
             {
                 if (Root != null) Root.SetActive(!Root.activeSelf);
             }
 
-            m_ui.UpdateToggle(() => m_loaded?.EnableBvh(m_src), () => m_loaded?.EnableTPose(m_pose));
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                if (_cancellationTokenSource != null)
+                {
+                    _cancellationTokenSource.Cancel();
+                }
+            }
+
+            if (Motion != null)
+            {
+                Motion.ShowBoxMan(m_showBoxMan.isOn);
+            }
+
+            if (m_loaded != null)
+            {
+                var vrm = m_loaded.Instance;
+
+                if (m_loaded.Runtime != null)
+                {
+                    if (m_ui.IsTPose)
+                    {
+                        m_loaded.Runtime.VrmAnimation = TPose;
+                    }
+                    else if (Motion != null)
+                    {
+                        // Automatically retarget in Vrm10Runtime.Process
+                        m_loaded.Runtime.VrmAnimation = Motion;
+                    }
+
+                    m_loaded.Runtime.SpringBone.SetModelLevel(vrm.transform, new BlittableModelLevel
+                    {
+                        ExternalForce = new Vector3(m_springboneExternalX.value, m_springboneExternalY.value, m_springboneExternalZ.value),
+                        StopSpringBoneWriteback = m_springbonePause.isOn,
+                        SupportsScalingAtRuntime = m_springboneScaling.isOn,
+                    });
+                }
+
+                m_happy.ApplyRuntime(m_loaded.Instance.Vrm.Expression.Happy);
+                m_angry.ApplyRuntime(m_loaded.Instance.Vrm.Expression.Angry);
+                m_sad.ApplyRuntime(m_loaded.Instance.Vrm.Expression.Sad);
+                m_relaxed.ApplyRuntime(m_loaded.Instance.Vrm.Expression.Relaxed);
+                m_surprised.ApplyRuntime(m_loaded.Instance.Vrm.Expression.Surprised);
+                m_lipAa.ApplyRuntime(m_loaded.Instance.Vrm.Expression.Aa);
+                m_lipIh.ApplyRuntime(m_loaded.Instance.Vrm.Expression.Ih);
+                m_lipOu.ApplyRuntime(m_loaded.Instance.Vrm.Expression.Ou);
+                m_lipEe.ApplyRuntime(m_loaded.Instance.Vrm.Expression.Ee);
+                m_lipOh.ApplyRuntime(m_loaded.Instance.Vrm.Expression.Oh);
+                m_blink.ApplyRuntime(m_loaded.Instance.Vrm.Expression.Blink);
+
+                if (m_enableAutoExpression.isOn)
+                {
+                    vrm.Runtime.Expression.SetWeight(ExpressionKey.Happy, m_autoEmotion.Happy);
+                    vrm.Runtime.Expression.SetWeight(ExpressionKey.Angry, m_autoEmotion.Angry);
+                    vrm.Runtime.Expression.SetWeight(ExpressionKey.Sad, m_autoEmotion.Sad);
+                    vrm.Runtime.Expression.SetWeight(ExpressionKey.Relaxed, m_autoEmotion.Relaxed);
+                    vrm.Runtime.Expression.SetWeight(ExpressionKey.Surprised, m_autoEmotion.Surprised);
+                    m_happy.m_expression.SetValueWithoutNotify(m_autoEmotion.Happy);
+                    m_angry.m_expression.SetValueWithoutNotify(m_autoEmotion.Angry);
+                    m_sad.m_expression.SetValueWithoutNotify(m_autoEmotion.Sad);
+                    m_relaxed.m_expression.SetValueWithoutNotify(m_autoEmotion.Relaxed);
+                    m_surprised.m_expression.SetValueWithoutNotify(m_autoEmotion.Surprised);
+                }
+                else
+                {
+                    vrm.Runtime.Expression.SetWeight(ExpressionKey.Happy, m_happy.m_expression.value);
+                    vrm.Runtime.Expression.SetWeight(ExpressionKey.Angry, m_angry.m_expression.value);
+                    vrm.Runtime.Expression.SetWeight(ExpressionKey.Sad, m_sad.m_expression.value);
+                    vrm.Runtime.Expression.SetWeight(ExpressionKey.Relaxed, m_relaxed.m_expression.value);
+                    vrm.Runtime.Expression.SetWeight(ExpressionKey.Surprised, m_surprised.m_expression.value);
+                }
+
+                if (m_enableLipSync.isOn)
+                {
+                    vrm.Runtime.Expression.SetWeight(ExpressionKey.Aa, m_autoLipsync.Aa);
+                    vrm.Runtime.Expression.SetWeight(ExpressionKey.Ih, m_autoLipsync.Ih);
+                    vrm.Runtime.Expression.SetWeight(ExpressionKey.Ou, m_autoLipsync.Ou);
+                    vrm.Runtime.Expression.SetWeight(ExpressionKey.Ee, m_autoLipsync.Ee);
+                    vrm.Runtime.Expression.SetWeight(ExpressionKey.Oh, m_autoLipsync.Oh);
+                    m_lipAa.m_expression.SetValueWithoutNotify(m_autoLipsync.Aa);
+                    m_lipIh.m_expression.SetValueWithoutNotify(m_autoLipsync.Ih);
+                    m_lipOu.m_expression.SetValueWithoutNotify(m_autoLipsync.Ou);
+                    m_lipEe.m_expression.SetValueWithoutNotify(m_autoLipsync.Ee);
+                    m_lipOh.m_expression.SetValueWithoutNotify(m_autoLipsync.Oh);
+                }
+                else
+                {
+                    vrm.Runtime.Expression.SetWeight(ExpressionKey.Aa, m_lipAa.m_expression.value);
+                    vrm.Runtime.Expression.SetWeight(ExpressionKey.Ih, m_lipIh.m_expression.value);
+                    vrm.Runtime.Expression.SetWeight(ExpressionKey.Ou, m_lipOu.m_expression.value);
+                    vrm.Runtime.Expression.SetWeight(ExpressionKey.Ee, m_lipEe.m_expression.value);
+                    vrm.Runtime.Expression.SetWeight(ExpressionKey.Oh, m_lipOh.m_expression.value);
+                }
+
+                if (m_enableAutoBlink.isOn)
+                {
+                    vrm.Runtime.Expression.SetWeight(ExpressionKey.Blink, m_autoBlink.BlinkValue);
+                    m_blink.m_expression.SetValueWithoutNotify(m_autoBlink.BlinkValue);
+                }
+                else
+                {
+                    vrm.Runtime.Expression.SetWeight(ExpressionKey.Blink, m_blink.m_expression.value);
+                }
+
+                if (m_useLookAtTarget.isOn)
+                {
+                    var (yaw, pitch) = vrm.Runtime.LookAt.CalculateYawPitchFromLookAtPosition(m_lookAtTarget.transform.position);
+                    vrm.Runtime.LookAt.SetYawPitchManually(yaw, pitch);
+                    m_yaw.value = yaw;
+                    m_pitch.value = pitch;
+                }
+                else
+                {
+                    vrm.Runtime.LookAt.SetYawPitchManually(m_yaw.value, m_pitch.value);
+                }
+
+                if (vrm.TryGetBoneTransform(HumanBodyBones.Head, out var head))
+                {
+                    var initLocarlRotation = vrm.DefaultTransformStates[head].LocalRotation;
+                    var r = head.rotation * Quaternion.Inverse(initLocarlRotation);
+                    var pos = head.position
+                        + (r * Vector3.forward * 0.7f)
+                        + (r * Vector3.up * 0.07f)
+                        ;
+                    m_faceCamera.position = pos;
+                    m_faceCamera.rotation = r;
+                }
+            }
         }
 
-        void OnOpenClicked()
+        void OnOpenModelClicked()
         {
 #if UNITY_STANDALONE_WIN
-            var path = VRM10FileDialogForWindows.FileDialog("open VRM", "vrm", "glb", "bvh", "gltf", "zip");
+            var path = VRM10FileDialogForWindows.FileDialog("open VRM", "vrm");
 #elif UNITY_EDITOR
             var path = UnityEditor.EditorUtility.OpenFilePanel("Open VRM", "", "vrm");
 #else
@@ -378,18 +654,85 @@ namespace UniVRM10.VRM10Viewer
             }
 
             var ext = Path.GetExtension(path).ToLower();
-            switch (ext)
+            if (ext != ".vrm")
             {
-                case ".gltf":
-                case ".glb":
-                case ".vrm":
-                case ".zip":
-                    LoadModel(path);
-                    break;
+                Debug.LogWarning($"{path} is not vrm");
+                return;
+            }
 
-                case ".bvh":
-                    LoadMotion(path);
-                    break;
+            LoadModel(path);
+        }
+
+        async void OnOpenMotionClicked()
+        {
+#if UNITY_STANDALONE_WIN
+            var path = VRM10FileDialogForWindows.FileDialog("open Motion", "bvh", "gltf", "glb", "vrma");
+#elif UNITY_EDITOR
+            var path = UnityEditor.EditorUtility.OpenFilePanel("Open Motion", "", "bvh");
+#else
+            var path = Application.dataPath + "/default.bvh";
+#endif
+            if (string.IsNullOrEmpty(path))
+            {
+                return;
+            }
+
+            var ext = Path.GetExtension(path).ToLower();
+            if (ext == ".bvh")
+            {
+                Motion = BvhMotion.LoadBvhFromPath(path);
+                return;
+            }
+
+            // gltf, glb etc...
+            using GltfData data = new AutoGltfFileParser(path).Parse();
+            using var loader = new VrmAnimationImporter(data);
+            var instance = await loader.LoadAsync(new ImmediateCaller());
+            Motion = instance.GetComponent<Vrm10AnimationInstance>();
+            instance.GetComponent<Animation>().Play();
+        }
+
+        async void OnPastePoseClicked()
+        {
+            var text = GUIUtility.systemCopyBuffer;
+            if (string.IsNullOrEmpty(text))
+            {
+                return;
+            }
+
+            try
+            {
+                Motion = await Vrm10PoseLoader.LoadVrmAnimationPose(text);
+            }
+            catch (UniJSON.ParserException)
+            {
+                Debug.LogWarning("UniJSON.ParserException");
+            }
+            catch (UniJSON.DeserializationException)
+            {
+                Debug.LogWarning("UniJSON.DeserializationException");
+            }
+        }
+
+        void OnResetSpringBoneClicked()
+        {
+            if (m_loaded != null)
+            {
+                if (m_loaded.Runtime != null)
+                {
+                    m_loaded.Runtime.SpringBone.RestoreInitialTransform();
+                }
+            }
+        }
+
+        void OnReconstructSpringBoneClicked()
+        {
+            if (m_loaded != null)
+            {
+                if (m_loaded.Runtime != null)
+                {
+                    m_loaded.Runtime.SpringBone.ReconstructSpringBone();
+                }
             }
         }
 
@@ -397,11 +740,11 @@ namespace UniVRM10.VRM10Viewer
         {
             if (useUrp)
             {
-                return new Vrm10UrpMaterialDescriptorGenerator();
+                return new UrpVrm10MaterialDescriptorGenerator();
             }
             else
             {
-                return new Vrm10MaterialDescriptorGenerator();
+                return new BuiltInVrm10MaterialDescriptorGenerator();
             }
         }
 
@@ -409,103 +752,74 @@ namespace UniVRM10.VRM10Viewer
         {
             if (useUrp)
             {
-                return new GltfUrpMaterialDescriptorGenerator();
+                return new UrpGltfMaterialDescriptorGenerator();
             }
             else
             {
-                return new GltfMaterialDescriptorGenerator();
+                return new BuiltInGltfMaterialDescriptorGenerator();
             }
         }
 
         async void LoadModel(string path)
         {
-            if (!File.Exists(path))
-            {
-                return;
-            }
+            // cleanup
+            m_loaded?.Dispose();
+            m_loaded = null;
+            _cancellationTokenSource?.Dispose();
+            _cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = _cancellationTokenSource.Token;
 
-            Debug.LogFormat("{0}", path);
-            GltfData data;
             try
             {
-                data = new AutoGltfFileParser(path).Parse();
+                Debug.LogFormat("{0}", path);
+                var vrm10Instance = await Vrm10.LoadPathAsync(path,
+                    canLoadVrm0X: true,
+                    showMeshes: false,
+                    awaitCaller: m_useAsync.enabled ? new RuntimeOnlyAwaitCaller() : new ImmediateCaller(),
+                    vrmMetaInformationCallback: m_texts.UpdateMeta,
+                    ct: cancellationToken,
+                    springboneRuntime: m_useSpringboneSingelton.isOn ? new Vrm10FastSpringboneRuntime() : new Vrm10FastSpringboneRuntimeStandalone());
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    UnityObjectDestroyer.DestroyRuntimeOrEditor(vrm10Instance.gameObject);
+                    cancellationToken.ThrowIfCancellationRequested();
+                }
+
+                if (vrm10Instance == null)
+                {
+                    Debug.LogWarning("LoadPathAsync is null");
+                    return;
+                }
+
+                var instance = vrm10Instance.GetComponent<RuntimeGltfInstance>();
+                instance.ShowMeshes();
+                instance.EnableUpdateWhenOffscreen();
+                m_loaded = new Loaded(instance);
+                m_showBoxMan.isOn = false;
+
+                m_happy.OnLoad(m_loaded.Instance.Vrm.Expression.Happy);
+                m_angry.OnLoad(m_loaded.Instance.Vrm.Expression.Angry);
+                m_sad.OnLoad(m_loaded.Instance.Vrm.Expression.Sad);
+                m_relaxed.OnLoad(m_loaded.Instance.Vrm.Expression.Relaxed);
+                m_surprised.OnLoad(m_loaded.Instance.Vrm.Expression.Surprised);
+                m_lipAa.OnLoad(m_loaded.Instance.Vrm.Expression.Aa);
+                m_lipIh.OnLoad(m_loaded.Instance.Vrm.Expression.Ih);
+                m_lipOu.OnLoad(m_loaded.Instance.Vrm.Expression.Ou);
+                m_lipEe.OnLoad(m_loaded.Instance.Vrm.Expression.Ee);
+                m_lipOh.OnLoad(m_loaded.Instance.Vrm.Expression.Oh);
+                m_blink.OnLoad(m_loaded.Instance.Vrm.Expression.Blink);
             }
             catch (Exception ex)
             {
-                Debug.LogWarning(ex);
-                return;
-            }
-
-            var vrm = await System.Threading.Tasks.Task.Run(() =>
-            {
-                if (Vrm10Data.TryParseOrMigrate(data, doMigrate: true, out Vrm10Data _vrm))
+                if (ex is OperationCanceledException)
                 {
-                    return _vrm;
+                    Debug.LogWarning($"Canceled to Load: {path}");
                 }
                 else
                 {
-                    return null;
+                    Debug.LogError($"Failed to Load: {path}");
+                    Debug.LogException(ex);
                 }
-            });
-
-            if (vrm != null)
-            {
-                // vrm
-                using (var loader = new Vrm10Importer(vrm, 
-                    materialGenerator: GetVrmMaterialDescriptorGenerator(m_useUrpMaterial.isOn),
-                    doNormalize: m_useNormalization.isOn))
-                {
-                    // migrate しても thumbnail は同じ
-                    var thumbnail = await loader.LoadVrmThumbnailAsync();
-
-                    if (vrm.OriginalMetaBeforeMigration != null)
-                    {
-                        // migrated from vrm-0.x. use OldMeta
-                        m_texts.UpdateMeta(vrm.OriginalMetaBeforeMigration, thumbnail);
-                    }
-                    else
-                    {
-                        // load vrm-1.0. use newMeta
-                        m_texts.UpdateMeta(vrm.VrmExtension.Meta, thumbnail);
-                    }
-
-                    var instance = await loader.LoadAsync(new RuntimeOnlyAwaitCaller());
-                    SetModel(instance);
-                }
-            }
-            else
-            {
-                // gltf
-                using (var loader = new UniGLTF.ImporterContext(data, materialGenerator: GetMaterialDescriptorGenerator(m_useUrpMaterial.isOn)))
-                {
-                    var instance = await loader.LoadAsync(new RuntimeOnlyAwaitCaller());
-                    SetModel(instance);
-                }
-            }
-        }
-
-        void SetModel(RuntimeGltfInstance instance)
-        {
-            // cleanup
-            if (m_loaded != null)
-            {
-                m_loaded.Dispose();
-                m_loaded = null;
-            }
-
-            instance.ShowMeshes();
-            instance.EnableUpdateWhenOffscreen();
-            m_loaded = new Loaded(instance, m_src, m_target.transform);
-        }
-
-        void SetMotion(HumanPoseTransfer src)
-        {
-            m_src = src;
-            src.GetComponent<Renderer>().enabled = false;
-
-            if (m_loaded != null)
-            {
-                m_loaded.EnableBvh(m_src);
             }
         }
     }

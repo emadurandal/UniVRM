@@ -1,20 +1,25 @@
 ﻿using System;
+using System.Collections;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using UniGLTF;
+using UniGLTF.SpringBoneJobs;
 using UniHumanoid;
+using Unity.Collections;
 using UnityEngine;
 using UnityEngine.UI;
-using VRMShaders;
-
 
 namespace VRM.SimpleViewer
 {
-
-
+    /// <summary>
+    /// UI event handling
+    /// </summary>
     public class ViewerUI : MonoBehaviour
     {
+        [SerializeField]
+        TextFields m_texts = default;
+
         #region UI
         [SerializeField]
         Text m_version = default;
@@ -35,7 +40,30 @@ namespace VRM.SimpleViewer
         Toggle m_useAsync = default;
 
         [SerializeField]
+        Toggle m_loadAnimation = default;
+
+        // SpringBone
+        [SerializeField]
         Toggle m_useFastSpringBone = default;
+
+        [SerializeField]
+        Toggle m_springBonePause = default;
+
+        [SerializeField]
+        Toggle m_springBoneScaling = default;
+
+        [SerializeField]
+        Slider m_springExternalX = default;
+        [SerializeField]
+        Slider m_springExternalY = default;
+        [SerializeField]
+        Slider m_springExternalZ = default;
+
+        [SerializeField]
+        Button m_reset = default;
+
+        [SerializeField]
+        Button m_reconstruct = default;
         #endregion
 
         [SerializeField]
@@ -46,9 +74,6 @@ namespace VRM.SimpleViewer
 
         [SerializeField]
         GameObject Root = default;
-
-        [SerializeField]
-        Button m_reset = default;
 
         [SerializeField]
         TextAsset m_motion;
@@ -103,10 +128,8 @@ namespace VRM.SimpleViewer
                 m_textDistributionOther.text = "";
             }
 
-            public async Task UpdateMetaAsync(VRMImporterContext context)
+            public void UpdateMeta(VRMMetaObject meta)
             {
-                var meta = await context.ReadMetaAsync(new ImmediateCaller(), true);
-
                 m_textModelTitle.text = meta.Title;
                 m_textModelVersion.text = meta.Version;
                 m_textModelAuthor.text = meta.Author;
@@ -125,9 +148,6 @@ namespace VRM.SimpleViewer
                 m_thumbnail.texture = meta.Thumbnail;
             }
         }
-
-        [SerializeField]
-        TextFields m_texts = default;
 
         [Serializable]
         class UIFields
@@ -172,145 +192,114 @@ namespace VRM.SimpleViewer
 
         private void Reset()
         {
+#if UNITY_2022_3_OR_NEWER
+            var buttons = GameObject.FindObjectsByType<Button>(FindObjectsSortMode.InstanceID);
+#else
             var buttons = GameObject.FindObjectsOfType<Button>();
+#endif
             m_open = buttons.First(x => x.name == "Open");
 
             m_reset = buttons.First(x => x.name == "ResetSpringBone");
 
+#if UNITY_2022_3_OR_NEWER
+            var toggles = GameObject.FindObjectsByType<Toggle>(FindObjectsSortMode.InstanceID);
+#else
             var toggles = GameObject.FindObjectsOfType<Toggle>();
+#endif
             m_useFastSpringBone = toggles.First(x => x.name == "UseFastSpringBone");
             m_enableLipSync = toggles.First(x => x.name == "EnableLipSync");
             m_enableAutoBlink = toggles.First(x => x.name == "EnableAutoBlink");
 
+#if UNITY_2022_3_OR_NEWER
+            var texts = GameObject.FindObjectsByType<Text>(FindObjectsSortMode.InstanceID);
+#else
             var texts = GameObject.FindObjectsOfType<Text>();
+#endif
             m_version = texts.First(x => x.name == "Version");
 
+#if UNITY_2022_3_OR_NEWER
+            m_src = GameObject.FindFirstObjectByType<HumanPoseTransfer>();
+
+            m_target = GameObject.FindFirstObjectByType<TargetMover>().gameObject;
+#else
             m_src = GameObject.FindObjectOfType<HumanPoseTransfer>();
 
             m_target = GameObject.FindObjectOfType<TargetMover>().gameObject;
+#endif
         }
 
-        class Loaded : IDisposable
-        {
-            RuntimeGltfInstance _instance;
-            HumanPoseTransfer _pose;
-            VRMBlendShapeProxy m_proxy;
-
-            Blinker m_blink;
-            bool m_enableBlinkValue;
-            public bool EnableBlinkValue
-            {
-                set
-                {
-                    if (m_blink == value) return;
-                    m_enableBlinkValue = value;
-                    if (m_blink != null)
-                    {
-                        m_blink.enabled = m_enableBlinkValue;
-                    }
-                }
-            }
-
-            AIUEO m_lipSync;
-            bool m_enableLipSyncValue;
-            public bool EnableLipSyncValue
-            {
-                set
-                {
-                    if (m_enableLipSyncValue == value) return;
-                    m_enableLipSyncValue = value;
-                    if (m_lipSync != null)
-                    {
-                        m_lipSync.enabled = m_enableLipSyncValue;
-                    }
-                }
-            }
-
-            public Loaded(RuntimeGltfInstance instance, HumanPoseTransfer src, Transform lookAtTarget)
-            {
-                _instance = instance;
-
-                var lookAt = instance.GetComponent<VRMLookAtHead>();
-                if (lookAt != null)
-                {
-                    // vrm
-                    _pose = _instance.gameObject.AddComponent<HumanPoseTransfer>();
-                    _pose.Source = src;
-                    _pose.SourceType = HumanPoseTransfer.HumanPoseTransferSourceType.HumanPoseTransfer;
-
-                    m_lipSync = instance.gameObject.AddComponent<AIUEO>();
-                    m_blink = instance.gameObject.AddComponent<Blinker>();
-
-                    lookAt.Target = lookAtTarget;
-                    lookAt.UpdateType = UpdateType.LateUpdate; // after HumanPoseTransfer's setPose
-
-                    m_proxy = instance.GetComponent<VRMBlendShapeProxy>();
-                }
-
-                // not vrm
-                var animation = instance.GetComponent<Animation>();
-                if (animation && animation.clip != null)
-                {
-                    animation.Play(animation.clip.name);
-                }
-            }
-
-            public void Dispose()
-            {
-                // Destroy game object. not RuntimeGltfInstance
-                GameObject.Destroy(_instance.gameObject);
-            }
-
-            public void EnableBvh(HumanPoseTransfer src)
-            {
-                if (_pose != null)
-                {
-                    _pose.Source = src;
-                    _pose.SourceType = HumanPoseTransfer.HumanPoseTransferSourceType.HumanPoseTransfer;
-                }
-            }
-
-            public void EnableTPose(HumanPoseClip pose)
-            {
-                if (_pose != null)
-                {
-                    _pose.PoseClip = pose;
-                    _pose.SourceType = HumanPoseTransfer.HumanPoseTransferSourceType.HumanPoseClip;
-                }
-            }
-
-            public void OnResetClicked()
-            {
-                if (_pose != null)
-                {
-                    foreach (var spring in _pose.GetComponentsInChildren<VRMSpringBone>())
-                    {
-                        spring.Setup();
-                    }
-                }
-            }
-
-            public void Update()
-            {
-                if (m_proxy != null)
-                {
-                    m_proxy.Apply();
-                }
-            }
-        }
         Loaded m_loaded;
 
+        static class ArgumentChecker
+        {
+            static string[] Supported = {
+                ".gltf",
+                ".glb",
+                ".vrm",
+                ".zip",
+            };
 
+            static string UnityHubPath => System.Environment.GetEnvironmentVariable("ProgramFiles") + "\\Unity\\Hub";
+
+            public static bool IsLoadable(string path)
+            {
+                if (!File.Exists(path))
+                {
+                    // not exists
+                    return false;
+                }
+
+                if (Application.isEditor)
+                {
+                    // skip editor argument
+                    // {UnityHub_Resources}\PackageManager\ProjectTemplates\com.unity.template.3d-5.0.4.tgz
+                    if (path.StartsWith(UnityHubPath))
+                    {
+                        return false;
+                    }
+                }
+
+                var ext = Path.GetExtension(path).ToLower();
+                if (!Supported.Contains(ext))
+                {
+                    // unknown extension
+                    return false;
+                }
+
+                return true;
+            }
+
+            public static bool TryGetFirstLoadable(out string cmd)
+            {
+                foreach (var arg in System.Environment.GetCommandLineArgs())
+                {
+                    if (ArgumentChecker.IsLoadable(arg))
+                    {
+                        cmd = arg;
+                        return true;
+                    }
+                }
+
+                cmd = default;
+                return false;
+            }
+        }
+
+        private void Awake()
+        {
+#if DEBUG
+            NativeLeakDetection.Mode = NativeLeakDetectionMode.EnabledWithStackTrace;
+#endif
+        }
 
         private void Start()
         {
             m_version.text = string.Format("VRMViewer {0}.{1}",
-                VRMVersion.MAJOR, VRMVersion.MINOR);
+                PackageVersion.MAJOR, PackageVersion.MINOR);
             m_open.onClick.AddListener(OnOpenClicked);
-            m_useFastSpringBone.onValueChanged.AddListener(OnUseFastSpringBoneValueChanged);
-            OnUseFastSpringBoneValueChanged(m_useFastSpringBone.isOn);
 
-            m_reset.onClick.AddListener(() => m_loaded.OnResetClicked());
+            m_reset.onClick.AddListener(() => m_loaded?.ResetSpringbone());
+            m_reconstruct.onClick.AddListener(() => m_loaded?.ReconstructSpringbone());
 
             // load initial bvh
             if (m_motion != null)
@@ -318,10 +307,9 @@ namespace VRM.SimpleViewer
                 LoadMotion("tmp.bvh", m_motion.text);
             }
 
-            string[] cmds = System.Environment.GetCommandLineArgs();
-            if (cmds.Length > 1)
+            if (ArgumentChecker.TryGetFirstLoadable(out var cmd))
             {
-                LoadModel(cmds[1]);
+                LoadPathAsync(cmd);
             }
 
             m_texts.Start();
@@ -332,7 +320,12 @@ namespace VRM.SimpleViewer
             var context = new UniHumanoid.BvhImporterContext();
             context.Parse(path, source);
             context.Load();
-            SetMotion(context.Root.GetComponent<HumanPoseTransfer>());
+            m_src = context.Root.GetComponent<HumanPoseTransfer>();
+            if (m_src == null)
+            {
+                throw new ArgumentNullException();
+            }
+            m_loaded?.EnableBvh(m_src);
         }
 
         private void Update()
@@ -342,150 +335,79 @@ namespace VRM.SimpleViewer
                 if (Root != null) Root.SetActive(!Root.activeSelf);
             }
 
-            m_ui.UpdateToggle(() => m_loaded?.EnableBvh(m_src), () => m_loaded?.EnableTPose(m_pose));
+            m_ui.UpdateToggle(
+                () => m_loaded?.EnableBvh(m_src),
+                () => m_loaded?.EnableTPose(m_pose));
 
             if (m_loaded != null)
             {
                 m_loaded.EnableLipSyncValue = m_enableLipSync.isOn;
                 m_loaded.EnableBlinkValue = m_enableAutoBlink.isOn;
+                m_loaded.SetSpringboneModelLevel(new UniGLTF.SpringBoneJobs.Blittables.BlittableModelLevel
+                {
+                    ExternalForce = new Vector3(
+                        m_springExternalX.value,
+                        m_springExternalY.value,
+                        m_springExternalZ.value
+                    ),
+                    StopSpringBoneWriteback = m_springBonePause.isOn,
+                    SupportsScalingAtRuntime = m_springBoneScaling.isOn,
+                });
                 m_loaded.Update();
             }
         }
 
+        IEnumerator LoadCoroutine(string url)
+        {
+            var www = new UnityEngine.Networking.UnityWebRequest(url);
+            yield return www;
+            var task = LoadBytesAsync("WebGL.vrm", www.downloadHandler.data);
+        }
+
+        /// <summary>
+        /// for WebGL
+        /// call from OpenFile.jslib
+        /// </summary>
+        public void FileSelected(string url)
+        {
+            Debug.Log($"FileSelected: {url}");
+            StartCoroutine(LoadCoroutine(url));
+        }
+
         void OnOpenClicked()
         {
-#if UNITY_STANDALONE_WIN
-            var path = FileDialogForWindows.FileDialog("open VRM", "vrm", "glb", "bvh", "gltf", "zip");
-#elif UNITY_EDITOR
-            var path = UnityEditor.EditorUtility.OpenFilePanel("Open VRM", "", "vrm");
-#else
-            var path = Application.dataPath + "/default.vrm";
-#endif
+            var path = FileUtil.OpenFileDialog("Open VRM", "vrm", "bvh");
             if (string.IsNullOrEmpty(path))
             {
                 return;
             }
-
-            LoadModel(path);
+            LoadPathAsync(path);
         }
 
-        void LoadModel(string path)
-        {
-            var ext = Path.GetExtension(path).ToLower();
-            switch (ext)
-            {
-                case ".gltf":
-                case ".glb":
-                case ".zip":
-                    LoadModelAsync(path, false);
-                    break;
-
-                case ".vrm":
-                    LoadModelAsync(path, true);
-                    break;
-
-                case ".bvh":
-                    LoadMotion(path, File.ReadAllText(path));
-                    break;
-            }
-        }
-
-        void OnUseFastSpringBoneValueChanged(bool flag)
-        {
-            m_reset.gameObject.SetActive(!flag);
-        }
-
-        static IMaterialDescriptorGenerator GetGltfMaterialGenerator(bool useUrp)
-        {
-            if (useUrp)
-            {
-                return new GltfUrpMaterialDescriptorGenerator();
-            }
-            else
-            {
-                return new GltfMaterialDescriptorGenerator();
-            }
-        }
-
-        static IMaterialDescriptorGenerator GetVrmMaterialGenerator(bool useUrp, VRM.glTF_VRM_extensions vrm)
-        {
-            if (useUrp)
-            {
-                return new VRM.VRMUrpMaterialDescriptorGenerator(vrm);
-            }
-            else
-            {
-                return new VRM.VRMMaterialDescriptorGenerator(vrm);
-            }
-        }
-
-        static IAwaitCaller GetIAwaitCaller(bool useAsync)
-        {
-            if (useAsync)
-            {
-                return new RuntimeOnlyAwaitCaller();
-            }
-            else
-            {
-                return new ImmediateCaller();
-            }
-        }
-
-        async void LoadModelAsync(string path, bool isVrm)
+        async void LoadPathAsync(string path)
         {
             if (!File.Exists(path))
             {
+                Debug.LogWarning($"{path} not exists");
                 return;
             }
-
-            Debug.LogFormat("{0}", path);
-
-            GltfData data;
-            try
-            {
-                data = new AutoGltfFileParser(path).Parse();
-            }
-            catch (Exception ex)
-            {
-                Debug.LogWarningFormat("parse error: {0}", ex);
-                return;
-            }
-
-            if (isVrm)
-            {
-                try
-                {
-                    var vrm = new VRMData(data);
-                    using (var loader = new VRMImporterContext(vrm, materialGenerator: GetVrmMaterialGenerator(m_useUrpMaterial.isOn, vrm.VrmExtension)))
-                    {
-                        await m_texts.UpdateMetaAsync(loader);
-                        var instance = await loader.LoadAsync(GetIAwaitCaller(m_useAsync.isOn));
-                        SetModel(instance);
-                    }
-                }
-                catch (NotVrm0Exception)
-                {
-                    // retry
-                    Debug.LogWarning("file extension is vrm. but not vrm ?");
-                    using (var loader = new UniGLTF.ImporterContext(data, materialGenerator: GetGltfMaterialGenerator(m_useUrpMaterial.isOn)))
-                    {
-                        var instance = await loader.LoadAsync(GetIAwaitCaller(m_useAsync.isOn));
-                        SetModel(instance);
-                    }
-                }
-            }
-            else
-            {
-                using (var loader = new UniGLTF.ImporterContext(data, materialGenerator: GetGltfMaterialGenerator(m_useUrpMaterial.isOn)))
-                {
-                    var instance = await loader.LoadAsync(GetIAwaitCaller(m_useAsync.isOn));
-                    SetModel(instance);
-                }
-            }
+            var bytes = File.ReadAllBytes(path);
+            await LoadBytesAsync(path, bytes);
         }
 
-        void SetModel(RuntimeGltfInstance instance)
+        public async Task LoadBytesAsync(string path, byte[] bytes)
         {
+            var size = bytes != null ? bytes.Length : 0;
+            Debug.Log($"LoadModelAsync: {path}: {size}bytes");
+
+            var ext = Path.GetExtension(path).ToLower();
+            if (ext == ".bvh")
+            {
+                // bvh motion
+                LoadMotion(path, File.ReadAllText(path));
+                return;
+            }
+
             // cleanup
             if (m_loaded != null)
             {
@@ -493,24 +415,61 @@ namespace VRM.SimpleViewer
                 m_loaded = null;
             }
 
-            if (m_useFastSpringBone.isOn)
-            {
-                FastSpringBoneReplacer.ReplaceAsync(instance.Root);
-            }
+            // vrm
+            VrmUtility.MaterialGeneratorCallback materialCallback = (glTF_VRM_extensions vrm) => GetVrmMaterialGenerator(m_useUrpMaterial.isOn, vrm);
+            VrmUtility.MetaCallback metaCallback = m_texts.UpdateMeta;
+            IVrm0XSpringBoneRuntime springboneRuntime = m_useFastSpringBone.isOn ? new Vrm0XFastSpringboneRuntime() : new Vrm0XSpringBoneDefaultRuntime();
+            var instance = await VrmUtility.LoadBytesAsync(path, bytes, GetIAwaitCaller(m_useAsync.isOn),
+                materialCallback, metaCallback,
+                loadAnimation: m_loadAnimation.isOn,
+                springboneRuntime: springboneRuntime
+                );
 
             instance.EnableUpdateWhenOffscreen();
             instance.ShowMeshes();
 
-            m_loaded = new Loaded(instance, m_src, m_target.transform);
+            m_loaded = new Loaded(instance, m_src, m_target.transform, springboneRuntime);
         }
 
-        void SetMotion(HumanPoseTransfer src)
+        static IMaterialDescriptorGenerator GetGltfMaterialGenerator(bool useUrp)
         {
-            m_src = src;
-            src.GetComponent<Renderer>().enabled = false;
-            if (m_loaded != null)
+            //Could be refactored to no longer need this check using RenderPipelineMaterialDescriptorGeneratorUtility
+            if (useUrp)
             {
-                m_loaded.EnableBvh(src);
+                return new UrpGltfMaterialDescriptorGenerator();
+            }
+            else
+            {
+                return new BuiltInGltfMaterialDescriptorGenerator();
+            }
+        }
+
+        static IMaterialDescriptorGenerator GetVrmMaterialGenerator(bool useUrp, VRM.glTF_VRM_extensions vrm)
+        {
+            //Could be refactored to no longer need this check using VrmRenderPipelineMaterialDescriptorGeneratorDescriptorUtility
+            if (useUrp)
+            {
+                return new VRM.UrpVrmMaterialDescriptorGenerator(vrm);
+            }
+            else
+            {
+                return new VRM.BuiltInVrmMaterialDescriptorGenerator(vrm);
+            }
+        }
+
+        static IAwaitCaller GetIAwaitCaller(bool useAsync)
+        {
+            if (useAsync)
+            {
+#if UNITY_WEBGL
+                return new RuntimeOnlyNoThreadAwaitCaller();
+#else                
+                return new RuntimeOnlyAwaitCaller();
+#endif
+            }
+            else
+            {
+                return new ImmediateCaller();
             }
         }
     }

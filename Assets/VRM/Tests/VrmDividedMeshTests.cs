@@ -4,7 +4,6 @@ using System.Linq;
 using NUnit.Framework;
 using UniGLTF;
 using UnityEngine;
-using VRMShaders;
 
 namespace VRM
 {
@@ -21,13 +20,15 @@ namespace VRM
 
         static GameObject Load(byte[] bytes, string path)
         {
-            var gltf = new GlbLowLevelParser(path, bytes).Parse();
-            var data = new VRMData(gltf);
-            using (var loader = new VRMImporterContext(data))
+            using (var gltf = new GlbLowLevelParser(path, bytes).Parse())
             {
-                var loaded = loader.Load();
-                loaded.ShowMeshes();
-                return loaded.gameObject;
+                var data = new VRMData(gltf);
+                using (var loader = new VRMImporterContext(data))
+                {
+                    var loaded = loader.Load();
+                    loaded.ShowMeshes();
+                    return loaded.gameObject;
+                }
             }
         }
 
@@ -66,13 +67,21 @@ namespace VRM
             var path = AliciaPath;
             var loaded = Load(File.ReadAllBytes(path), path);
 
-            var exported = VRMExporter.Export(new UniGLTF.GltfExportSettings
+            var exportSettings = new GltfExportSettings
             {
                 DivideVertexBuffer = true, // test this
                 ExportOnlyBlendShapePosition = true,
                 ExportTangents = false,
                 UseSparseAccessorForMorphTarget = true,
-            }, loaded, new EditorTextureSerializer());
+            };
+            var exported = new ExportingGltfData();
+            using var exporter = new VRMExporter(
+                exported,
+                exportSettings,
+                textureSerializer: new EditorTextureSerializer(),
+                materialExporter: new BuiltInVrmMaterialExporter());
+            exporter.Prepare(loaded);
+            exporter.Export();
             var bytes = exported.ToGlbBytes();
             var divided = Load(bytes, path);
 

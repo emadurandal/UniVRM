@@ -48,12 +48,14 @@ namespace VRM
         private void OnEnable()
         {
             m_checkbox_list.Add(new CheckBoxProp(serializedObject.FindProperty(nameof(VRMExportSettings.PoseFreeze)), VRMExportOptions.NORMALIZE));
+            m_checkbox_list.Add(new CheckBoxProp(serializedObject.FindProperty(nameof(VRMExportSettings.FreezeMeshUseCurrentBlendShapeWeight)), VRMExportOptions.FREEZE_BLENDSHAPE));
             m_checkbox_list.Add(new CheckBoxProp(serializedObject.FindProperty(nameof(VRMExportSettings.UseSparseAccessor)), VRMExportOptions.BLENDSHAPE_USE_SPARSE));
             m_checkbox_list.Add(new CheckBoxProp(serializedObject.FindProperty(nameof(VRMExportSettings.OnlyBlendshapePosition)), VRMExportOptions.BLENDSHAPE_EXCLUDE_NORMAL_AND_TANGENT));
             m_checkbox_list.Add(new CheckBoxProp(serializedObject.FindProperty(nameof(VRMExportSettings.ReduceBlendshape)), VRMExportOptions.BLENDSHAPE_ONLY_CLIP_USE));
             m_checkbox_list.Add(new CheckBoxProp(serializedObject.FindProperty(nameof(VRMExportSettings.ReduceBlendshapeClip)), VRMExportOptions.BLENDSHAPE_EXCLUDE_UNKNOWN));
             m_checkbox_list.Add(new CheckBoxProp(serializedObject.FindProperty(nameof(VRMExportSettings.DivideVertexBuffer)), VRMExportOptions.DIVIDE_VERTEX_BUFFER));
             m_checkbox_list.Add(new CheckBoxProp(serializedObject.FindProperty(nameof(VRMExportSettings.KeepVertexColor)), VRMExportOptions.KEEP_VERTEX_COLOR));
+            m_checkbox_list.Add(new CheckBoxProp(serializedObject.FindProperty(nameof(VRMExportSettings.KeepAnimation)), VRMExportOptions.EXPORT_GLTF_ANIMATION));
         }
 
 

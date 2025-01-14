@@ -30,16 +30,83 @@ namespace UniGLTF
 
         public BlendShape(string name)
         {
-            Name = name;
+            Positions = new List<Vector3>();
+            Normals = new List<Vector3>();
+            Tangents = new List<Vector3>();
         }
 
-        public List<Vector3> Positions = new List<Vector3>();
-        public List<Vector3> Normals = new List<Vector3>();
-        public List<Vector3> Tangents = new List<Vector3>();
+        public BlendShape(string name, int vertexCount, bool hasPositions, bool hasNormals, bool hasTangents)
+        {
+            Name = name;
+            if (hasPositions)
+            {
+                Positions = new List<Vector3>(vertexCount);
+            }
+            else
+            {
+                Positions = new List<Vector3>();
+            }
+
+            if (hasNormals)
+            {
+                Normals = new List<Vector3>(vertexCount);
+            }
+            else
+            {
+                Normals = new List<Vector3>();
+            }
+
+            if (hasTangents)
+            {
+                Tangents = new List<Vector3>(vertexCount);
+            }
+            else
+            {
+                Tangents = new List<Vector3>();
+            }
+        }
+
+        public List<Vector3> Positions { get; private set; }
+        public List<Vector3> Normals { get; private set; }
+        public List<Vector3> Tangents { get; private set; }
     }
 
     public static class UnityExtensions
     {
+        const float EPSILON = 1e-5f;
+
+        public static bool NearlyEqual(this float lhs, float rhs)
+        {
+            return Math.Abs(lhs - rhs) <= EPSILON;
+        }
+
+        public static bool NearlyEqual(this Vector3 lhs, Vector3 rhs)
+        {
+            if (Math.Abs(lhs.x - rhs.x) > EPSILON) return false;
+            if (Math.Abs(lhs.y - rhs.y) > EPSILON) return false;
+            if (Math.Abs(lhs.z - rhs.z) > EPSILON) return false;
+            return true;
+        }
+
+        public static bool NearlyEqual(this Quaternion lhs, Quaternion rhs)
+        {
+            if (Math.Abs(lhs.x - rhs.x) > EPSILON) return false;
+            if (Math.Abs(lhs.y - rhs.y) > EPSILON) return false;
+            if (Math.Abs(lhs.z - rhs.z) > EPSILON) return false;
+            if (Math.Abs(lhs.w - rhs.w) > EPSILON) return false;
+            return true;
+        }
+
+        public static (Vector3, Quaternion, Vector3) Decompose(this Matrix4x4 m)
+        {
+            return (m.ExtractPosition(), m.ExtractRotation(), m.ExtractScale());
+        }
+
+        public static Vector2 UVVerticalFlip(this Vector2 src)
+        {
+            return new Vector2(src.x, 1.0f - src.y);
+        }
+
         public static Vector4 ReverseZ(this Vector4 v)
         {
             return new Vector4(v.x, v.y, -v.z, v.w);
@@ -146,20 +213,9 @@ namespace UniGLTF
             return m;
         }
 
-        // https://forum.unity.com/threads/how-to-assign-matrix4x4-to-transform.121966/
         public static Quaternion ExtractRotation(this Matrix4x4 matrix)
         {
-            Vector3 forward;
-            forward.x = matrix.m02;
-            forward.y = matrix.m12;
-            forward.z = matrix.m22;
-
-            Vector3 upwards;
-            upwards.x = matrix.m01;
-            upwards.y = matrix.m11;
-            upwards.z = matrix.m21;
-
-            return Quaternion.LookRotation(forward, upwards);
+            return matrix.rotation;
         }
 
         public static Vector3 ExtractPosition(this Matrix4x4 matrix)
@@ -343,14 +399,12 @@ namespace UniGLTF
 
         public static Mesh GetSharedMesh(this Transform t)
         {
-            var meshFilter = t.GetComponent<MeshFilter>();
-            if (meshFilter != null)
+            if (t.TryGetComponent<MeshFilter>(out var meshFilter))
             {
                 return meshFilter.sharedMesh;
             }
 
-            var skinnedMeshRenderer = t.GetComponent<SkinnedMeshRenderer>();
-            if (skinnedMeshRenderer != null)
+            if (t.TryGetComponent<SkinnedMeshRenderer>(out var skinnedMeshRenderer))
             {
                 return skinnedMeshRenderer.sharedMesh;
             }
@@ -358,30 +412,72 @@ namespace UniGLTF
             return null;
         }
 
-        public static Material[] GetSharedMaterials(this Transform t)
-        {
-            var renderer = t.GetComponent<Renderer>();
-            if (renderer != null)
-            {
-                return renderer.sharedMaterials;
-            }
-
-            return new Material[] { };
-        }
-
         public static bool Has<T>(this Transform transform, T t) where T : Component
         {
-            return transform.GetComponent<T>() == t;
+            if (transform.TryGetComponent<T>(out var c))
+            {
+                return c == t;
+            }
+            return false; ;
         }
 
         public static T GetOrAddComponent<T>(this GameObject go) where T : Component
         {
-            var c = go.GetComponent<T>();
-            if (c != null)
+            if (go.TryGetComponent<T>(out var t))
             {
-                return c;
+                return t;
             }
             return go.AddComponent<T>();
+        }
+
+        public static T GetComponentOrThrow<T>(this GameObject go) where T : Component
+        {
+            if (go.TryGetComponent<T>(out var t))
+            {
+                return t;
+            }
+            else
+            {
+                throw new ArgumentException($"no {typeof(T)}");
+            }
+        }
+
+        public static T GetComponentOrThrow<T>(this Component c) where T : Component
+        {
+            if (c.TryGetComponent<T>(out var t))
+            {
+                return t;
+            }
+            else
+            {
+                throw new ArgumentException($"no {typeof(T)}");
+            }
+        }
+
+        public static T GetComponentOrNull<T>(this GameObject go) where T : Component
+        {
+            if (go.TryGetComponent<T>(out var t))
+            {
+                return t;
+            }
+            else
+            {
+                // きれいな null を返す
+                return null;
+            }
+        }
+
+        public static T GetComponentOrNull<T>(this Component c) where T : Component
+        {
+            if (c.TryGetComponent<T>(out var t))
+            {
+                return t;
+            }
+            else
+            {
+                // きれいな null を返す
+                return null;
+            }
         }
 
         public static bool EnableForExport(this Component mono)
@@ -392,6 +488,41 @@ namespace UniGLTF
                 return false;
             }
             return true;
+        }
+
+        public enum PrefabType
+        {
+            PrefabAsset,
+            PrefabInstance,
+            NotPrefab,
+        }
+
+        /// <summary>
+        /// Scene と Prefab で挙動をスイッチする。
+        /// 
+        /// - Scene: ヒエラルキーを操作する。Asset の 書き出しはしない。UNDO はする。TODO: 明示的な Asset の書き出し。
+        /// - Prefab: 対象をコピーして処理する。Undo は実装しない。結果を Asset として書き出し、処理後にコピーは削除する。
+        /// 
+        /// </summary>
+        public static PrefabType GetPrefabType(this GameObject go)
+        {
+            if (go == null)
+            {
+                throw new ArgumentNullException();
+            }
+            if (!go.scene.IsValid())
+            {
+                return PrefabType.PrefabAsset;
+            }
+
+#if UNITY_EDITOR
+            if (PrefabUtility.GetOutermostPrefabInstanceRoot(go) != null)
+            {
+                return PrefabType.PrefabInstance;
+            }
+#endif
+
+            return PrefabType.NotPrefab;
         }
     }
 }

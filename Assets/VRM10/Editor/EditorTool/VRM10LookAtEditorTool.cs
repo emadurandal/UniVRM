@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.EditorTools;
+using UniGLTF;
 
 #if UNITY_2021_OR_NEWER
 #else
@@ -46,7 +47,11 @@ namespace UniVRM10
 
         public override void OnToolGUI(EditorWindow window)
         {
-            var root = Selection.activeTransform.GetComponent<Vrm10Instance>();
+            if(Selection.activeTransform==null)
+            {
+                return;
+            }
+            var root = Selection.activeTransform.GetComponentOrNull<Vrm10Instance>();
             if (root == null)
             {
                 return;
@@ -55,7 +60,7 @@ namespace UniVRM10
             {
                 return;
             }
-            var humanoid = root.GetComponent<UniHumanoid.Humanoid>();
+            var humanoid = root.GetComponentOrThrow<UniHumanoid.Humanoid>();
             var head = humanoid.Head;
             if (head == null)
             {
@@ -65,24 +70,24 @@ namespace UniVRM10
             {
                 EditorGUI.BeginChangeCheck();
 
-                var worldOffset = head.localToWorldMatrix.MultiplyPoint(root.Vrm.LookAt.OffsetFromHead);
-                worldOffset = Handles.PositionHandle(worldOffset, head.rotation);
+                var eyeWorldPosition = head.localToWorldMatrix.MultiplyPoint(root.Vrm.LookAt.OffsetFromHead);
+                eyeWorldPosition = Handles.PositionHandle(eyeWorldPosition, head.rotation);
 
-                Handles.DrawDottedLine(head.position, worldOffset, 5);
+                Handles.DrawDottedLine(head.position, eyeWorldPosition, 5);
                 Handles.SphereHandleCap(0, head.position, Quaternion.identity, 0.02f, Event.current.type);
-                Handles.SphereHandleCap(0, worldOffset, Quaternion.identity, 0.02f, Event.current.type);
+                Handles.SphereHandleCap(0, eyeWorldPosition, Quaternion.identity, 0.02f, Event.current.type);
 
                 if (EditorGUI.EndChangeCheck())
                 {
                     Undo.RecordObject(root.Vrm, "LookAt.OffsetFromHead");
 
-                    root.Vrm.LookAt.OffsetFromHead = head.worldToLocalMatrix.MultiplyPoint(worldOffset);
+                    root.Vrm.LookAt.OffsetFromHead = head.worldToLocalMatrix.MultiplyPoint(eyeWorldPosition);
                 }
             }
 
             if (Application.isPlaying)
             {
-                OnSceneGUILookAt(root.Vrm.LookAt, head, root.LookAtTargetType, root.Gaze);
+                OnSceneGUILookAt(root.Vrm.LookAt, root.Runtime.LookAt, root.LookAtTargetType, root.LookAtTarget);
             }
             else
             {
@@ -121,28 +126,27 @@ namespace UniVRM10
 
         const float RADIUS = 0.5f;
 
-        static void OnSceneGUILookAt(VRM10ObjectLookAt lookAt, Transform head, VRM10ObjectLookAt.LookAtTargetTypes lookAtTargetType, Transform gaze)
+        static void OnSceneGUILookAt(VRM10ObjectLookAt lookAt, Vrm10RuntimeLookAt runtime, VRM10ObjectLookAt.LookAtTargetTypes lookAtTargetType, Transform lookAtTarget)
         {
-            if (head == null) return;
-
-            if (gaze != null)
+            if (lookAtTargetType == VRM10ObjectLookAt.LookAtTargetTypes.SpecifiedTransform && lookAtTarget != null)
             {
                 {
                     EditorGUI.BeginChangeCheck();
-                    var newTargetPosition = Handles.PositionHandle(gaze.position, Quaternion.identity);
+                    var newTargetPosition = Handles.PositionHandle(lookAtTarget.position, Quaternion.identity);
                     if (EditorGUI.EndChangeCheck())
                     {
-                        Undo.RecordObject(gaze, "Change Look At Target Position");
-                        gaze.position = newTargetPosition;
+                        Undo.RecordObject(lookAtTarget, "Change Look At Target Position");
+                        lookAtTarget.position = newTargetPosition;
                     }
                 }
 
                 Handles.color = new Color(1, 1, 1, 0.6f);
-                Handles.DrawDottedLine(lookAt.GetLookAtOrigin(head).position, gaze.position, 4.0f);
+                Handles.DrawDottedLine(runtime.LookAtOriginTransform.position, lookAtTarget.position, 4.0f);
             }
 
-            var (yaw, pitch) = lookAt.GetLookAtYawPitch(head, lookAtTargetType, gaze);
-            var lookAtOriginMatrix = lookAt.GetLookAtOrigin(head).localToWorldMatrix;
+            var yaw = runtime.Yaw;
+            var pitch = runtime.Pitch;
+            var lookAtOriginMatrix = runtime.LookAtOriginTransform.localToWorldMatrix;
             Handles.matrix = lookAtOriginMatrix;
             var p = lookAt.OffsetFromHead;
             Handles.Label(Vector3.zero,

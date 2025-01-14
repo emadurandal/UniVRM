@@ -5,10 +5,12 @@ using UnityEngine;
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using UniGLTF.Utils;
 
 
 namespace UniHumanoid
 {
+    // TODO: BoneLimit.cs に分ける(v0.104以降)
     [Serializable]
     public struct BoneLimit
     {
@@ -19,13 +21,34 @@ namespace UniHumanoid
         public Vector3 max;
         public Vector3 center;
         public float axisLength;
-        private static string[] cashedHumanTraitBoneName = null;
+
+
+        // HumanTrait.BoneName は HumanBodyBones.ToString とほぼ一対一に対応するが、
+        // 指のボーンについては " " の有無という微妙な違いがある。
+        // このスペースは AvatarBuilder.BuildHumanAvatar において必用であり、
+        // HumanBodyBones.ToString と区別する必要がある。
+        //
+        // また、下記についてGCが発生するのでキャッシュします。
+        // * HumanTrait.BoneName
+        // * traitName.Replace
+        // * Enum.Parse
+        //
+        private static readonly Dictionary<HumanBodyBones, string> cachedHumanBodyBonesToBoneTraitNameMap =
+        HumanTrait.BoneName.ToDictionary(
+            traitName => (HumanBodyBones)Enum.Parse(typeof(HumanBodyBones), traitName.Replace(" ", "")),
+            traitName => traitName);
+
+        // 逆引き
+        private static readonly Dictionary<string, HumanBodyBones> cachedBoneTraitNameToHumanBodyBonesMap =
+        HumanTrait.BoneName.ToDictionary(
+            traitName => traitName,
+            traitName => (HumanBodyBones)Enum.Parse(typeof(HumanBodyBones), traitName.Replace(" ", "")));
 
         public static BoneLimit From(HumanBone bone)
         {
             return new BoneLimit
             {
-                humanBone = (HumanBodyBones) Enum.Parse(typeof(HumanBodyBones), bone.humanName.Replace(" ", ""), true),
+                humanBone = cachedBoneTraitNameToHumanBodyBonesMap[bone.humanName],
                 boneName = bone.boneName,
                 useDefaultValues = bone.limit.useDefaultValues,
                 min = bone.limit.min,
@@ -35,31 +58,12 @@ namespace UniHumanoid
             };
         }
 
-        public static String ToHumanBoneName(HumanBodyBones b)
-        {
-            // 呼び出し毎にGCが発生するのでキャッシュする
-            if (cashedHumanTraitBoneName == null)
-            {
-                cashedHumanTraitBoneName = HumanTrait.BoneName;
-            }
-
-            foreach (var x in cashedHumanTraitBoneName)
-            {
-                if (x.Replace(" ", "") == b.ToString())
-                {
-                    return x;
-                }
-            }
-
-            throw new KeyNotFoundException();
-        }
-
         public HumanBone ToHumanBone()
         {
             return new HumanBone
             {
                 boneName = boneName,
-                humanName = ToHumanBoneName(humanBone),
+                humanName = cachedHumanBodyBonesToBoneTraitNameMap[humanBone],
                 limit = new HumanLimit
                 {
                     useDefaultValues = useDefaultValues,
@@ -71,6 +75,7 @@ namespace UniHumanoid
             };
         }
     }
+
 
     [Serializable]
     public class AvatarDescription : ScriptableObject
@@ -122,6 +127,8 @@ namespace UniHumanoid
 
         public Avatar CreateAvatar(Transform root)
         {
+            // force unique name
+            ForceUniqueName.Process(root);
             return AvatarBuilder.BuildHumanAvatar(root.gameObject, ToHumanDescription(root));
         }
 
@@ -130,8 +137,7 @@ namespace UniHumanoid
             var avatar = CreateAvatar(root);
             avatar.name = name;
 
-            var animator = root.GetComponent<Animator>();
-            if (animator != null)
+            if (root.TryGetComponent<Animator>(out var animator))
             {
                 var positionMap = root.Traverse().ToDictionary(x => x, x => x.position);
                 animator.avatar = avatar;
@@ -141,8 +147,7 @@ namespace UniHumanoid
                 }
             }
 
-            var transfer = root.GetComponent<HumanPoseTransfer>();
-            if (transfer != null)
+            if (root.TryGetComponent<HumanPoseTransfer>(out var transfer))
             {
                 transfer.Avatar = avatar;
             }
@@ -265,5 +270,65 @@ namespace UniHumanoid
             return false;
         }
 #endif
+
+        public static Avatar CreateAvatarForCopyHierarchy(
+            Animator src,
+            GameObject dst,
+            IDictionary<Transform, Transform> boneMap,
+            Action<AvatarDescription> modAvatarDesc = null)
+        {
+            if (src == null)
+            {
+                throw new ArgumentNullException("src");
+            }
+
+            var srcHumanBones = CachedEnum.GetValues<HumanBodyBones>()
+                .Where(x => x != HumanBodyBones.LastBone)
+                .Select(x => new { Key = x, Value = src.GetBoneTransform(x) })
+                .Where(x => x.Value != null)
+                ;
+
+            var map =
+                   srcHumanBones
+                   .Where(x => boneMap.ContainsKey(x.Value))
+                   .ToDictionary(x => x.Key, x => boneMap[x.Value])
+                   ;
+
+            var avatarDescription = UniHumanoid.AvatarDescription.Create();
+            if (modAvatarDesc != null)
+            {
+                modAvatarDesc(avatarDescription);
+            }
+            avatarDescription.SetHumanBones(map);
+            var avatar = avatarDescription.CreateAvatar(dst.transform);
+            avatar.name = "created";
+            return avatar;
+        }
+
+        public static Avatar RecreateAvatar(Animator src)
+        {
+            if (src == null)
+            {
+                throw new ArgumentNullException("src");
+            }
+
+            var srcHumanBones = CachedEnum.GetValues<HumanBodyBones>()
+                .Where(x => x != HumanBodyBones.LastBone)
+                .Select(x => new { Key = x, Value = src.GetBoneTransform(x) })
+                .Where(x => x.Value != null)
+                ;
+
+            var map =
+                   srcHumanBones
+                   .ToDictionary(x => x.Key, x => x.Value)
+                   ;
+
+            var avatarDescription = UniHumanoid.AvatarDescription.Create();
+            avatarDescription.SetHumanBones(map);
+
+            var avatar = avatarDescription.CreateAvatar(src.transform);
+            avatar.name = "created";
+            return avatar;
+        }
     }
 }

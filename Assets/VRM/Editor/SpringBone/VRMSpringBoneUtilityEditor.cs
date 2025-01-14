@@ -10,7 +10,7 @@ namespace VRM
     internal static class VRMSpringBoneUtilityEditor
     {
         #region save
-
+        public const string SAVE_MENU_NAME = "VRM 0.x Save SpringBone to JSON...";
         public static bool SaveSpringBoneToJsonValidation()
         {
             var root = Selection.activeObject as GameObject;
@@ -19,8 +19,7 @@ namespace VRM
                 return false;
             }
 
-            var animator = root.GetComponent<Animator>();
-            if (animator == null)
+            if (root.TryGetComponent<Animator>(out var animator))
             {
                 return false;
             }
@@ -57,7 +56,7 @@ namespace VRM
         #endregion
 
         #region load
-
+        public const string LOAD_MENU_NAME = "VRM 0.x Load SpringBone from JSON...";
         public static bool LoadSpringBoneFromJsonValidation()
         {
             var root = Selection.activeObject as GameObject;
@@ -66,8 +65,7 @@ namespace VRM
                 return false;
             }
 
-            var animator = root.GetComponent<Animator>();
-            if (animator == null)
+            if (root.TryGetComponent<Animator>(out var animator))
             {
                 return false;
             }
@@ -93,10 +91,18 @@ namespace VRM
             var root = go.transform;
             var nodes = root.Traverse().Skip(1).ToList();
 
-            VRMSpringUtility.LoadSecondary(root, nodes, spring);
+            VRMSpringUtility.LoadSecondary(root, (int index, out Transform node) =>
+            {
+                if (index < 0 || index >= nodes.Count)
+                {
+                    Debug.LogWarning($"nodes[{index}] is not found !");
+                    node = default;
+                    return false;
+                }
+                node = nodes[index];
+                return true;
+            }, spring);
         }
-
         #endregion
-
     }
 }

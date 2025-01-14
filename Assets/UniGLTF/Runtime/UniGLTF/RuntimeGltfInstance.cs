@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
+using UniGLTF.Utils;
 using UnityEngine;
-using VRMShaders;
 
 namespace UniGLTF
 {
@@ -21,6 +20,11 @@ namespace UniGLTF
         /// Transforms with gltf node index.
         /// </summary>
         public IReadOnlyList<Transform> Nodes => _nodes;
+
+        /// <summary>
+        /// Transform states on load.
+        /// </summary>
+        public IReadOnlyDictionary<Transform, TransformState> InitialTransformStates => _initialTransformStates;
 
         /// <summary>
         /// Runtime resources.
@@ -73,6 +77,7 @@ namespace UniGLTF
         public IList<Renderer> VisibleRenderers => _visibleRenderers;
 
         private readonly List<Transform> _nodes = new List<Transform>();
+        private readonly Dictionary<Transform, TransformState> _initialTransformStates = new Dictionary<Transform, TransformState>();
         private readonly List<(SubAssetKey, UnityEngine.Object)> _resources = new List<(SubAssetKey, UnityEngine.Object)>();
         private readonly List<Material> _materials = new List<Material>();
         private readonly List<Texture> _textures = new List<Texture>();
@@ -92,6 +97,7 @@ namespace UniGLTF
             {
                 // Maintain index order.
                 loaded._nodes.Add(node);
+                loaded._initialTransformStates.Add(node, new TransformState(node));
             }
 
             context.TransferOwnership((k, o) =>
@@ -159,12 +165,71 @@ namespace UniGLTF
             }
         }
 
+        public void ReplaceResource(UnityEngine.Object oldResource, UnityEngine.Object newResource)
+        {
+            if (oldResource == null || newResource == null || oldResource.GetType() != newResource.GetType())
+            {
+                Debug.LogError($"{nameof(RuntimeGltfInstance)} - Could not replace resource: mismatched or null types.");
+                return;
+            }
+            
+            for (int i = 0; i < _resources.Count; i++)
+            {
+                if (_resources[i].Item2 == oldResource)
+                {
+                    _resources[i] = (_resources[i].Item1, newResource);
+                    break;
+                }
+            }
+
+            switch (oldResource)
+            {
+                case Texture oldTexture when newResource is Texture newTexture:
+                    int texIndex = _textures.IndexOf(oldTexture);
+                    if (texIndex != -1)
+                    {
+                        _textures[texIndex] = newTexture;
+                    }
+                    break;
+
+                case Material oldMaterial when newResource is Material newMaterial:
+                    int matIndex = _materials.IndexOf(oldMaterial);
+                    if (matIndex != -1)
+                    {
+                        _materials[matIndex] = newMaterial;
+                    }
+                    break;
+
+                case AnimationClip oldClip when newResource is AnimationClip newClip:
+                    int clipIndex = _animationClips.IndexOf(oldClip);
+                    if (clipIndex != -1)
+                    {
+                        _animationClips[clipIndex] = newClip;
+                    }
+                    break;
+
+                case Mesh oldMesh when newResource is Mesh newMesh:
+                    int meshIndex = _meshes.IndexOf(oldMesh);
+                    if (meshIndex != -1)
+                    {
+                        _meshes[meshIndex] = newMesh;
+                    }
+                    break;
+            }
+
+            Destroy(oldResource);
+        }
+
+        public void AddResource<T>(T resource) where T : UnityEngine.Object
+        {
+            _resources.Add((SubAssetKey.Create(resource), resource));
+        }
+
         void OnDestroy()
         {
-            Debug.Log("UnityResourceDestroyer.OnDestroy");
             foreach (var (_, obj) in _resources)
             {
-                UnityObjectDestoyer.DestroyRuntimeOrEditor(obj);
+                UnityObjectDestroyer.DestroyRuntimeOrEditor(obj);
             }
         }
 
@@ -181,7 +246,7 @@ namespace UniGLTF
         {
             if (this != null && this.gameObject != null)
             {
-                UnityObjectDestoyer.DestroyRuntimeOrEditor(this.gameObject);
+                UnityObjectDestroyer.DestroyRuntimeOrEditor(this.gameObject);
             }
         }
     }

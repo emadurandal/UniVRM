@@ -272,14 +272,14 @@ public static void Serialize_gltf_accessors_ITEM(JsonFormatter f, glTFAccessor v
     f.BeginMap();
 
 
-    if(value.bufferView>=0){
+    if(value.bufferView.HasValue){
         f.Key("bufferView");
-        f.Value(value.bufferView);
+        f.Value(value.bufferView.Value);
     }
 
-    if(value.byteOffset>=0){
+    if(value.byteOffset.HasValue){
         f.Key("byteOffset");
-        f.Value(value.byteOffset);
+        f.Value(value.byteOffset.Value);
     }
 
     if(!string.IsNullOrEmpty(value.type)){
@@ -475,9 +475,9 @@ public static void Serialize_gltf_textures_ITEM(JsonFormatter f, glTFTexture val
         f.Value(value.sampler);
     }
 
-    if(value.source>=0){
+    if(value.source.HasValue){
         f.Key("source");
-        f.Value(value.source);
+        f.Value(value.source.Value);
     }
 
     if(value.extensions!=null){
@@ -972,9 +972,9 @@ public static void Serialize_gltf_meshes__primitives_ITEM(JsonFormatter f, glTFP
         Serialize_gltf_meshes__primitives__attributes(f, value.attributes);
     }
 
-    if(value.material>=0){
+    if(value.material.HasValidIndex()){
         f.Key("material");
-        f.Value(value.material);
+        f.Value(value.material.Value);
     }
 
     if(value.targets!=null&&value.targets.Count>=1){

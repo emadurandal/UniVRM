@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using UniGLTF.MeshUtility;
 using UnityEngine;
-using VRMShaders;
-
 
 namespace UniGLTF
 {
@@ -12,7 +11,7 @@ namespace UniGLTF
     {
         protected ExportingGltfData _data;
 
-        protected glTF _gltf => _data.GLTF;
+        protected glTF _gltf => _data.Gltf;
 
         public GameObject Copy
         {
@@ -46,33 +45,36 @@ namespace UniGLTF
             private set;
         }
 
-        protected virtual IMaterialExporter CreateMaterialExporter()
-        {
-            return new MaterialExporter();
-        }
-
-        /// <summary>
-        /// このエクスポーターがサポートするExtension
-        /// </summary>
-        protected virtual IEnumerable<string> ExtensionUsed
-        {
-            get
-            {
-                yield return glTF_KHR_materials_unlit.ExtensionName;
-                yield return glTF_KHR_texture_transform.ExtensionName;
-            }
-        }
-
         protected ITextureExporter TextureExporter => _textureExporter;
         private TextureExporter _textureExporter;
 
         GltfExportSettings m_settings;
 
-        public gltfExporter(ExportingGltfData data, GltfExportSettings settings)
+        IProgress<ExportProgress> m_progress;
+
+        void ReportProgress(string msg, float progress)
+        {
+            if (m_progress == null)
+            {
+                return;
+            }
+            m_progress.Report(new ExportProgress("gltfExporter", msg, progress));
+        }
+
+        private readonly IAnimationExporter m_animationExporter;
+        private readonly IMaterialExporter m_materialExporter;
+        private readonly ITextureSerializer m_textureSerializer;
+
+        public gltfExporter(
+            ExportingGltfData data,
+            GltfExportSettings settings,
+            IProgress<ExportProgress> progress = null,
+            IAnimationExporter animationExporter = null,
+            IMaterialExporter materialExporter = null,
+            ITextureSerializer textureSerializer = null
+        )
         {
             _data = data;
-
-            _gltf.extensionsUsed.AddRange(ExtensionUsed);
 
             _gltf.asset = new glTFAssets
             {
@@ -86,6 +88,10 @@ namespace UniGLTF
                 // default
                 m_settings = new GltfExportSettings();
             }
+
+            m_animationExporter = animationExporter;
+            m_materialExporter = materialExporter ?? MaterialExporterUtility.GetValidGltfMaterialExporter();
+            m_textureSerializer = textureSerializer ?? new RuntimeTextureSerializer();
         }
 
         GameObject m_tmpParent = null;
@@ -108,11 +114,13 @@ namespace UniGLTF
                 Copy = m_tmpParent;
             }
 
-            if (Copy.transform.GetComponent<Renderer>() != null)
+            if (Copy.transform.TryGetComponent<Renderer>(out var r))
             {
                 // should throw ?
                 Debug.LogError("root mesh is not exported");
             }
+
+            ReportProgress("prepared", 0.1f);
         }
 
         public void Dispose()
@@ -140,6 +148,8 @@ namespace UniGLTF
             {
                 GameObject.Destroy(Copy);
             }
+
+            _textureExporter.Dispose();
         }
 
         #region Export
@@ -156,12 +166,9 @@ namespace UniGLTF
 
             if (x.gameObject.activeInHierarchy)
             {
-                var meshRenderer = x.GetComponent<MeshRenderer>();
-
-                if (meshRenderer != null)
+                if (x.TryGetComponent<MeshRenderer>(out var meshRenderer) && meshRenderer.enabled)
                 {
-                    var meshFilter = x.GetComponent<MeshFilter>();
-                    if (meshFilter != null)
+                    if (x.TryGetComponent<MeshFilter>(out var meshFilter))
                     {
                         var mesh = meshFilter.sharedMesh;
                         var materials = meshRenderer.sharedMaterials;
@@ -187,8 +194,7 @@ namespace UniGLTF
                     }
                 }
 
-                var skinnedMeshRenderer = x.GetComponent<SkinnedMeshRenderer>();
-                if (skinnedMeshRenderer != null)
+                if (x.TryGetComponent<SkinnedMeshRenderer>(out var skinnedMeshRenderer) && skinnedMeshRenderer.enabled)
                 {
                     var mesh = skinnedMeshRenderer.sharedMesh;
                     var materials = skinnedMeshRenderer.sharedMaterials;
@@ -223,8 +229,20 @@ namespace UniGLTF
             // do nothing
         }
 
-        public virtual void Export(ITextureSerializer textureSerializer)
+        public virtual void Export()
         {
+            if (m_settings.FreezeMesh)
+            {
+                // Transform の回転とスケールを Mesh に適用します。
+                // - BlendShape は現状がbakeされます
+                // - 回転とスケールが反映された新しい Mesh が作成されます
+                // - Transform の回転とスケールはクリアされます。world position を維持します
+                var newMeshMap = BoneNormalizer.NormalizeHierarchyFreezeMesh(Copy, m_settings.FreezeMeshUseCurrentBlendShapeWeight);
+
+                // SkinnedMeshRenderer.sharedMesh と MeshFilter.sharedMesh を新しいMeshで置き換える
+                BoneNormalizer.Replace(Copy, newMeshMap, m_settings.FreezeMeshKeepRotation);
+            }
+
             Nodes = Copy.transform.Traverse()
                 .Skip(1) // exclude root object for the symmetry with the importer
                 .ToList();
@@ -233,15 +251,16 @@ namespace UniGLTF
             uniqueUnityMeshes.GetInfo(Nodes, m_settings);
 
             #region Materials and Textures
+            ReportProgress("Materials and Textures", 0.2f);
             Materials = uniqueUnityMeshes.GetUniqueMaterials().ToList();
 
-            _textureExporter = new TextureExporter(textureSerializer);
+            _textureExporter = new TextureExporter(m_textureSerializer);
 
-            var materialExporter = CreateMaterialExporter();
-            _gltf.materials = Materials.Select(x => materialExporter.ExportMaterial(x, TextureExporter, m_settings)).ToList();
+            _gltf.materials = Materials.Select(x => m_materialExporter.ExportMaterial(x, TextureExporter, m_settings)).ToList();
             #endregion
 
             #region Meshes
+            ReportProgress("Meshes", 0.4f);
             MeshBlendShapeIndexMap = new Dictionary<Mesh, Dictionary<int, int>>();
             foreach (var unityMesh in uniqueUnityMeshes)
             {
@@ -265,6 +284,7 @@ namespace UniGLTF
             #endregion
 
             #region Nodes and Skins
+            ReportProgress("Nodes and Skins", 0.8f);
             var skins = uniqueUnityMeshes
                 .SelectMany(x => x.Renderers)
                 .Where(x => x.Item1 is SkinnedMeshRenderer && x.UniqueBones != null)
@@ -295,7 +315,19 @@ namespace UniGLTF
                         var skin = new glTFSkin
                         {
                             inverseBindMatrices = accessor,
-                            joints = uniqueBones.Select(y => Nodes.IndexOf(y)).ToArray(),
+                            joints = uniqueBones.Select(y =>
+                            {
+                                var index = Nodes.IndexOf(y);
+                                if (index < 0)
+                                {
+                                    // bones の先頭を使う
+                                    return 0;
+                                }
+                                else
+                                {
+                                    return index;
+                                }
+                            }).ToArray(),
                             skeleton = Nodes.IndexOf(smr.rootBone),
                         };
                         var skinIndex = _gltf.skins.Count;
@@ -312,83 +344,27 @@ namespace UniGLTF
             }
             #endregion
 
-#if UNITY_EDITOR
-            #region Animations
-
-            var clips = new List<AnimationClip>();
-            var animator = Copy.GetComponent<Animator>();
-            var animation = Copy.GetComponent<Animation>();
-            if (animator != null)
+            if (m_animationExporter != null)
             {
-                clips = AnimationExporter.GetAnimationClips(animator);
-            }
-            else if (animation != null)
-            {
-                clips = AnimationExporter.GetAnimationClips(animation);
+                ReportProgress("Animations", 0.9f);
+                m_animationExporter.Export(_data, Copy, Nodes);
             }
 
-            if (clips.Any())
-            {
-                foreach (AnimationClip clip in clips)
-                {
-                    var animationWithCurve = AnimationExporter.Export(clip, Copy.transform, Nodes);
-
-                    foreach (var kv in animationWithCurve.SamplerMap)
-                    {
-                        var sampler = animationWithCurve.Animation.samplers[kv.Key];
-
-                        var inputAccessorIndex = _data.ExtendBufferAndGetAccessorIndex(kv.Value.Input);
-                        sampler.input = inputAccessorIndex;
-
-                        var outputAccessorIndex = _data.ExtendBufferAndGetAccessorIndex(kv.Value.Output);
-                        sampler.output = outputAccessorIndex;
-
-                        // modify accessors
-                        var outputAccessor = _gltf.accessors[outputAccessorIndex];
-                        var channel = animationWithCurve.Animation.channels.First(x => x.sampler == kv.Key);
-                        switch (glTFAnimationTarget.GetElementCount(channel.target.path))
-                        {
-                            case 1:
-                                outputAccessor.type = "SCALAR";
-                                //outputAccessor.count = ;
-                                break;
-                            case 3:
-                                outputAccessor.type = "VEC3";
-                                outputAccessor.count /= 3;
-                                break;
-
-                            case 4:
-                                outputAccessor.type = "VEC4";
-                                outputAccessor.count /= 4;
-                                break;
-
-                            default:
-                                throw new NotImplementedException();
-                        }
-                    }
-                    animationWithCurve.Animation.name = clip.name;
-                    _gltf.animations.Add(animationWithCurve.Animation);
-                }
-
-            }
-            #endregion
-#endif
-
-            ExportExtensions(textureSerializer);
+            ExportExtensions(m_textureSerializer);
 
             // Extension で Texture が増える場合があるので最後に呼ぶ
             var exported = _textureExporter.Export();
             for (var exportedTextureIdx = 0; exportedTextureIdx < exported.Count; ++exportedTextureIdx)
             {
                 var (unityTexture, colorSpace) = exported[exportedTextureIdx];
-                GltfTextureExporter.PushGltfTexture(_data, unityTexture, colorSpace, textureSerializer);
+                GltfTextureExporter.PushGltfTexture(_data, unityTexture, colorSpace, m_textureSerializer);
             }
 
             FixName(_gltf);
         }
 
         /// <summary>
-        /// GlbLowPevelParser.FixNameUnique で付与した Suffix を remove
+        /// GlbLowLevelParser.FixNameUnique で付与した Suffix を remove
         /// </summary>
         public static void FixName(glTF gltf)
         {

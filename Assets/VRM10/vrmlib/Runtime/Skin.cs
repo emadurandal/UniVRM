@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Text;
 using UniGLTF;
+using Unity.Collections;
+using UnityEngine;
 
 namespace VrmLib
 {
@@ -29,7 +30,7 @@ namespace VrmLib
         /// <summary>
         /// BoneSkinningもしくはMorphTargetの適用
         /// <summary>
-        public void Skinning(VertexBuffer vertexBuffer = null)
+        public void Skinning(INativeArrayManager arrayManager, VertexBuffer vertexBuffer = null)
         {
             m_indexOfRoot = (ushort)Joints.IndexOf(Root);
             var addRoot = Root != null && m_indexOfRoot == ushort.MaxValue;
@@ -46,13 +47,13 @@ namespace VrmLib
 
             if (InverseMatrices == null)
             {
-                CalcInverseMatrices();
+                CalcInverseMatrices(arrayManager);
             }
             else
             {
                 if (addRoot)
                 {
-                    var inverseArray = SpanLike.Wrap<Matrix4x4>(InverseMatrices.Bytes).ToArray();
+                    var inverseArray = InverseMatrices.Bytes.Reinterpret<Matrix4x4>(1);
                     var concat = inverseArray.Concat(new[] { Root.InverseMatrix }).ToArray();
                     InverseMatrices.Assign(concat);
                 }
@@ -80,33 +81,33 @@ namespace VrmLib
 
             if (vertexBuffer != null)
             {
-                Apply(vertexBuffer);
+                Apply(arrayManager, vertexBuffer);
             }
         }
 
-        void Apply(VertexBuffer vertexBuffer)
+        void Apply(INativeArrayManager arrayManager, VertexBuffer vertexBuffer)
         {
-            var dstPosition = SpanLike.Wrap<Vector3>(vertexBuffer.Positions.Bytes);
+            var dstPosition = vertexBuffer.Positions.Bytes.Reinterpret<Vector3>(1);
             // Span<Vector3> emptyNormal = stackalloc Vector3[0];
-            Apply(vertexBuffer, dstPosition, vertexBuffer.Normals != null ? SpanLike.Wrap<Vector3>(vertexBuffer.Normals.Bytes) : default);
+            Apply(arrayManager, vertexBuffer, dstPosition, vertexBuffer.Normals != null ? vertexBuffer.Normals.Bytes.Reinterpret<Vector3>(1) : default);
         }
 
-        public void Apply(VertexBuffer vertexBuffer, SpanLike<Vector3> dstPosition, SpanLike<Vector3> dstNormal)
+        public void Apply(INativeArrayManager arrayManager, VertexBuffer vertexBuffer, NativeArray<Vector3> dstPosition, NativeArray<Vector3> dstNormal)
         {
             var jointsBuffer = vertexBuffer.Joints;
             var joints = (jointsBuffer != null || jointsBuffer.Count == 0)
-                ? SpanLike.Wrap<SkinJoints>(jointsBuffer.Bytes)
-                : SpanLike.Create<SkinJoints>(vertexBuffer.Count) // when MorphTarget only
+                ? jointsBuffer.GetAsSkinJointsArray()
+                : arrayManager.CreateNativeArray<SkinJoints>(vertexBuffer.Count) // when MorphTarget only
                 ;
 
             var weightsBuffer = vertexBuffer.Weights;
             var weights = (weightsBuffer != null || weightsBuffer.Count == 0)
-                ? SpanLike.Wrap<Vector4>(weightsBuffer.Bytes)
-                : SpanLike.Create<Vector4>(vertexBuffer.Count) // when MorphTarget only
+                ? weightsBuffer.GetAsVector4Array()
+                : arrayManager.CreateNativeArray<Vector4>(vertexBuffer.Count) // when MorphTarget only
                 ;
 
             var positionBuffer = vertexBuffer.Positions;
-            var position = SpanLike.Wrap<Vector3>(positionBuffer.Bytes);
+            var position = positionBuffer.Bytes.Reinterpret<Vector3>(1);
 
             bool useNormal = false;
             if (dstNormal.Length > 0)
@@ -119,7 +120,7 @@ namespace VrmLib
                 var j = joints[i];
                 var w = weights[i];
 
-                var sum = (w.X + w.Y + w.Z + w.W);
+                var sum = (w.x + w.y + w.z + w.w);
                 float factor;
                 if (sum > 0)
                 {
@@ -131,31 +132,31 @@ namespace VrmLib
                     j = new SkinJoints(m_indexOfRoot, 0, 0, 0);
                     w = new Vector4(1, 0, 0, 0);
                 }
-                if (j.Joint0 == ushort.MaxValue) w.X = 0;
-                if (j.Joint1 == ushort.MaxValue) w.Y = 0;
-                if (j.Joint2 == ushort.MaxValue) w.Z = 0;
-                if (j.Joint3 == ushort.MaxValue) w.W = 0;
+                if (j.Joint0 == ushort.MaxValue) w.x = 0;
+                if (j.Joint1 == ushort.MaxValue) w.y = 0;
+                if (j.Joint2 == ushort.MaxValue) w.z = 0;
+                if (j.Joint3 == ushort.MaxValue) w.w = 0;
 
                 {
-                    var src = new Vector4(position[i], 1); // 位置ベクトル
-                    var dst = Vector4.Zero;
-                    if (w.X > 0) dst += Vector4.Transform(src, m_matrices[j.Joint0]) * w.X * factor;
-                    if (w.Y > 0) dst += Vector4.Transform(src, m_matrices[j.Joint1]) * w.Y * factor;
-                    if (w.Z > 0) dst += Vector4.Transform(src, m_matrices[j.Joint2]) * w.Z * factor;
-                    if (w.W > 0) dst += Vector4.Transform(src, m_matrices[j.Joint3]) * w.W * factor;
-                    dstPosition[i] = new Vector3(dst.X, dst.Y, dst.Z);
+                    var src = position[i]; // 位置ベクトル
+                    var dst = Vector3.zero;
+                    if (w.x > 0) dst += m_matrices[j.Joint0].MultiplyPoint(src) * w.x * factor;
+                    if (w.y > 0) dst += m_matrices[j.Joint1].MultiplyPoint(src) * w.y * factor;
+                    if (w.z > 0) dst += m_matrices[j.Joint2].MultiplyPoint(src) * w.z * factor;
+                    if (w.w > 0) dst += m_matrices[j.Joint3].MultiplyPoint(src) * w.w * factor;
+                    dstPosition[i] = new Vector3(dst.x, dst.y, dst.z);
                 }
                 if (useNormal)
                 {
                     var normalBuffer = vertexBuffer.Normals;
-                    var normal = normalBuffer != null ? SpanLike.Wrap<Vector3>(normalBuffer.Bytes) : dstNormal;
-                    var src = new Vector4(normal[i], 0); // 方向ベクトル
-                    var dst = Vector4.Zero;
-                    if (w.X > 0) dst += Vector4.Transform(src, m_matrices[j.Joint0]) * w.X * factor;
-                    if (w.Y > 0) dst += Vector4.Transform(src, m_matrices[j.Joint1]) * w.Y * factor;
-                    if (w.Z > 0) dst += Vector4.Transform(src, m_matrices[j.Joint2]) * w.Z * factor;
-                    if (w.W > 0) dst += Vector4.Transform(src, m_matrices[j.Joint3]) * w.W * factor;
-                    dstNormal[i] = new Vector3(dst.X, dst.Y, dst.Z);
+                    var normal = normalBuffer != null ? normalBuffer.Bytes.Reinterpret<Vector3>(1) : dstNormal;
+                    var src = normal[i]; // 方向ベクトル
+                    var dst = Vector3.zero;
+                    if (w.x > 0) dst += m_matrices[j.Joint0].MultiplyVector(src) * w.x * factor;
+                    if (w.y > 0) dst += m_matrices[j.Joint1].MultiplyVector(src) * w.y * factor;
+                    if (w.z > 0) dst += m_matrices[j.Joint2].MultiplyVector(src) * w.z * factor;
+                    if (w.w > 0) dst += m_matrices[j.Joint3].MultiplyVector(src) * w.w * factor;
+                    dstNormal[i] = new Vector3(dst.x, dst.y, dst.z);
                 }
             }
         }
@@ -165,10 +166,10 @@ namespace VrmLib
         {
             // 回転・スケール・しあー
             if (
-                m.M11 == 1 && m.M12 == 0 && m.M13 == 0 && m.M14 == 0
-                && m.M21 == 0 && m.M22 == 1 && m.M23 == 0 && m.M24 == 0
-                && m.M31 == 0 && m.M32 == 0 && m.M33 == 1 && m.M34 == 0
-                && m.M44 == 1
+                m.m00 == 1 && m.m10 == 0 && m.m20 == 0 && m.m30 == 0
+                && m.m01 == 0 && m.m11 == 1 && m.m21 == 0 && m.m31 == 0
+                && m.m02 == 0 && m.m12 == 0 && m.m22 == 1 && m.m32 == 0
+                && m.m33 == 1
             )
             {
 
@@ -178,9 +179,10 @@ namespace VrmLib
                 return false;
             }
 
-            if (Math.Abs(m.M41) > 1e-5f) return false;
-            if (Math.Abs(m.M42) > 1e-5f) return false;
-            if (Math.Abs(m.M43) > 1e-5f) return false;
+            // translate
+            if (Math.Abs(m.m03) > 1e-5f) return false;
+            if (Math.Abs(m.m13) > 1e-5f) return false;
+            if (Math.Abs(m.m23) > 1e-5f) return false;
 
             return true;
         }
@@ -190,9 +192,9 @@ namespace VrmLib
             if (InverseMatrices != null)
             {
                 var sb = new StringBuilder();
-                var matrices = SpanLike.Wrap<Matrix4x4>(InverseMatrices.Bytes);
+                var matrices = InverseMatrices.Bytes.Reinterpret<Matrix4x4>(1);
                 var count = 0;
-                // var rootMatrix = Matrix4x4.Identity;
+                // var rootMatrix = Matrix4x4.identity;
                 // if (Root != null)
                 // {
                 //     rootMatrix = Root.InverseMatrix;
@@ -221,7 +223,7 @@ namespace VrmLib
             }
         }
 
-        public void Replace(Node src, Node dst)
+        public void Replace(INativeArrayManager arrayManager, Node src, Node dst)
         {
             var removeIndex = Joints.IndexOf(src);
             if (removeIndex >= 0)
@@ -229,22 +231,22 @@ namespace VrmLib
                 Joints[removeIndex] = dst;
 
                 // エクスポート時に再計算させる
-                CalcInverseMatrices();
+                CalcInverseMatrices(arrayManager);
             }
         }
 
-        public void CalcInverseMatrices()
+        public void CalcInverseMatrices(INativeArrayManager arrayManager)
         {
             // var root = Root;
             // if (root == null)
             // {
             //     root = Joints[0].Ancestors().Last();
             // }
-            // root.CalcWorldMatrix(Matrix4x4.Identity, true);
+            // root.CalcWorldMatrix(Matrix4x4.identity, true);
 
             // calc inverse bind matrices
-            var matricesBytes = new Byte[Marshal.SizeOf(typeof(Matrix4x4)) * Joints.Count];
-            var matrices = SpanLike.Wrap<Matrix4x4>(new ArraySegment<byte>(matricesBytes));
+            var matricesBytes = arrayManager.CreateNativeArray<Byte>(Marshal.SizeOf(typeof(Matrix4x4)) * Joints.Count);
+            var matrices = matricesBytes.Reinterpret<Matrix4x4>(1);
             for (int i = 0; i < Joints.Count; ++i)
             {
                 // var w = Joints[i].Matrix;
@@ -254,7 +256,7 @@ namespace VrmLib
                     matrices[i] = Joints[i].InverseMatrix;
                 }
             }
-            InverseMatrices = new BufferAccessor(new ArraySegment<byte>(matricesBytes), AccessorValueType.FLOAT, AccessorVectorType.MAT4, Joints.Count);
+            InverseMatrices = new BufferAccessor(arrayManager, matricesBytes, AccessorValueType.FLOAT, AccessorVectorType.MAT4, Joints.Count);
         }
 
         static void Update(ref float weight, ref ushort index, int[] indexMap)
@@ -274,40 +276,6 @@ namespace VrmLib
                 // 参照を更新(変わっているかもしれない)
                 index = (ushort)indexMap[index];
             }
-        }
-
-        /// <summary>
-        /// nullになったjointを除去して、boneweightを前に詰める
-        /// </summary>
-        public void FixBoneWeight(BufferAccessor jointsAccessor, BufferAccessor weightsAccessor)
-        {
-            var map = Joints.Select((x, i) => ValueTuple.Create(i, x)).Where(x => x.Item2 != null).ToArray();
-            var indexMap = Enumerable.Repeat(-1, Joints.Count).ToArray();
-            {
-                for (int i = 0; i < map.Length; ++i)
-                {
-                    indexMap[map[i].Item1] = i;
-                }
-            }
-            Joints.RemoveAll(x => x == null);
-
-            var joints = jointsAccessor.GetSpan<SkinJoints>();
-            var weights = weightsAccessor.GetSpan<Vector4>();
-            for (int i = 0; i < joints.Length; ++i)
-            {
-                var j = joints[i];
-                var w = weights[i];
-
-                Update(ref w.X, ref j.Joint0, indexMap);
-                Update(ref w.Y, ref j.Joint1, indexMap);
-                Update(ref w.Z, ref j.Joint2, indexMap);
-                Update(ref w.W, ref j.Joint3, indexMap);
-
-                joints[i] = j;
-                weights[i] = w;
-            }
-
-            CalcInverseMatrices();
         }
     }
 }

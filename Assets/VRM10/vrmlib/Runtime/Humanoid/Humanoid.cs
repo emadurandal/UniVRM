@@ -2,7 +2,8 @@ using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
-using System.Numerics;
+using UniGLTF.Utils;
+using UnityEngine;
 
 
 /// <summary>
@@ -78,9 +79,17 @@ namespace VrmLib
         public Node Distal;
     }
 
+    struct HumanoidThumb
+    {
+        public Node Metacarpal;
+        public Node Proximal;
+        public Node Distal;
+    }
+
+
     struct HumanoidFingers
     {
-        public HumanoidFinger Thumb;
+        public HumanoidThumb Thumb;
         public HumanoidFinger Index;
         public HumanoidFinger Middle;
         public HumanoidFinger Ring;
@@ -182,7 +191,7 @@ namespace VrmLib
         public (bool, string) Y180()
         {
             var sb = new System.Text.StringBuilder();
-            Hips.LocalRotation = Quaternion.CreateFromYawPitchRoll(MathFWrap.PI, 0, 0);
+            Hips.LocalRotation = Quaternion.Euler(0, MathFWrap.PI, 0);
             Hips.CalcWorldMatrix();
             return (true, sb.ToString());
         }
@@ -198,22 +207,22 @@ namespace VrmLib
             // hipsのforward を -Z に向ける
             // hipsのforward は (left.leg - right.leg) cross (0, 1, 0)
             var left = Vector3.Normalize(LeftLeg.Upper.Translation - RightLeg.Upper.Translation);
-            var forward = Vector3.Cross(left, Vector3.UnitY);
-            if (Vector3.Dot(forward, -Vector3.UnitZ) < 1.0f - 0.1f)
+            var forward = Vector3.Cross(left, Vector3.up);
+            if (Vector3.Dot(forward, -Vector3.forward) < 1.0f - 0.1f)
             {
-                Hips.RotateFromTo(forward, -Vector3.UnitZ);
+                Hips.RotateFromTo(forward, -Vector3.forward);
                 modified = true;
             }
 
-            if (Vector3.Dot(LeftArm.Direction, -Vector3.UnitX) < 1.0f - 0.1f)
+            if (Vector3.Dot(LeftArm.Direction, -Vector3.right) < 1.0f - 0.1f)
             {
-                LeftArm.DirectTo(-Vector3.UnitX);
+                LeftArm.DirectTo(-Vector3.right);
                 sb.Append("(fix left arm)");
                 modified = true;
             }
-            if (Vector3.Dot(RightArm.Direction, Vector3.UnitX) < 1.0f - 0.1f)
+            if (Vector3.Dot(RightArm.Direction, Vector3.right) < 1.0f - 0.1f)
             {
-                RightArm.DirectTo(Vector3.UnitX);
+                RightArm.DirectTo(Vector3.right);
                 sb.Append("(fix right arm)");
                 modified = true;
             }
@@ -230,7 +239,7 @@ namespace VrmLib
                 if (dst.TryGetValue(kv.Key, out Node node))
                 {
                     // var t = tposeNode.LocalRotation;
-                    // var t = Quaternion.Identity;
+                    // var t = Quaternion.identity;
                     // node.LocalRotationWithoutUpdate = Quaternion.Inverse(t) * kv.Value.LocalRotation;
                     // node.LocalRotationWithoutUpdate = kv.Value.LocalRotation * Quaternion.Inverse(t);
 
@@ -294,8 +303,8 @@ namespace VrmLib
                 case HumanoidBones.rightFoot: RightLeg.Foot = node; break;
                 case HumanoidBones.rightToes: RightLeg.Toe = node; break;
 
+                case HumanoidBones.leftThumbMetacarpal: LeftFingers.Thumb.Metacarpal = node; break;
                 case HumanoidBones.leftThumbProximal: LeftFingers.Thumb.Proximal = node; break;
-                case HumanoidBones.leftThumbIntermediate: LeftFingers.Thumb.Intermediate = node; break;
                 case HumanoidBones.leftThumbDistal: LeftFingers.Thumb.Distal = node; break;
                 case HumanoidBones.leftIndexProximal: LeftFingers.Index.Proximal = node; break;
                 case HumanoidBones.leftIndexIntermediate: LeftFingers.Index.Intermediate = node; break;
@@ -310,8 +319,8 @@ namespace VrmLib
                 case HumanoidBones.leftLittleIntermediate: LeftFingers.Little.Intermediate = node; break;
                 case HumanoidBones.leftLittleDistal: LeftFingers.Little.Distal = node; break;
 
+                case HumanoidBones.rightThumbMetacarpal: RightFingers.Thumb.Metacarpal = node; break;
                 case HumanoidBones.rightThumbProximal: RightFingers.Thumb.Proximal = node; break;
-                case HumanoidBones.rightThumbIntermediate: RightFingers.Thumb.Intermediate = node; break;
                 case HumanoidBones.rightThumbDistal: RightFingers.Thumb.Distal = node; break;
                 case HumanoidBones.rightIndexProximal: RightFingers.Index.Proximal = node; break;
                 case HumanoidBones.rightIndexIntermediate: RightFingers.Index.Intermediate = node; break;
@@ -410,8 +419,8 @@ namespace VrmLib
                 case HumanoidBones.rightFoot: value = RightLeg.Foot; return true;
                 case HumanoidBones.rightToes: value = RightLeg.Toe; return true;
 
+                case HumanoidBones.leftThumbMetacarpal: value = LeftFingers.Thumb.Metacarpal; return true;
                 case HumanoidBones.leftThumbProximal: value = LeftFingers.Thumb.Proximal; return true;
-                case HumanoidBones.leftThumbIntermediate: value = LeftFingers.Thumb.Intermediate; return true;
                 case HumanoidBones.leftThumbDistal: value = LeftFingers.Thumb.Distal; return true;
                 case HumanoidBones.leftIndexProximal: value = LeftFingers.Index.Proximal; return true;
                 case HumanoidBones.leftIndexIntermediate: value = LeftFingers.Index.Intermediate; return true;
@@ -427,7 +436,7 @@ namespace VrmLib
                 case HumanoidBones.leftLittleDistal: value = LeftFingers.Little.Distal; return true;
 
                 case HumanoidBones.rightThumbProximal: value = LeftFingers.Thumb.Proximal; return true;
-                case HumanoidBones.rightThumbIntermediate: value = LeftFingers.Thumb.Intermediate; return true;
+                case HumanoidBones.rightThumbMetacarpal: value = LeftFingers.Thumb.Metacarpal; return true;
                 case HumanoidBones.rightThumbDistal: value = LeftFingers.Thumb.Distal; return true;
                 case HumanoidBones.rightIndexProximal: value = LeftFingers.Index.Proximal; return true;
                 case HumanoidBones.rightIndexIntermediate: value = LeftFingers.Index.Intermediate; return true;
@@ -449,7 +458,7 @@ namespace VrmLib
 
         public void Clear()
         {
-            foreach (HumanoidBones key in Enum.GetValues(typeof(HumanoidBones)))
+            foreach (HumanoidBones key in CachedEnum.GetValues<HumanoidBones>())
             {
                 Add(key, null);
             }

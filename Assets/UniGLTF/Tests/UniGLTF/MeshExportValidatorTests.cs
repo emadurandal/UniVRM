@@ -12,7 +12,7 @@ namespace UniGLTF
             var cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
             cube.transform.SetParent(root.transform);
 
-            var renderer = cube.GetComponent<Renderer>();
+            var renderer = cube.GetComponentOrThrow<Renderer>();
             renderer.sharedMaterials = materials;
             return root;
         }
@@ -48,7 +48,7 @@ namespace UniGLTF
             {
                 validator.SetRoot(root, new GltfExportSettings(), new DefualtBlendShapeExportFilter());
                 var vs = validator.Validate(root);
-                Assert.False(vs.All(x => x.CanExport));
+                Assert.True(vs.All(x => x.CanExport));
             }
             finally
             {
@@ -68,7 +68,7 @@ namespace UniGLTF
             {
                 validator.SetRoot(root, new GltfExportSettings(), new DefualtBlendShapeExportFilter());
                 var vs = validator.Validate(root);
-                Assert.False(vs.All(x => x.CanExport));
+                Assert.True(vs.All(x => x.CanExport));
             }
             finally
             {
@@ -88,7 +88,10 @@ namespace UniGLTF
                 var child = GameObject.CreatePrimitive(PrimitiveType.Cube);
                 child.transform.SetParent(root.transform);
                 // remove MeshFilter
-                Component.DestroyImmediate(child.GetComponent<MeshFilter>());
+                if (child.TryGetComponent<MeshFilter>(out var mf))
+                {
+                    Component.DestroyImmediate(mf);
+                }
 
                 validator.SetRoot(root, new GltfExportSettings(), new DefualtBlendShapeExportFilter());
                 var vs = validator.Validate(root);
@@ -112,7 +115,7 @@ namespace UniGLTF
                 var child = GameObject.CreatePrimitive(PrimitiveType.Cube);
                 child.transform.SetParent(root.transform);
                 // set null
-                child.GetComponent<MeshFilter>().sharedMesh = null;
+                child.GetComponentOrThrow<MeshFilter>().sharedMesh = null;
 
                 validator.SetRoot(root, new GltfExportSettings(), new DefualtBlendShapeExportFilter());
                 var vs = validator.Validate(root);

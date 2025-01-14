@@ -2,6 +2,7 @@
 using System.Linq;
 using UnityEngine;
 using System;
+using UniGLTF;
 
 
 namespace UniVRM10
@@ -12,6 +13,8 @@ namespace UniVRM10
     public sealed class PreviewSceneManager : MonoBehaviour
     {
         public GameObject Prefab;
+
+        public bool hasError;
 
 #if UNITY_EDITOR
         public static PreviewSceneManager GetOrCreate(GameObject prefab)
@@ -24,15 +27,19 @@ namespace UniVRM10
             PreviewSceneManager manager = null;
 
             // if we already instantiated a PreviewInstance previously but just lost the reference, then use that same instance instead of making a new one
+#if UNITY_2022_3_OR_NEWER
+            var managers = GameObject.FindObjectsByType<PreviewSceneManager>(FindObjectsSortMode.InstanceID);
+#else
             var managers = GameObject.FindObjectsOfType<PreviewSceneManager>();
+#endif
             foreach (var x in managers)
             {
                 if (x.Prefab == prefab)
                 {
-                    Debug.LogFormat("find {0}", manager);
+                    UniGLTFLogger.Log($"find {manager}");
                     return manager;
                 }
-                Debug.LogFormat("destroy {0}", x);
+                UniGLTFLogger.Log($"destroy {x}");
                 GameObject.DestroyImmediate(x.gameObject);
             }
 
@@ -50,14 +57,17 @@ namespace UniVRM10
             // HideFlags are special editor-only settings that let you have *secret* GameObjects in a scene, or to tell Unity not to save that temporary GameObject as part of the scene
             foreach (var x in go.transform.Traverse())
             {
-                x.gameObject.hideFlags = HideFlags.None
-                | HideFlags.DontSave
-                //| HideFlags.DontSaveInBuild
-#if VRM_DEVELOP
-#else
-                | HideFlags.HideAndDontSave
-#endif
-                ;
+                if (Symbols.VRM_DEVELOP)
+                {
+                    x.gameObject.hideFlags = HideFlags.None |
+                                             HideFlags.DontSave;
+                }
+                else
+                {
+                    x.gameObject.hideFlags = HideFlags.None |
+                                             HideFlags.DontSave |
+                                             HideFlags.HideAndDontSave;
+                }
             }
 
             return manager;
@@ -75,7 +85,8 @@ namespace UniVRM10
 #if UNITY_EDITOR
         private void Initialize(GameObject prefab)
         {
-            //Debug.LogFormat("[PreviewSceneManager.Initialize] {0}", prefab);
+            hasError = false;
+            
             Prefab = prefab;
 
             var materialNames = new List<string>();
@@ -94,10 +105,17 @@ namespace UniVRM10
                 {
                     dst = new Material(src);
                     map.Add(src, dst);
+                    
+                    if (!PreviewMaterialUtil.TryCreateForPreview(dst, out var previewMaterialItem))
+                    {
+                        hasError = true;
+                        // Return cloned material for preview
+                        return dst;
+                    }
+                    
+                    m_materialMap.Add(src.name, previewMaterialItem);
 
-                    //Debug.LogFormat("add material {0}", src.name);
                     materialNames.Add(src.name);
-                    m_materialMap.Add(src.name, PreviewMaterialUtil.CreateForPreview(dst));
                 }
                 return dst;
             };
@@ -120,8 +138,7 @@ namespace UniVRM10
                 .Select(x => x.Path)
                 .ToArray();
 
-            var animator = GetComponent<Animator>();
-            if (animator != null)
+            if(TryGetComponent<Animator>(out var animator))
             {
                 var head = animator.GetBoneTransform(HumanBodyBones.Head);
                 if (head != null)
@@ -259,7 +276,6 @@ namespace UniVRM10
                                 // }
 
                                 var value = item.Material.GetVector(prop.Name);
-                                //Debug.LogFormat("{0} => {1}", valueName, x.TargetValue);
                                 value += ((x.TargetValue - prop.DefaultValues) * weight);
                                 item.Material.SetColor(prop.Name, value);
                             }

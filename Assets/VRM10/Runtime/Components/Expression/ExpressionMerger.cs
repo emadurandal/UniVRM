@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using VrmLib;
-
 
 namespace UniVRM10
 {
@@ -28,10 +26,12 @@ namespace UniVRM10
 
         public ExpressionMerger(VRM10ObjectExpression expressions, Transform root)
         {
-            m_clipMap = expressions.Clips.ToDictionary(x => expressions.CreateKey(x.Clip), x => x.Clip);
-
-            m_valueMap = new Dictionary<ExpressionKey, float>();
-
+            m_clipMap = expressions.Clips.ToDictionary(
+                x => expressions.CreateKey(x.Clip),
+                x => x.Clip,
+                ExpressionKey.Comparer
+            );
+            m_valueMap = new Dictionary<ExpressionKey, float>(ExpressionKey.Comparer);
             m_morphTargetBindingMerger = new MorphTargetBindingMerger(m_clipMap, root);
             m_materialValueBindingMerger = new MaterialValueBindingMerger(m_clipMap, root);
         }
@@ -42,7 +42,7 @@ namespace UniVRM10
         /// <param name="expressionWeights"></param>
         public void SetValues(Dictionary<ExpressionKey, float> expressionWeights)
         {
-            foreach (var (key, weight) in expressionWeights.Select(kv => (kv.Key, kv.Value)))
+            foreach (var (key, weight) in expressionWeights)
             {
                 AccumulateValue(key, weight);
             }
@@ -61,7 +61,7 @@ namespace UniVRM10
                 return;
             }
 
-            m_morphTargetBindingMerger.AccumulateValue(clip, value);
+            m_morphTargetBindingMerger.AccumulateValue(key, value);
             m_materialValueBindingMerger.AccumulateValue(clip, value);
         }
 

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using UniGLTF;
 using System.IO;
+using UniGLTF.Utils;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -15,24 +16,6 @@ namespace VRM
     {
         [SerializeField]
         public List<BlendShapeClip> Clips = new List<BlendShapeClip>();
-
-        /// <summary>
-        /// NullのClipを削除して詰める
-        /// </summary>
-        public void RemoveNullClip()
-        {
-            if (Clips == null)
-            {
-                return;
-            }
-            for (int i = Clips.Count - 1; i >= 0; --i)
-            {
-                if (Clips[i] == null)
-                {
-                    Clips.RemoveAt(i);
-                }
-            }
-        }
 
 #if UNITY_EDITOR
         [ContextMenu("Restore")]
@@ -55,14 +38,13 @@ namespace VRM
                     Clips.Add(clip);
                 }
 
-                Debug.LogFormat("{0}", clip.name);
+                UniGLTFLogger.Log(clip.name);
             }
             Clips = Clips.OrderBy(x => BlendShapeKey.CreateFromClip(x)).ToList();
         }
 
         static public BlendShapeClip CreateBlendShapeClip(string path)
         {
-            //Debug.LogFormat("{0}", path);
             var clip = ScriptableObject.CreateInstance<BlendShapeClip>();
             clip.BlendShapeName = Path.GetFileNameWithoutExtension(path);
             AssetDatabase.CreateAsset(clip, path);
@@ -79,7 +61,7 @@ namespace VRM
         /// </summary>
         public void CreateDefaultPreset()
         {
-            var presets = CacheEnum.GetValues<BlendShapePreset>();
+            var presets = CachedEnum.GetValues<BlendShapePreset>();
 
             foreach (var preset in presets)
             {

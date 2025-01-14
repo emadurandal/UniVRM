@@ -32,8 +32,7 @@ namespace UniGLTF
             var materials = unityMesh.Materials;
             var positions = mesh.vertices.Select(axisInverter.InvertVector3).ToArray();
             var positionAccessorIndex = data.ExtendBufferAndGetAccessorIndex(positions, glBufferTarget.ARRAY_BUFFER);
-            data.GLTF.accessors[positionAccessorIndex].min = positions.Aggregate(positions[0], (a, b) => new Vector3(Mathf.Min(a.x, b.x), Math.Min(a.y, b.y), Mathf.Min(a.z, b.z))).ToArray();
-            data.GLTF.accessors[positionAccessorIndex].max = positions.Aggregate(positions[0], (a, b) => new Vector3(Mathf.Max(a.x, b.x), Math.Max(a.y, b.y), Mathf.Max(a.z, b.z))).ToArray();
+            AccessorsBounds.UpdatePositionAccessorsBounds(data.Gltf.accessors[positionAccessorIndex], positions);
 
             var normalAccessorIndex = data.ExtendBufferAndGetAccessorIndex(mesh.normals.Select(y => axisInverter.InvertVector3(y.normalized)).ToArray(), glBufferTarget.ARRAY_BUFFER);
 
@@ -44,12 +43,16 @@ namespace UniGLTF
             }
 
             var uvAccessorIndex0 = data.ExtendBufferAndGetAccessorIndex(mesh.uv.Select(y => y.ReverseUV()).ToArray(), glBufferTarget.ARRAY_BUFFER);
-            var uvAccessorIndex1 = data.ExtendBufferAndGetAccessorIndex(mesh.uv2.Select(y => y.ReverseUV()).ToArray(), glBufferTarget.ARRAY_BUFFER);
+
+            var uvAccessorIndex1 = -1;
+            if (settings.ExportUvSecondary)
+            {
+                uvAccessorIndex1 = data.ExtendBufferAndGetAccessorIndex(mesh.uv2.Select(y => y.ReverseUV()).ToArray(), glBufferTarget.ARRAY_BUFFER);
+            }
 
             var colorAccessorIndex = -1;
-
             var vColorState = VertexColorUtility.DetectVertexColor(mesh, materials);
-            if ((settings.KeepVertexColor && mesh.colors != null && mesh.colors.Length == mesh.vertexCount) // vertex color を残す設定
+            if ((settings.ExportVertexColor && mesh.colors != null && mesh.colors.Length == mesh.vertexCount) // vertex color を残す設定
             || vColorState == VertexColorState.ExistsAndIsUsed // VColor使っている
             || vColorState == VertexColorState.ExistsAndMixed // VColorを使っているところと使っていないところが混在(とりあえずExportする)
             )
@@ -58,15 +61,23 @@ namespace UniGLTF
                 colorAccessorIndex = data.ExtendBufferAndGetAccessorIndex(mesh.colors, glBufferTarget.ARRAY_BUFFER);
             }
 
-            var boneweights = mesh.boneWeights;
-            var weightAccessorIndex = data.ExtendBufferAndGetAccessorIndex(boneweights.Select(y => new Vector4(y.weight0, y.weight1, y.weight2, y.weight3)).ToArray(), glBufferTarget.ARRAY_BUFFER);
-            var jointsAccessorIndex = data.ExtendBufferAndGetAccessorIndex(boneweights.Select(y =>
-                new UShort4(
-                    (ushort)unityMesh.GetJointIndex(y.boneIndex0),
-                    (ushort)unityMesh.GetJointIndex(y.boneIndex1),
-                    (ushort)unityMesh.GetJointIndex(y.boneIndex2),
-                    (ushort)unityMesh.GetJointIndex(y.boneIndex3))
-                ).ToArray(), glBufferTarget.ARRAY_BUFFER);
+            var boneWeights = mesh.boneWeights;
+            var weightAccessorIndex = -1;
+            var jointsAccessorIndex = -1;
+            if (boneWeights.All(x => x.weight0 == 0 && x.weight1 == 0 && x.weight2 == 0 && x.weight3 == 0))
+            {
+            }
+            else
+            {
+                weightAccessorIndex = data.ExtendBufferAndGetAccessorIndex(boneWeights.Select(y => new Vector4(y.weight0, y.weight1, y.weight2, y.weight3)).ToArray(), glBufferTarget.ARRAY_BUFFER);
+                jointsAccessorIndex = data.ExtendBufferAndGetAccessorIndex(boneWeights.Select(y =>
+                    new UShort4(
+                        (ushort)unityMesh.GetJointIndex(y.boneIndex0),
+                        (ushort)unityMesh.GetJointIndex(y.boneIndex1),
+                        (ushort)unityMesh.GetJointIndex(y.boneIndex2),
+                        (ushort)unityMesh.GetJointIndex(y.boneIndex3))
+                    ).ToArray(), glBufferTarget.ARRAY_BUFFER);
+            }
 
             var attributes = new glTFAttributes
             {
@@ -103,62 +114,20 @@ namespace UniGLTF
                 attributes.JOINTS_0 = jointsAccessorIndex;
             }
 
-            var gltfMesh = new glTFMesh(mesh.name);
-            var indices = new List<uint>();
-            for (int j = 0; j < mesh.subMeshCount; ++j)
-            {
-                indices.Clear();
-
-                var triangles = mesh.GetIndices(j);
-                if (triangles.Length == 0)
-                {
-                    // https://github.com/vrm-c/UniVRM/issues/664                    
-                    continue;
-                }
-
-                for (int i = 0; i < triangles.Length; i += 3)
-                {
-                    var i0 = triangles[i];
-                    var i1 = triangles[i + 1];
-                    var i2 = triangles[i + 2];
-
-                    // flip triangle
-                    indices.Add((uint)i2);
-                    indices.Add((uint)i1);
-                    indices.Add((uint)i0);
-                }
-
-                var indicesAccessorIndex = data.ExtendBufferAndGetAccessorIndex(indices.ToArray(), glBufferTarget.ELEMENT_ARRAY_BUFFER);
-                if (indicesAccessorIndex < 0)
-                {
-                    // https://github.com/vrm-c/UniVRM/issues/664                    
-                    throw new Exception();
-                }
-
-                if (j >= materials.Length)
-                {
-                    Debug.LogWarningFormat("{0}.materials is not enough", unityMesh.Mesh.name);
-                    break;
-                }
-
-                gltfMesh.primitives.Add(new glTFPrimitives
-                {
-                    attributes = attributes,
-                    indices = indicesAccessorIndex,
-                    mode = 4, // triangles ?
-                    material = unityMaterials.IndexOf(materials[j])
-                });
-            }
+            var gltfMesh = CreateGLTFMesh(attributes, data, unityMesh, unityMaterials);
 
             var blendShapeIndexMap = new Dictionary<int, int>();
             {
                 var targetNames = new List<string>();
 
                 int exportBlendShapes = 0;
+                Vector3[] blendShapePositions = new Vector3[mesh.vertexCount];
+                Vector3[] blendShapeNormals = new Vector3[mesh.vertexCount];
                 for (int j = 0; j < unityMesh.Mesh.blendShapeCount; ++j)
                 {
                     var morphTarget = ExportMorphTarget(data,
                         unityMesh.Mesh, j,
+                        blendShapePositions, blendShapeNormals,
                         settings.UseSparseAccessorForMorphTarget,
                         settings.ExportOnlyBlendShapePosition, axisInverter);
                     if (morphTarget.POSITION < 0)
@@ -181,10 +150,123 @@ namespace UniGLTF
                     }
                 }
 
-                gltf_mesh_extras_targetNames.Serialize(gltfMesh, targetNames);
+                gltf_mesh_extras_targetNames.Serialize(gltfMesh, targetNames, BlendShapeTargetNameLocationFlags.Both);
             }
 
             return (gltfMesh, blendShapeIndexMap);
+        }
+
+        private static glTFMesh CreateGLTFMesh(glTFAttributes attributes, ExportingGltfData data, MeshExportInfo unityMesh, List<Material> unityMaterials)
+        {
+            var mesh = unityMesh.Mesh;
+            var materials = unityMesh.Materials;
+            var gltfMesh = new glTFMesh(mesh.name);
+
+            var indices = new List<uint>();
+            for (int j = 0; j < mesh.subMeshCount; ++j)
+            {
+                indices.Clear();
+                if (j >= materials.Length)
+                {
+                    Debug.LogWarningFormat("{0}.materials is not enough", mesh.name);
+                    continue;
+                }
+
+                var subMesh = mesh.GetSubMesh(j);
+                var topologyType = subMesh.topology;
+                var materialIndex = unityMaterials.IndexOf(materials[j]);
+
+                var submeshIndices = mesh.GetIndices(j);
+                if (submeshIndices.Length == 0)
+                {
+                    // https://github.com/vrm-c/UniVRM/issues/664                    
+                    break;
+                }
+                else if (submeshIndices.Length < 3)
+                {
+                    Debug.LogWarningFormat("Invalid primitive of type {0} found", topologyType);
+                    continue;
+                }
+
+                // Add indices considering the topology type
+                switch (topologyType)
+                {
+                    case MeshTopology.Triangles:
+                        if (submeshIndices.Length % 3 != 0)
+                            Debug.LogWarningFormat("triangle indices is not multiple of 3");
+                        GetTriangleIndices(indices, submeshIndices);
+                        break;
+                    case MeshTopology.Quads:
+                        if (submeshIndices.Length % 4 != 0)
+                            Debug.LogWarningFormat("quad indices is not multiple of 4");
+                        GetQuadIndices(indices, submeshIndices);
+                        break;
+                    default:
+                    case MeshTopology.Lines:
+                    case MeshTopology.LineStrip:
+                    case MeshTopology.Points:
+                        Debug.LogWarningFormat("Mesh {0} has unsupported topology type {1}.", mesh.name, topologyType);
+                        continue;
+                }
+
+                var primitive = CreatePrimitives(attributes, data, indices, materialIndex);
+                gltfMesh.primitives.Add(primitive);
+            }
+
+            return gltfMesh;
+        }
+
+        private static glTFPrimitives CreatePrimitives(glTFAttributes attributes, ExportingGltfData data, List<uint> indices, int materialIndex)
+        {
+            var indicesAccessorIndex = data.ExtendBufferAndGetAccessorIndex(indices.ToArray(), glBufferTarget.ELEMENT_ARRAY_BUFFER);
+            if (indicesAccessorIndex < 0)
+            {
+                // https://github.com/vrm-c/UniVRM/issues/664                    
+                throw new Exception();
+            }
+            var primitive = new glTFPrimitives
+            {
+                attributes = attributes,
+                indices = indicesAccessorIndex,
+                mode = (int)glTFPrimitives.Mode.TRIANGLES, // triangles ?
+                material = materialIndex
+            };
+            return primitive;
+        }
+
+        private static void GetQuadIndices(List<uint> indices, int[] quadIndices)
+        {
+            for (int i = 0; i < quadIndices.Length - 3; i += 4)
+            {
+                var i0 = quadIndices[i];
+                var i1 = quadIndices[i + 1];
+                var i2 = quadIndices[i + 2];
+                var i3 = quadIndices[i + 3];
+
+                // flip triangles
+                indices.Add((uint)i2);
+                indices.Add((uint)i1);
+                indices.Add((uint)i0);
+
+                indices.Add((uint)i3);
+                indices.Add((uint)i2);
+                indices.Add((uint)i0);
+            }
+        }
+
+        private static void GetTriangleIndices(List<uint> indices, int[] triangleIndices)
+        {
+            for (int i = 0; i < triangleIndices.Length - 2; i += 3)
+            {
+                var i0 = triangleIndices[i];
+                var i1 = triangleIndices[i + 1];
+                var i2 = triangleIndices[i + 2];
+
+                // flip triangle
+                indices.Add((uint)i2);
+                indices.Add((uint)i1);
+                indices.Add((uint)i0);
+            }
         }
 
         static bool UseSparse(
@@ -203,14 +285,13 @@ namespace UniGLTF
 
         static gltfMorphTarget ExportMorphTarget(ExportingGltfData data,
             Mesh mesh, int blendShapeIndex,
+            Vector3[] blendShapeVertices, Vector3[] blendShapeNormals,
             bool useSparseAccessorForMorphTarget,
             bool exportOnlyBlendShapePosition,
             IAxisInverter axisInverter)
         {
-            var blendShapeVertices = mesh.vertices;
             var usePosition = blendShapeVertices != null && blendShapeVertices.Length > 0;
 
-            var blendShapeNormals = mesh.normals;
             var useNormal = usePosition && blendShapeNormals != null && blendShapeNormals.Length == blendShapeVertices.Length;
             // var useNormal = usePosition && blendShapeNormals != null && blendShapeNormals.Length == blendShapeVertices.Length && !exportOnlyBlendShapePosition;
 
@@ -231,18 +312,6 @@ namespace UniGLTF
             for (int i = 0; i < blendShapeNormals.Length; ++i)
             {
                 blendShapeNormals[i] = axisInverter.InvertVector3(blendShapeNormals[i]);
-            }
-
-            var positions = mesh.vertices;
-            for (int i = 0; i < positions.Length; ++i)
-            {
-                positions[i] = axisInverter.InvertVector3(positions[i]);
-            }
-
-            var normals = mesh.normals;
-            for (int i = 0; i < normals.Length; ++i)
-            {
-                normals[i] = axisInverter.InvertVector3(normals[i]);
             }
 
             return BlendShapeExporter.Export(data,

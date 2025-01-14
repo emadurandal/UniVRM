@@ -6,15 +6,33 @@ using UnityEngine;
 
 namespace UniVRM10
 {
-    public static class MigrationVrmExpression
+    internal static class MigrationVrmExpression
     {
-        static ExpressionPreset ToPreset(JsonNode json)
+        /// <summary>
+        /// preset 名の文字列から ExpressionPreset を確定させる。
+        ///
+        /// 0.x の特殊な挙動として、
+        /// preset名が "unknown" の場合に、
+        /// "name" を preset 名として解釈を試みる。
+        /// </summary>
+        /// <param name="json"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        static ExpressionPreset ToPreset(JsonNode json, string name)
         {
-            switch (json.GetString().ToLower())
+            var src = json.GetString().ToLowerInvariant();
+            if (src == "unknown")
             {
-                case "unknown": return ExpressionPreset.custom;
+                // VRM 0.x では以下の実装が存在した。
+                // Preset が unknown で Name が Joy の表情があったときに
+                // それは Preset が Joy であるとみなしてロードしていた。
+                src = name.ToLowerInvariant();
+            }
 
+            switch (src)
+            {
                 // https://github.com/vrm-c/vrm-specification/issues/185
+                // https://github.com/vrm-c/UniVRM/issues/1482
                 case "neutral": return ExpressionPreset.neutral;
 
                 case "a": return ExpressionPreset.aa;
@@ -32,6 +50,7 @@ namespace UniVRM10
                 case "angry": return ExpressionPreset.angry;
                 case "sorrow": return ExpressionPreset.sad;
                 case "fun": return ExpressionPreset.relaxed;
+                case "surprised": return ExpressionPreset.surprised;
 
                 case "lookup": return ExpressionPreset.lookUp;
                 case "lookdown": return ExpressionPreset.lookDown;
@@ -39,7 +58,7 @@ namespace UniVRM10
                 case "lookright": return ExpressionPreset.lookRight;
             }
 
-            throw new NotImplementedException();
+            return ExpressionPreset.custom;
         }
 
         static IEnumerable<UniGLTF.Extensions.VRMC_vrm.MorphTargetBind> ToMorphTargetBinds(JsonNode json,
@@ -64,7 +83,7 @@ namespace UniVRM10
                 }
                 bind.Node = nodeIndex;
                 bind.Index = morphTargetIndex;
-                // https://github.com/vrm-c/vrm-specification/issues/209                
+                // https://github.com/vrm-c/vrm-specification/issues/209
                 bind.Weight = weight * 0.01f;
 
                 yield return bind;
@@ -77,7 +96,7 @@ namespace UniVRM10
         public const string OUTLINE_COLOR_PROPERTY = "_OutlineColor";
         public const string SHADE_COLOR_PROPERTY = "_ShadeColor";
 
-        static UniGLTF.Extensions.VRMC_vrm.MaterialColorType ToMaterialType(string src)
+        static UniGLTF.Extensions.VRMC_vrm.MaterialColorType? ToMaterialColorType(string src)
         {
             switch (src)
             {
@@ -97,17 +116,17 @@ namespace UniVRM10
                     return UniGLTF.Extensions.VRMC_vrm.MaterialColorType.outlineColor;
             }
 
-            throw new NotImplementedException();
+            return default;
         }
 
         /// <summary>
         /// MaterialValue の仕様変更
-        /// 
+        ///
         /// * MaterialColorBind
         /// * TextureTransformBind
-        /// 
+        ///
         /// の２種類になった。
-        /// 
+        ///
         /// </summary>
         /// <param name="gltf"></param>
         /// <param name="json"></param>
@@ -133,57 +152,70 @@ namespace UniVRM10
                 }
                 var propertyName = x["propertyName"].GetString();
                 var targetValue = x["targetValue"].ArrayItems().Select(y => y.GetSingle()).ToArray();
-                if (propertyName.EndsWith("_ST"))
+                if (propertyName == "_MainTex_ST")
                 {
                     // VRM-0 は無変換
                     var (scale, offset) = UniGLTF.TextureTransform.VerticalFlipScaleOffset(
                         new UnityEngine.Vector2(targetValue[0], targetValue[1]),
                         new UnityEngine.Vector2(targetValue[2], targetValue[3]));
 
-                    expression.TextureTransformBinds.Add(new UniGLTF.Extensions.VRMC_vrm.TextureTransformBind
+                    if (!expression.TextureTransformBinds.Exists(bind => bind.Material == materialIndex))
                     {
-                        Material = materialIndex,
-                        Scale = new float[] { scale.x, scale.y },
-                        Offset = new float[] { offset.x, offset.y }
-                    });
+                        expression.TextureTransformBinds.Add(new UniGLTF.Extensions.VRMC_vrm.TextureTransformBind
+                        {
+                            Material = materialIndex,
+                            Scale = new float[] { scale.x, scale.y },
+                            Offset = new float[] { offset.x, offset.y }
+                        });
+                    }
                 }
-                else if (propertyName.EndsWith("_ST_S"))
+                else if (propertyName == "_MainTex_ST_S")
                 {
                     // VRM-0 は無変換
                     var (scale, offset) = UniGLTF.TextureTransform.VerticalFlipScaleOffset(
                         new UnityEngine.Vector2(targetValue[0], 1),
                         new UnityEngine.Vector2(targetValue[2], 0));
 
-                    expression.TextureTransformBinds.Add(new UniGLTF.Extensions.VRMC_vrm.TextureTransformBind
+                    if (!expression.TextureTransformBinds.Exists(bind => bind.Material == materialIndex))
                     {
-                        Material = materialIndex,
-                        Scale = new float[] { scale.x, scale.y },
-                        Offset = new float[] { offset.x, offset.y }
-                    });
+                        expression.TextureTransformBinds.Add(new UniGLTF.Extensions.VRMC_vrm.TextureTransformBind
+                        {
+                            Material = materialIndex,
+                            Scale = new float[] { scale.x, scale.y },
+                            Offset = new float[] { offset.x, offset.y }
+                        });
+                    }
                 }
-                else if (propertyName.EndsWith("_ST_T"))
+                else if (propertyName == "_MainTex_ST_T")
                 {
                     // VRM-0 は無変換
                     var (scale, offset) = UniGLTF.TextureTransform.VerticalFlipScaleOffset(
                         new UnityEngine.Vector2(1, targetValue[1]),
                         new UnityEngine.Vector2(0, targetValue[3]));
 
-                    expression.TextureTransformBinds.Add(new UniGLTF.Extensions.VRMC_vrm.TextureTransformBind
+                    if (!expression.TextureTransformBinds.Exists(bind => bind.Material == materialIndex))
                     {
-                        Material = materialIndex,
-                        Scale = new float[] { scale.x, scale.y },
-                        Offset = new float[] { offset.x, offset.y }
-                    });
+                        expression.TextureTransformBinds.Add(new UniGLTF.Extensions.VRMC_vrm.TextureTransformBind
+                        {
+                            Material = materialIndex,
+                            Scale = new float[] { scale.x, scale.y },
+                            Offset = new float[] { offset.x, offset.y }
+                        });
+                    }
                 }
                 else
                 {
-                    // color
-                    expression.MaterialColorBinds.Add(new UniGLTF.Extensions.VRMC_vrm.MaterialColorBind
+                    var materialColorType = ToMaterialColorType(propertyName);
+                    if (materialColorType.HasValue)
                     {
-                        Material = materialIndex,
-                        Type = ToMaterialType(propertyName),
-                        TargetValue = targetValue,
-                    });
+                        // color
+                        expression.MaterialColorBinds.Add(new UniGLTF.Extensions.VRMC_vrm.MaterialColorBind
+                        {
+                            Material = materialIndex,
+                            Type = materialColorType.Value,
+                            TargetValue = targetValue,
+                        });
+                    }
                 }
             }
         }
@@ -199,7 +231,7 @@ namespace UniVRM10
                 {
                     isBinary = isBinaryNode.GetBoolean();
                 }
-                var preset = ToPreset(blendShapeClip["presetName"]);
+                var preset = ToPreset(blendShapeClip["presetName"], name);
                 var expression = new UniGLTF.Extensions.VRMC_vrm.Expression
                 {
                     IsBinary = isBinary,
@@ -207,8 +239,10 @@ namespace UniVRM10
                     MaterialColorBinds = new List<UniGLTF.Extensions.VRMC_vrm.MaterialColorBind>(),
                     TextureTransformBinds = new List<UniGLTF.Extensions.VRMC_vrm.TextureTransformBind>(),
                 };
-                expression.MorphTargetBinds = ToMorphTargetBinds(blendShapeClip["binds"], meshToNode).ToList();
-
+                if (blendShapeClip.TryGet("binds", out JsonNode binds))
+                {
+                    expression.MorphTargetBinds = ToMorphTargetBinds(binds, meshToNode).ToList();
+                }
                 if (blendShapeClip.TryGet("materialValues", out JsonNode materialValues))
                 {
                     ToMaterialColorBinds(gltf, materialValues, expression);
@@ -281,6 +315,7 @@ namespace UniVRM10
                     case "lookright": Check(name, blendShape, vrm1.Preset.LookRight, meshToNode); break;
                     case "blink_l": Check(name, blendShape, vrm1.Preset.BlinkLeft, meshToNode); break;
                     case "blink_r": Check(name, blendShape, vrm1.Preset.BlinkRight, meshToNode); break;
+                    case "neutral": Check(name, blendShape, vrm1.Preset.Neutral, meshToNode); break;
                     default:
                         {
                             string found = default;

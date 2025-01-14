@@ -6,20 +6,16 @@ using UniGLTF.M17N;
 using UniGLTF.MeshUtility;
 using UnityEditor;
 using UnityEngine;
-using VrmLib;
-using VRMShaders;
 
 namespace UniVRM10
 {
     public class VRM10ExportDialog : ExportDialogBase
     {
-        const string CONVERT_HUMANOID_KEY = VRMVersion.MENU + "/Export VRM-1.0";
+        public const string MENU_NAME = "Export VRM 1.0...";
 
-        [MenuItem(CONVERT_HUMANOID_KEY, false, 0)]
-        private static void ExportFromMenu()
+        public static void Open()
         {
-            var window = (VRM10ExportDialog)GetWindow(typeof(VRM10ExportDialog));
-            window.titleContent = new GUIContent("VRM-1.0 Exporter");
+            var window = GetWindow<VRM10ExportDialog>(MENU_NAME);
             window.Show();
         }
 
@@ -86,8 +82,7 @@ namespace UniVRM10
                 }
                 else
                 {
-                    var controller = root.GetComponent<Vrm10Instance>();
-                    if (controller != null)
+                    if (root.TryGetComponent<Vrm10Instance>(out var controller))
                     {
                         Vrm = controller.Vrm;
                     }
@@ -136,6 +131,10 @@ namespace UniVRM10
                 yield break;
             }
 
+            // Mesh/Renderer のチェック
+            m_meshes.MaterialValidator = new VRM10MaterialValidator();
+            yield return m_meshes.Validate;
+
             yield return HumanoidValidator.Validate_TPose;
 
             // MeshUtility.Validators.HumanoidValidator.EnableFreeze = false;
@@ -173,7 +172,7 @@ namespace UniVRM10
                 return false;
             }
 
-            if (State.ExportRoot.GetComponent<Animator>() != null)
+            if (State.ExportRoot.TryGetComponent<Animator>(out var animator))
             {
                 var backup = GUI.enabled;
                 GUI.enabled = State.ExportRoot.scene.IsValid();
@@ -202,7 +201,7 @@ namespace UniVRM10
                         }
                     }
                 }
-
+                EditorGUILayout.Separator();
                 GUI.enabled = backup;
             }
 
@@ -256,6 +255,24 @@ namespace UniVRM10
 
         string m_logLabel;
 
+        class TmpDisposer : IDisposable
+        {
+            List<UnityEngine.Object> _disposables = new();
+            public void Push(UnityEngine.Object o)
+            {
+                _disposables.Add(o);
+            }
+
+            public void Dispose()
+            {
+                foreach (var o in _disposables)
+                {
+                    GameObject.DestroyImmediate(o);
+                }
+                _disposables.Clear();
+            }
+        }
+
         protected override void ExportPath(string path)
         {
             m_logLabel = "";
@@ -266,36 +283,68 @@ namespace UniVRM10
 
             try
             {
-                var converter = new UniVRM10.ModelExporter();
-                var model = converter.Export(root);
-
-                // 右手系に変換
-                m_logLabel += $"convert to right handed coordinate...\n";
-                model.ConvertCoordinate(VrmLib.Coordinates.Vrm1, ignoreVrm: false);
-
-                // export vrm-1.0
-                var exporter = new UniVRM10.Vrm10Exporter(new EditorTextureSerializer(), new GltfExportSettings());
-                var option = new VrmLib.ExportArgs();
-                exporter.Export(root, model, converter, option, Vrm ? Vrm.Meta : m_tmpObject.Meta);
-
-                var exportedBytes = exporter.Storage.ToBytes();
-
-                m_logLabel += $"write to {path}...\n";
-                File.WriteAllBytes(path, exportedBytes);
-                Debug.Log("exportedBytes: " + exportedBytes.Length);
-
-                var assetPath = UniGLTF.UnityPath.FromFullpath(path);
-                if (assetPath.IsUnderAssetsFolder)
+                using (var disposer = new TmpDisposer())
+                using (var arrayManager = new NativeArrayManager())
                 {
-                    // asset folder 内。import を発動
-                    assetPath.ImportAsset();
+                    if (m_settings.FreezeMesh)
+                    {
+                        Debug.Log("vrm-1.0 FreezeMesh");
+                        var copy = GameObject.Instantiate(root);
+                        copy.GetComponent<Vrm10Instance>().UpdateType = Vrm10Instance.UpdateTypes.None;
+                        disposer.Push(copy);
+                        root = copy;
+
+                        using (var backup = new Vrm10GeometryBackup(root))
+                        {
+                            // Transform の回転とスケールを Mesh に適用します。
+                            // - BlendShape は現状がbakeされます
+                            // - 回転とスケールが反映された新しい Mesh が作成されます
+                            // - Transform の回転とスケールはクリアされます。world position を維持します
+                            var newMeshMap = BoneNormalizer.NormalizeHierarchyFreezeMesh(root, m_settings.FreezeMeshUseCurrentBlendShapeWeight);
+
+                            // SkinnedMeshRenderer.sharedMesh と MeshFilter.sharedMesh を新しいMeshで置き換える
+                            BoneNormalizer.Replace(root, newMeshMap, m_settings.FreezeMeshKeepRotation);
+                        }
+                    }
+
+                    var converter = new UniVRM10.ModelExporter();
+                    var model = converter.Export(m_settings.MeshExportSettings, arrayManager, root);
+
+                    // 右手系に変換
+                    m_logLabel += $"convert to right handed coordinate...\n";
+                    model.ConvertCoordinate(VrmLib.Coordinates.Vrm1, ignoreVrm: false);
+
+                    // export vrm-1.0
+                    var exporter = new Vrm10Exporter(
+                        m_settings.MeshExportSettings,
+                        textureSerializer: new EditorTextureSerializer()
+                    );
+                    var option = new VrmLib.ExportArgs
+                    {
+                        sparse = m_settings.MorphTargetUseSparse,
+                    };
+                    exporter.Export(root, model, converter, option, Vrm ? Vrm.Meta : m_tmpObject.Meta);
+
+                    var exportedBytes = exporter.Storage.ToGlbBytes();
+
+                    m_logLabel += $"write to {path}...\n";
+                    File.WriteAllBytes(path, exportedBytes);
+                    Debug.Log("exportedBytes: " + exportedBytes.Length);
+
+                    var assetPath = UniGLTF.UnityPath.FromFullpath(path);
+                    if (assetPath.IsUnderWritableFolder)
+                    {
+                        // asset folder 内。import を発動
+                        assetPath.ImportAsset();
+                    }
                 }
             }
             catch (Exception ex)
             {
                 m_logLabel += ex.ToString();
                 // rethrow
-                throw;
+                //throw;
+                Debug.LogException(ex);
             }
         }
     }
